@@ -69,6 +69,8 @@ Bash
 
 -   bin/rails db:seed
 
+-   bin/rails leet_code:seed
+
 #### 5\. Run the Application
 
 This application uses dartsass-rails to compile CSS. The standard way to run the server in development is to use the bin/dev command, which starts both the Rails server and the CSS watcher.
