@@ -175,4 +175,4 @@ Team
 
 [](https://github.com/tamu-edu-students/CSCE606-group5-project1#-team)
 
-Group 5 -- CSCE 606 Fall 2025 - Members: Yafei Li, Shreya Sahni, Hasitha Tumu, Tasnia Jamal
+Group 5 -- CSCE 606 Fall 2025 - Members: Shreya Sahni, Shivam Mishra, Mohammed Sharique, Venkata Sai Nithin Bazaru
