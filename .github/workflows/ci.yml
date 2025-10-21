@@ -83,10 +83,13 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Run rspec tests
-        env:
-          RAILS_ENV: test
-        run: bin/rails db:test:prepare; bundle exec rspec
+      - name: Set up DB
+        run: bin/rails db:test:prepare
+
+      - name: Run RSpec
+        run: bundle exec rspec
+      - name: Run Cucumber
+        run: bundle exec cucumber
 
       - name: Keep screenshots from failed system tests
         uses: actions/upload-artifact@v4

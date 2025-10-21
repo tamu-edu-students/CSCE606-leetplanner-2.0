@@ -17,6 +17,11 @@ require "simplecov"
 SimpleCov.start "rails" do
   command_name "RSpec"
   merge_timeout 3600 # 1 hour
+  add_filter '/spec/'
+  command_name 'RSpec'
+  coverage_dir 'coverage/rspec'
+  minimum_coverage 90
+  minimum_coverage_by_file 90
 end
 
 RSpec.configure do |config|

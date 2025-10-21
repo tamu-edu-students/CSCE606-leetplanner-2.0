@@ -11,6 +11,11 @@ SimpleCov.start "rails" do
   add_filter "channels"
   add_filter "mailers"
   add_filter "jobs"
+  add_filter '/features/'
+  command_name 'Cucumber'
+  coverage_dir 'coverage/cucumber'
+  minimum_coverage 90
+  minimum_coverage_by_file 90
 end
 
 require "cucumber/rails"
