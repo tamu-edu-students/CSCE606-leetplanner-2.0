@@ -1,5 +1,6 @@
+# This step mocks the Google OAuth response that your application will receive.
+# It is used for both successful and failed login scenarios.
 Given('a student with the email {string} can be authenticated by Google') do |email|
-  # This mocks the data that Google would send back after a successful login.
   OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new({
     provider: 'google_oauth2',
     uid: '123545',
@@ -9,46 +10,37 @@ Given('a student with the email {string} can be authenticated by Google') do |em
       last_name: 'User'
     },
     credentials: {
-      token: 'mock_token',
-      refresh_token: 'mock_refresh_token'
+      token: 'mock_google_token',
+      refresh_token: 'mock_google_refresh_token'
     }
   })
 end
 
-# This step establishes a logged-in state
 Given('I am logged in as a student') do
-step %(a student with the email "testuser@tamu.edu" can be authenticated by Google)
-  visit root_path
-  login_element = find(:link_or_button, 'Sign in with Google')
-  execute_script("arguments[0].click();", login_element)
-
-  expect(page).to have_current_path(dashboard_path)
+  expect(page).to have_current_path(path_for('dashboard'))
 end
 
+# Navigates to the root/login page using your path helper.
 Given('I am on the login page') do
-  visit root_path
+  visit path_for('login')
 end
 
-Then('I should be redirected to the login page') do
-  expect(page).to have_current_path(root_path)
-end
-
-When('I click {string}') do |link_or_button_text|
-  click_link_or_button(link_or_button_text)
-end
-
+# Verifies redirection to the dashboard after a successful login.
 Then('I should be redirected to the dashboard') do
-  expect(page).to have_current_path(dashboard_path)
+  expect(page).to have_current_path(path_for('dashboard'))
 end
 
-Then('I should see a success message {string}') do |message|
+# This step is for the successful logout message.
+Then('I should see a confirmation message {string}') do |message|
   expect(page).to have_content(message)
 end
 
-Then('I should see an error message {string}') do |message|
-  expect(page).to have_content(message)
+# Verifies that after logging out or a failed login, the user is on the login page.
+Then('I should be redirected to the login page') do
+  expect(page).to have_current_path(path_for('login'))
 end
 
+# Verifies that after a failed login attempt, the user remains on the login page.
 Then('I should still be on the login page') do
-  expect(page).to have_current_path(root_path)
+  expect(page).to have_current_path(path_for('login'))
 end
