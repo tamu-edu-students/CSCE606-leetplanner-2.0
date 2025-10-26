@@ -40,6 +40,21 @@ RSpec.describe Leetcode::FetchStats do
       end
     end
 
+    context 'with invalid JSON response' do
+      before do
+        stub_request(:get, "https://alfa-leetcode-api.onrender.com/#{username}/solved")
+          .to_return(status: 200, body: "invalid-json")
+      end
+
+      it 'logs the JSON parse error and raises "Invalid JSON response"' do
+        expect(Rails.logger).to receive(:error)
+                                  .with(a_string_matching(/\[LeetCodeAPI\] JSON parse error for .*solved: /))
+
+        expect { service.solved(username) }
+          .to raise_error(RuntimeError, "Invalid JSON response")
+      end
+    end
+
     context 'with timeout' do
       before do
         stub_request(:get, "https://alfa-leetcode-api.onrender.com/#{username}/solved")
