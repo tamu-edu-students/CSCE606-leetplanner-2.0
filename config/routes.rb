@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :lobbies
   # Root page
   root "login#index"
 
