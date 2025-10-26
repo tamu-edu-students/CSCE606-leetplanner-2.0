@@ -1,11 +1,23 @@
-<% content_for :title, "New lobby" %>
+<div class="app-container">
+  <%= render 'shared/navbar' %>
 
-<h1>New lobby</h1>
+  <main class="main-content">
+    <div class="page">
+        <div class="page-header">
+            <h1 class="page-title">Create Lobby</h1>
+            <p class="page-subtitle"></p>
+        </div>
 
-<%= render "form", lobby: @lobby %>
-
-<br>
-
-<div>
-  <%= link_to "Back to lobbies", lobbies_path %>
+        <div class="content-area">
+            <%= render partial: "form", locals: {
+            lobby:@lobby,
+            event: {},
+            form_url: new_lobby_path,
+            form_method: :post,
+            submit_text: "Create Lobby",
+            action: "add",
+            } %>
+        </div>
+    </div>
+  </main>
 </div>

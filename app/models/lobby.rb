@@ -1,13 +1,16 @@
 class Lobby < ApplicationRecord
   belongs_to :owner, class_name: 'User'
-  serialize :members, Array
 
   validates :lobby_code, presence: true, uniqueness: true
+  #TODO: Remove members
+  attribute :members, :json, default: []
   validates :owner, presence: true
+
+  has_many :lobby_members
+  has_many :users, through: :lobby_members
 
   before_validation :generate_lobby_code, on: :create
 
-  private
   def add_member(user)
     self.members ||= []
     self.members |= [user.id] # union to prevent duplicates

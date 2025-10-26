@@ -10,25 +10,14 @@
       </ul>
     </div>
   <% end %>
-
+  <%= form.hidden_field:owner_id, value:current_user.id %>
   <div>
-    <%= form.label :owner_id, style: "display: block" %>
-    <%= form.text_field :owner_id %>
+    <%= form.label :name, style: "display: block" %>
+    <%= form.text_field :name %>
   </div>
-
   <div>
     <%= form.label :description, style: "display: block" %>
     <%= form.textarea :description %>
-  </div>
-
-  <div>
-    <%= form.label :members, style: "display: block" %>
-    <%= form.textarea :members %>
-  </div>
-
-  <div>
-    <%= form.label :lobby_code, style: "display: block" %>
-    <%= form.text_field :lobby_code %>
   </div>
 
   <div>

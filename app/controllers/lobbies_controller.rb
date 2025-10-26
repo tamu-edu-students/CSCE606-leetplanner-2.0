@@ -3,6 +3,7 @@ class LobbiesController < ApplicationController
 
   # GET /lobbies or /lobbies.json
   def index
+    # @lobbies =Lobby.find_by(owner_id: current_user.id)
     @lobbies = Lobby.all
   end
 
@@ -22,6 +23,7 @@ class LobbiesController < ApplicationController
   # POST /lobbies or /lobbies.json
   def create
     @lobby = Lobby.new(lobby_params)
+    LobbyMember.create(user: current_user, lobby: @lobby)
 
     respond_to do |format|
       if @lobby.save
@@ -65,6 +67,6 @@ class LobbiesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def lobby_params
-      params.expect(lobby: [ :owner_id, :description, :members, :lobby_code ])
+      params.expect(lobby: [ :owner_id, :description, :members, :lobby_code, :name ])
     end
 end

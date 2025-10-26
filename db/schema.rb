@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_26_002100) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_26_044549) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -58,8 +58,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_26_002100) do
     t.string "lobby_code", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "name"
     t.index ["lobby_code"], name: "index_lobbies_on_lobby_code", unique: true
     t.index ["owner_id"], name: "index_lobbies_on_owner_id"
+  end
+
+  create_table "lobby_members", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "lobby_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["lobby_id"], name: "index_lobby_members_on_lobby_id"
+    t.index ["user_id"], name: "index_lobby_members_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -89,4 +99,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_26_002100) do
   add_foreign_key "leet_code_session_problems", "leet_code_sessions"
   add_foreign_key "leet_code_sessions", "users"
   add_foreign_key "lobbies", "users", column: "owner_id"
+  add_foreign_key "lobby_members", "lobbies"
+  add_foreign_key "lobby_members", "users"
 end
