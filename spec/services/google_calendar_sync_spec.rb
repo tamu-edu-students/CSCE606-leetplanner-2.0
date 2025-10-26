@@ -387,6 +387,25 @@ RSpec.describe GoogleCalendarSync do
         expect(result[:skipped]).to eq(1) # google_event_1 failed
       end
     end
+
+    context 'when a generic StandardError occurs during sync' do
+      before do
+        allow(mock_client).to receive(:expired?).and_return(false)
+
+        # Mock Google Calendar service to raise a plain StandardError
+        allow(mock_calendar_service).to receive(:list_events)
+                                          .and_raise(StandardError.new('Unexpected runtime failure'))
+      end
+
+      it 'logs the error and returns failure result with the message' do
+        expect(Rails.logger).to receive(:error).with(/Calendar sync error: Unexpected runtime failure/)
+
+        result = sync_service.sync(session_hash)
+
+        expect(result[:success]).to be false
+        expect(result[:error]).to eq('Unexpected runtime failure')
+      end
+    end
   end
 
   describe 'private methods' do
