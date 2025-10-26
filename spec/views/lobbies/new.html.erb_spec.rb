@@ -5,7 +5,6 @@ RSpec.describe "lobbies/new", type: :view do
     assign(:lobby, Lobby.new(
       owner: nil,
       description: "MyText",
-      members: "MyText",
       lobby_code: "MyString"
     ))
   end
@@ -17,8 +16,6 @@ RSpec.describe "lobbies/new", type: :view do
       assert_select "input[name=?]", "lobby[owner_id]"
 
       assert_select "textarea[name=?]", "lobby[description]"
-
-      assert_select "textarea[name=?]", "lobby[members]"
 
       assert_select "input[name=?]", "lobby[lobby_code]"
     end

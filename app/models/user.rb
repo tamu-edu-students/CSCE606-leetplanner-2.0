@@ -17,8 +17,6 @@ class User < ApplicationRecord
 
   # Associations with other models
   has_many :leet_code_sessions, dependent: :destroy  # User can have multiple coding sessions, destroy when user is deleted
-  # TODO: Remove owned lobbies
-  has_many :owned_lobbies, class_name: "Lobby", foreign_key: "owner_id"
   has_many :events                                   # User can have multiple calendar events
   has_many :lobby_members
   has_many :lobbies, through: :lobby_members
@@ -30,8 +28,5 @@ class User < ApplicationRecord
   # Instance method to get user's full name
   def full_name
     "#{first_name} #{last_name}"  # Concatenate first and last name
-  end
-  def joined_lobbies
-    Lobby.where("members::jsonb ? :user_id", user_id: id.to_s)
   end
 end

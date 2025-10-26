@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_26_044549) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_26_193342) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -54,7 +54,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_26_044549) do
   create_table "lobbies", force: :cascade do |t|
     t.bigint "owner_id", null: false
     t.text "description"
-    t.text "members"
     t.string "lobby_code", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

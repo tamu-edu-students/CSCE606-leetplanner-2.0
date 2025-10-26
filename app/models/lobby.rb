@@ -2,30 +2,12 @@ class Lobby < ApplicationRecord
   belongs_to :owner, class_name: "User"
 
   validates :lobby_code, presence: true, uniqueness: true
-  # TODO: Remove members
-  attribute :members, :json, default: []
   validates :owner, presence: true
 
   has_many :lobby_members
   has_many :users, through: :lobby_members
 
   before_validation :generate_lobby_code, on: :create
-
-  def add_member(user)
-    self.members ||= []
-    self.members |= [ user.id ] # union to prevent duplicates
-    save
-  end
-
-  def remove_member(user)
-    self.members ||= []
-    self.members.delete(user.id)
-    save
-  end
-
-  def member?(user)
-    self.members&.include?(user.id)
-  end
 
   private
 

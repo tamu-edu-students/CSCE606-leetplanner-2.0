@@ -5,7 +5,6 @@ RSpec.describe "lobbies/show", type: :view do
     assign(:lobby, Lobby.create!(
       owner: nil,
       description: "MyText",
-      members: "MyText",
       lobby_code: "Lobby Code"
     ))
   end
@@ -13,7 +12,6 @@ RSpec.describe "lobbies/show", type: :view do
   it "renders attributes in <p>" do
     render
     expect(rendered).to match(//)
-    expect(rendered).to match(/MyText/)
     expect(rendered).to match(/MyText/)
     expect(rendered).to match(/Lobby Code/)
   end

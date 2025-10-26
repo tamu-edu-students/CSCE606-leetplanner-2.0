@@ -5,7 +5,6 @@ RSpec.describe "lobbies/edit", type: :view do
     Lobby.create!(
       owner: nil,
       description: "MyText",
-      members: "MyText",
       lobby_code: "MyString"
     )
   }
@@ -21,8 +20,6 @@ RSpec.describe "lobbies/edit", type: :view do
       assert_select "input[name=?]", "lobby[owner_id]"
 
       assert_select "textarea[name=?]", "lobby[description]"
-
-      assert_select "textarea[name=?]", "lobby[members]"
 
       assert_select "input[name=?]", "lobby[lobby_code]"
     end

@@ -3,8 +3,7 @@ class LobbiesController < ApplicationController
 
   # GET /lobbies or /lobbies.json
   def index
-    # @lobbies =Lobby.find_by(owner_id: current_user.id)
-    @lobbies = Lobby.all
+    @lobbies = current_user.lobbies
   end
 
   # GET /lobbies/1 or /lobbies/1.json
@@ -67,6 +66,6 @@ class LobbiesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def lobby_params
-      params.expect(lobby: [ :owner_id, :description, :members, :lobby_code, :name ])
+      params.expect(lobby: [ :owner_id, :description, :lobby_code, :name ])
     end
 end
