@@ -4,7 +4,7 @@ class CreateLobbies < ActiveRecord::Migration[8.0]
       t.references :owner, null: false, foreign_key: { to_table: :users }
       t.text :description
       t.text :members
-      t.string :lobby_code, null:false
+      t.string :lobby_code, null: false
 
       t.timestamps
     end

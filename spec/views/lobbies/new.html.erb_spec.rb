@@ -14,7 +14,6 @@ RSpec.describe "lobbies/new", type: :view do
     render
 
     assert_select "form[action=?][method=?]", lobbies_path, "post" do
-
       assert_select "input[name=?]", "lobby[owner_id]"
 
       assert_select "textarea[name=?]", "lobby[description]"
