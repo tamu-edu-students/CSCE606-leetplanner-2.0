@@ -22,6 +22,11 @@ class UsersController < ApplicationController
         redirect_to profile_path, notice: "Profile updated successfully"
       else
         # Re-render profile form with validation errors
+        # Surface the first validation error in flash for feature tests that look for it
+        error_message = current_user.errors.full_messages.join(', ')
+        # reload the user from DB to show persisted values in the form (tests expect old values)
+        current_user.reload
+        flash.now[:alert] = error_message
         render :profile, status: :unprocessable_entity
       end
     end

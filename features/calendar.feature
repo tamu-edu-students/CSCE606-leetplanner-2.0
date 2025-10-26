@@ -14,12 +14,12 @@ Feature: Calendar
   Scenario: A user can create a new timed event
     Given my Google Calendar is ready to create an event
     When I am on the calendar page
-    And I click the "Add Event" button
+    And I open the Add Event form
     And I fill in "Title" with "New Study Session"
     And I fill in "Date" with "2025-10-25"
     And I fill in "Start" with "2025-10-25T14:00"
     And I fill in "End" with "2025-10-25T15:00"
-    And I click the "Add Event" button
+    And I submit the Add Event form
     Then I should see the success message "Event successfully created."
     And a "LeetCodeSession" with the title "New Study Session" should exist
 
@@ -27,19 +27,19 @@ Feature: Calendar
   Scenario: A user can create a new all-day event
     Given my Google Calendar is ready to create an event
     When I am on the calendar page
-    And I click the "Add Event" button
+    And I open the Add Event form
     And I fill in "Title" with "All-Day Hacking"
     And I fill in "Date" with "2025-11-01"
     And I check the "All-day event" checkbox
-    And I click the "Add Event" button
+    And I submit the Add Event form
     Then I should see the success message "Event successfully created."
     And a "LeetCodeSession" for the date "2025-11-01" should exist
 
   @javascript
   Scenario: A user cannot create an event without a title
     Given I am on the calendar page
-    And I click the "Add Event" button
-    And I click the "Add Event" button
+    And I open the Add Event form
+    And I submit the Add Event form
     Then I should see the error message "Event name is required."
 
   @javascript
@@ -61,6 +61,6 @@ Feature: Calendar
   Scenario: A user with an expired session is asked to log in again
     Given my Google authentication has expired
     When I am on the calendar page
-    And I click the "Add Event" button
+    And I open the Add Event form
     Then I should be redirected to the login page
     And I should see the alert "Your session expired. Please log in again."

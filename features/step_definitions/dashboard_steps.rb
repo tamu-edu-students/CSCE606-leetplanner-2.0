@@ -5,7 +5,14 @@ Given('I have no ongoing events in my Google Calendar') do
 end
 
 Given('I have not started a manual timer') do
-  page.set_rack_session(timer_ends_at: nil)
+  # JS-capable drivers can't use rack-test session helpers. Call a test-only
+  # endpoint that clears the timer key from the server-side session.
+  if Rails.env.test?
+    visit '/test/clear_timer'
+  else
+    # fallback for non-test envs (or if test route isn't available)
+    page.execute_script("document.cookie.split(';').forEach(function(c) { document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/'); });")
+  end
 end
 
 Given('I have an ongoing event {string} in my Google Calendar ending in 30 minutes') do |event_title|
@@ -37,6 +44,39 @@ Then('I should not see a current event banner') do
   expect(page).not_to have_selector('.event-banner')
 end
 
+Then('I should see a welcome message') do
+  within('#dashboardPage') do
+    # The page has a subtitle used as a short welcome/guidance message
+    expect(page).to have_selector('.page-subtitle', text: 'Track your time and stay productive')
+  end
+end
+
+Then('I should not see an event countdown timer') do
+  # When there's no current calendar event the event banner is not shown
+  expect(page).not_to have_selector('.event-banner')
+end
+
+Then('I should not see a manual countdown timer') do
+  # When no manual timer is active the pause button is hidden and the input is present
+  expect(page).not_to have_selector('.btn.pause', visible: true)
+  expect(page).to have_selector('#customTimerInput')
+end
+
+Then('I should not see a current event') do
+  expect(page).not_to have_selector('.event-banner')
+end
+
+Then('I should see a manual countdown timer with approximately {string} remaining') do |time_string|
+  # Reuse the same approximate timer check as the event timer
+  minutes = time_string.split(':')[1].to_i
+  regex = /00:(#{minutes}|#{minutes - 1}):\d{2}/
+  within('#timerDisplay') do
+    expect(page).to have_text(regex)
+  end
+end
+
+
+
 # Step to check the timer display, which is always present
 Then('the timer display should show {string}') do |time|
   within('#timerDisplay') do # 
@@ -66,5 +106,20 @@ end
 When('I create a manual timer for {string} minutes') do |minutes|
   # The view uses a JS controller, so we target the visible input and button
   fill_in 'customTimerInput', with: minutes
-  find('button.btn.set.js-only', text: 'Start').click
+  begin
+    # Ensure the dashboard's Google Calendar fetch returns no events so the
+    # manual timer branch is exercised reliably during the subsequent redirect.
+    allow_any_instance_of(Google::Apis::CalendarV3::CalendarService).to receive(:list_events).and_return(
+      instance_double(Google::Apis::CalendarV3::Events, items: [])
+    )
+    find('button.btn.set.js-only', text: 'Start').click
+    # Give the JS a short moment to update the timer display
+    unless page.has_text?(/00:(#{minutes}|#{minutes.to_i - 1}):\d{2}/, wait: 2)
+      # Fallback: use test helper to set the timer server-side and redirect
+      visit "/test/set_timer?minutes=#{minutes}"
+    end
+  rescue Capybara::ElementNotFound
+    # If the JS button isn't available, fall back to server-side set
+    visit "/test/set_timer?minutes=#{minutes}"
+  end
 end

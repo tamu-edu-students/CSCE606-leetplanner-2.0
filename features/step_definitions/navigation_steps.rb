@@ -10,7 +10,12 @@ Given('I am a logged-in user') do
     credentials: { token: 'mock_token', refresh_token: 'mock_refresh_token', expires_at: Time.now.to_i + 3600 }
   })
 
-  visit '/auth/google_oauth2/callback'
+  # Prefer using the test helper to set server-side session directly for deterministic tests
+  if Rails.env.test?
+    visit "/test/login_as?email=#{CGI.escape(@current_user.email)}"
+  else
+    visit '/auth/google_oauth2/callback'
+  end
 end
 
 Given('I am on the dashboard page') do
