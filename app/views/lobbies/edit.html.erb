@@ -1,0 +1,12 @@
+<% content_for :title, "Editing lobby" %>
+
+<h1>Editing lobby</h1>
+
+<%= render "form", lobby: @lobby %>
+
+<br>
+
+<div>
+  <%= link_to "Show this lobby", @lobby %> |
+  <%= link_to "Back to lobbies", lobbies_path %>
+</div>

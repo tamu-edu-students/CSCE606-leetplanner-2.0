@@ -1,0 +1,25 @@
+<div class="app-container">
+    <%= render 'shared/navbar' %>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Lobbies Page -->
+        <div id="lobbiesPage" class="page">
+
+            <div class="page-header align">
+                <div>
+                    <h1 class="page-title">Collaborative Lobbies</h1>
+                    <p class="page-subtitle">Connect and code together</p>
+                </div>
+            </div>
+            <div class="content-area">
+            <ol>
+            <%current_user.lobbies.each do |lobby| %>
+              <li> Lobby Name: <%=lobby.name%> | Host: <%= User.find_by(id: lobby.owner_id).first_name%> | Description: <%= lobby.description %> 
+            <% end %>
+            </ol>
+            <%= link_to "Create Lobby", new_lobby_path(), class: "btn btn-primary" %>
+            </div>
+        </div>
+    </main>
+</div>

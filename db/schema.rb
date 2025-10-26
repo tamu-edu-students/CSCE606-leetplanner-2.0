@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_04_225611) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_26_193342) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -24,7 +24,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_04_225611) do
     t.datetime "updated_at", null: false
     t.text "title_slug"
     t.text "description"
-    t.index [ "leetcode_id" ], name: "index_leet_code_problems_on_leetcode_id", unique: true
+    t.index ["leetcode_id"], name: "index_leet_code_problems_on_leetcode_id", unique: true
   end
 
   create_table "leet_code_session_problems", force: :cascade do |t|
@@ -34,8 +34,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_04_225611) do
     t.datetime "solved_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index [ "leet_code_problem_id" ], name: "index_leet_code_session_problems_on_leet_code_problem_id"
-    t.index [ "leet_code_session_id" ], name: "index_leet_code_session_problems_on_leet_code_session_id"
+    t.index ["leet_code_problem_id"], name: "index_leet_code_session_problems_on_leet_code_problem_id"
+    t.index ["leet_code_session_id"], name: "index_leet_code_session_problems_on_leet_code_session_id"
   end
 
   create_table "leet_code_sessions", force: :cascade do |t|
@@ -48,7 +48,27 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_04_225611) do
     t.string "google_event_id"
     t.text "description"
     t.string "title"
-    t.index [ "user_id" ], name: "index_leet_code_sessions_on_user_id"
+    t.index ["user_id"], name: "index_leet_code_sessions_on_user_id"
+  end
+
+  create_table "lobbies", force: :cascade do |t|
+    t.bigint "owner_id", null: false
+    t.text "description"
+    t.string "lobby_code", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "name"
+    t.index ["lobby_code"], name: "index_lobbies_on_lobby_code", unique: true
+    t.index ["owner_id"], name: "index_lobbies_on_owner_id"
+  end
+
+  create_table "lobby_members", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "lobby_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["lobby_id"], name: "index_lobby_members_on_lobby_id"
+    t.index ["user_id"], name: "index_lobby_members_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -69,12 +89,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_04_225611) do
     t.string "google_refresh_token"
     t.datetime "google_token_expires_at"
     t.string "personal_email"
-    t.index [ "active" ], name: "index_users_on_active"
-    t.index [ "email" ], name: "index_users_on_email", unique: true
-    t.index [ "netid" ], name: "index_users_on_netid", unique: true
+    t.index ["active"], name: "index_users_on_active"
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["netid"], name: "index_users_on_netid", unique: true
   end
 
   add_foreign_key "leet_code_session_problems", "leet_code_problems"
   add_foreign_key "leet_code_session_problems", "leet_code_sessions"
   add_foreign_key "leet_code_sessions", "users"
+  add_foreign_key "lobbies", "users", column: "owner_id"
+  add_foreign_key "lobby_members", "lobbies"
+  add_foreign_key "lobby_members", "users"
 end
