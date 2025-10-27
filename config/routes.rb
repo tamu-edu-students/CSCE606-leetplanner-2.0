@@ -7,6 +7,10 @@ Rails.application.routes.draw do
   # Authentication / Sessions
   # -------------------------------
   get "/login/google",          to: redirect("/auth/google_oauth2")
+  # Development login bypass - only available when ENABLE_DEV_LOGIN=true
+  if Rails.env.development? && ENV['ENABLE_DEV_LOGIN'] == 'true'
+    post "/login/dev_bypass",   to: "login#dev_bypass"
+  end
   get "/auth/:provider/callback", to: "sessions#create"
   get "sessions/create", to: "sessions#create", as: "sessions_create"
   get "/auth/failure",          to: "sessions#failure", as: "sessions_failure"
