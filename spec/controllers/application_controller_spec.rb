@@ -43,7 +43,7 @@ RSpec.describe ApplicationController, type: :controller do
         it 'returns JSON error response with 401 status' do
           request.headers['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest'
           get :protected_action
-          
+
           expect(response).to have_http_status(:unauthorized)
           expect(JSON.parse(response.body)).to eq({ 'error' => 'Authentication required' })
         end
@@ -52,7 +52,7 @@ RSpec.describe ApplicationController, type: :controller do
       context 'for JSON requests' do
         it 'returns JSON error response with 401 status' do
           get :protected_action, format: :json
-          
+
           expect(response).to have_http_status(:unauthorized)
           expect(JSON.parse(response.body)).to eq({ 'error' => 'Authentication required' })
         end
@@ -86,7 +86,7 @@ RSpec.describe ApplicationController, type: :controller do
 
       it 'memoizes the user object to avoid multiple database queries' do
         expect(User).to receive(:find).with(user.id).once.and_return(user)
-        
+
         # Call current_user multiple times
         controller.send(:current_user)
         controller.send(:current_user)
@@ -219,14 +219,14 @@ RSpec.describe ApplicationController, type: :controller do
 
     context 'session hijacking simulation' do
       let(:other_user) { create(:user) }
-      
+
       before { session[:user_id] = user.id }
 
       it 'maintains user identity throughout request due to memoization' do
         initial_user = controller.send(:current_user)
         # Simulate session change mid-request (shouldn't happen in practice due to memoization)
         session[:user_id] = other_user.id
-        
+
         # Due to memoization, should still return the original user
         expect(controller.send(:current_user)).to eq(initial_user)
       end
@@ -235,8 +235,8 @@ RSpec.describe ApplicationController, type: :controller do
 
   describe 'authentication bypass scenarios' do
     controller(ApplicationController) do
-      skip_before_action :authenticate_user!, only: [:skip_auth_action]
-      
+      skip_before_action :authenticate_user!, only: [ :skip_auth_action ]
+
       def skip_auth_action
         render plain: 'no auth needed'
       end

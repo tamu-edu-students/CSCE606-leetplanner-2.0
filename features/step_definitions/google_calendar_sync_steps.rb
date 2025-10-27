@@ -12,15 +12,15 @@ end
 
 # Background steps
 Given('I am a logged-in user with Google Calendar access') do
-  @current_user = create(:user, 
-    email: 'testuser@tamu.edu', 
-    first_name: 'Test', 
+  @current_user = create(:user,
+    email: 'testuser@tamu.edu',
+    first_name: 'Test',
     last_name: 'User',
     google_access_token: 'valid_token',
     google_refresh_token: 'valid_refresh_token',
     google_token_expires_at: 1.hour.from_now
   )
-  
+
   @mock_session = {
     google_token: @current_user.google_access_token,
     google_refresh_token: @current_user.google_refresh_token,
@@ -107,13 +107,13 @@ When('the Google Calendar sync is performed') do
   mock_oauth_client = double('Signet::OAuth2::Client')
   mock_calendar_service = double('Google::Apis::CalendarV3::CalendarService')
   mock_events_response = double('Google::Apis::CalendarV3::Events')
-  
+
   # Setup OAuth client mock
   allow(Signet::OAuth2::Client).to receive(:new).and_return(mock_oauth_client)
-  
+
   if @mock_session[:google_token]
     allow(mock_oauth_client).to receive(:expired?).and_return(@mock_session[:google_token_expires_at] && @mock_session[:google_token_expires_at] < Time.current)
-    
+
     if @token_refresh_fails
       allow(mock_oauth_client).to receive(:refresh!).and_raise(Signet::AuthorizationError.new('Refresh failed'))
     else
@@ -123,20 +123,20 @@ When('the Google Calendar sync is performed') do
       allow(mock_oauth_client).to receive(:expires_at).and_return(1.hour.from_now)
     end
   end
-  
+
   # Setup Calendar service mock
   allow(Google::Apis::CalendarV3::CalendarService).to receive(:new).and_return(mock_calendar_service)
   allow(mock_calendar_service).to receive(:authorization=)
-  
+
   # Setup events response
   allow(mock_events_response).to receive(:items).and_return(@google_events)
-  
+
   if @api_error
     allow(mock_calendar_service).to receive(:list_events).and_raise(@api_error)
   else
     allow(mock_calendar_service).to receive(:list_events).and_return(mock_events_response)
   end
-  
+
   # Mock individual event processing errors by making sync_event method fail for specific events
   if @processing_errors.any?
     original_sync_event = GoogleCalendarSync.instance_method(:sync_event)
@@ -157,7 +157,7 @@ When('the Google Calendar sync is performed') do
       end
     end
   end
-  
+
   # Perform the sync
   @sync_result = GoogleCalendarSync.sync_for_user(@current_user, @mock_session)
 end
@@ -196,7 +196,7 @@ end
 Then('the session for {string} should have:') do |google_event_id, table|
   session = LeetCodeSession.find_by(user: @current_user, google_event_id: google_event_id)
   expect(session).not_to be_nil
-  
+
   table.rows_hash.each do |attribute, expected_value|
     case attribute
     when 'title'
@@ -243,43 +243,43 @@ end
 # Helper methods
 def create_mock_google_event(row)
   event = double('Google::Apis::CalendarV3::Event')
-  
+
   allow(event).to receive(:id).and_return(row['id'])
   allow(event).to receive(:summary).and_return(row['title'])
   allow(event).to receive(:status).and_return(row['status'] || 'confirmed')
-  
+
   if row['all_day'] == 'true'
     # All-day event
     start_date_time = double('Google::Apis::CalendarV3::EventDateTime')
     end_date_time = double('Google::Apis::CalendarV3::EventDateTime')
-    
+
     allow(start_date_time).to receive(:date_time).and_return(nil)
     allow(start_date_time).to receive(:date).and_return(Date.parse(row['date']))
     allow(end_date_time).to receive(:date_time).and_return(nil)
     allow(end_date_time).to receive(:date).and_return(Date.parse(row['date']))
-    
+
     allow(event).to receive(:start).and_return(start_date_time)
     allow(event).to receive(:end).and_return(end_date_time)
   else
     # Timed event
     start_time = row['start_time'] ? Time.parse(row['start_time']) : nil
     end_time = row['end_time'] ? Time.parse(row['end_time']) : nil
-    
+
     start_date_time = double('Google::Apis::CalendarV3::EventDateTime')
     end_date_time = double('Google::Apis::CalendarV3::EventDateTime')
-    
+
     allow(start_date_time).to receive(:date_time).and_return(start_time)
     allow(start_date_time).to receive(:date).and_return(nil)
     allow(end_date_time).to receive(:date_time).and_return(end_time)
     allow(end_date_time).to receive(:date).and_return(nil)
-    
+
     allow(event).to receive(:start).and_return(start_date_time)
     allow(event).to receive(:end).and_return(end_date_time)
   end
-  
+
   # Set description
   description = row['description'] || row['title'] || 'Mock event description'
   allow(event).to receive(:description).and_return(description)
-  
+
   event
 end
