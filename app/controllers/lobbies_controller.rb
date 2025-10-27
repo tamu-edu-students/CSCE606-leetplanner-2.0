@@ -50,11 +50,21 @@ class LobbiesController < ApplicationController
 
   # DELETE /lobbies/1 or /lobbies/1.json
   def destroy
-    @lobby.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to lobbies_path, notice: "Lobby was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
+    if current_user.id == @lobby.owner_id
+      @lobby.lobby_members.each {
+        |member|
+        member.destroy!
+      }
+      @lobby.destroy!
+      respond_to do |format|
+        format.html { redirect_to lobbies_path, notice: "Lobby was successfully destroyed.", status: :see_other }
+        format.json { head :no_content }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to lobbies_path, alert: "You are not authorized to destroy this lobby.", status: :forbidden }
+        format.json { render json: { error: "Unauthorized" }, status: :forbidden }
+      end
     end
   end
 

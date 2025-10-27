@@ -11,16 +11,20 @@
     </div>
   <% end %>
   <%= form.hidden_field:owner_id, value:current_user.id %>
-  <div>
-    <%= form.label :name, style: "display: block" %>
-    <%= form.text_field :name %>
+  <div class="form-row">
+    <div class="form-field">
+      <%= form.label :name, style: "display: block" %>
+      <%= form.text_field :name %>
+    </div>
   </div>
-  <div>
-    <%= form.label :description, style: "display: block" %>
-    <%= form.textarea :description %>
+  <div class="form-row">
+    <div class="form-field">
+      <%= form.label :description, style: "display: block" %>
+      <%= form.textarea :description %>
+    </div>
   </div>
 
   <div>
-    <%= form.submit %>
+    <%= form.submit submit_text || "Create Lobby", class: "btn btn-primary", style: "margin-right: 1rem" %>
   </div>
 <% end %>
