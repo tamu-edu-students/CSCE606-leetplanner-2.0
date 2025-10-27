@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @lobby %>
+
+<div>
+  <%= link_to "Edit this lobby", edit_lobby_path(@lobby) %> |
+  <%= link_to "Back to lobbies", lobbies_path %>
+
+  <%= button_to "Destroy this lobby", @lobby, method: :delete %>
+</div>
