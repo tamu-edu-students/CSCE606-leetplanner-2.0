@@ -227,10 +227,22 @@ RSpec.describe GoogleCalendarSync do
         )
       end
 
+      # Override events_response for this context to only include relevant events
+      let(:events_response) do
+        double('Events', items: [ google_event_1, google_event_2 ])
+      end
+
       before do
-        # Mock the event to have exact same times
-        allow(google_event_1).to receive(:start).and_return(double(date_time: start_time, date: nil))
-        allow(google_event_1).to receive(:end).and_return(double(date_time: start_time + 1.hour, date: nil))
+        # Mock the event to have exact same times with database precision
+        # Use the actual saved time from the database to avoid precision issues
+        saved_start_time = existing_session.scheduled_time
+        saved_end_time = saved_start_time + 1.hour
+
+        allow(google_event_1).to receive(:start).and_return(double(date_time: saved_start_time, date: nil))
+        allow(google_event_1).to receive(:end).and_return(double(date_time: saved_end_time, date: nil))
+        # Also need to mock the summary and description to match exactly
+        allow(google_event_1).to receive(:summary).and_return('Team Meeting')
+        allow(google_event_1).to receive(:description).and_return('Weekly team sync')
       end
 
       it 'skips unchanged sessions' do
