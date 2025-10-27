@@ -12,13 +12,31 @@
                     <p class="page-subtitle">Connect and code together</p>
                 </div>
             </div>
+            
+
             <div class="content-area">
-            <ol>
+
+          <h3 class="page-title">Your Lobbies</h1>
+            <div class="lobbies-grid">
             <%current_user.lobbies.each do |lobby| %>
-              <li> Lobby Name: <%=lobby.name%> | Host: <%= User.find_by(id: lobby.owner_id).first_name%> | Description: <%= lobby.description %> 
+              <div class="lobby-card">
+            <%= link_to lobby_path(lobby), class: 'lobby-card-link' do %>
+                <div class="card-title"><%=lobby.name ? lobby.name : 'UNNAMED LOBBY'%></div>
             <% end %>
-            </ol>
-            <%= link_to "Create Lobby", new_lobby_path(), class: "btn btn-primary" %>
+                <div class="card-subtitle">Host: <%= User.find_by(id: lobby.owner_id).full_name%></div>
+                <div class="card-actions">
+                  <button class="join-btn btn btn-primary">Join</button>
+                <% if lobby.owner_id == current_user.id %>
+                  <button class="btn btn-share-link">Share Invite</button>
+                <% end %>
+                </div>
+              </div>
+            <% end %>
+
+            </div>
+          <hr style="margin-top:24px; border:none; border-top:1px solid #e5e7eb;">
+          <br/>
+            <%= link_to "+ Create New Lobby", new_lobby_path(), class: "btn btn-primary" %>
             </div>
         </div>
     </main>

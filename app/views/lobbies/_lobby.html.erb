@@ -1,17 +1,33 @@
-<div id="<%= dom_id lobby %>">
-  <p>
-    <strong>Owner:</strong>
-    <%= lobby.owner_id %>
-  </p>
+<div class="app-container">
+    <%= render 'shared/navbar' %>
 
-  <p>
-    <strong>Description:</strong>
-    <%= lobby.description %>
-  </p>
-
-  <p>
-    <strong>Lobby code:</strong>
-    <%= lobby.lobby_code %>
-  </p>
-
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Lobbies Page -->
+        <div id="lobbiesPage" class="page">
+            <div class="page-header align">
+                <div>
+                    <h1 class="page-title"><%= lobby.name ? lobby.name : 'UNNAMED LOBBY'%></h1>
+                    <p class="page-subtitle"> Host: <%= User.find_by(id: lobby.owner_id).full_name %> </p>
+                </div>
+            </div>
+            <div class="content-area">
+          <h3 class="page-title">Description</h3>
+          <div class="lobby-description"><%= lobby.description %></div>
+          <br/>
+          <h3 class="page-title">Participants (<%= lobby.lobby_members.length%>)</h3>
+          <% if lobby.lobby_members.length >= 1%>
+            <ul class="lobby-members">
+            <% lobby.lobby_members.each do |member| %>
+              <li> <%= User.find_by(id: member.user_id).full_name %></li>
+            <% end %>
+            </ul>
+          <% end %>
+  <div>
+    <% if current_user.id == @lobby.owner_id%>
+    <%= button_to "Destroy this lobby", @lobby, method: :delete, class: "btn btn-primary" %>
+  <% end %>
+  </div>
+        </div>
+    </main>
 </div>
