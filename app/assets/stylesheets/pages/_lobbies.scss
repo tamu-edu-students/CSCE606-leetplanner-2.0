@@ -96,7 +96,14 @@
 }
 
 .lobby-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
   margin-top: 2rem;
+}
+
+.lobby-actions form {
+  display: inline-block;
 }
 
 hr {
