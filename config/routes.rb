@@ -1,5 +1,12 @@
 Rails.application.routes.draw do
-  resources :lobbies
+  resources :lobbies do
+    resources :whiteboards, only: [] do
+      collection do
+        post :add_drawing
+        post :clear
+      end
+    end
+  end
   # Root page
   root "login#index"
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_26_193342) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_27_171818) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -94,10 +94,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_26_193342) do
     t.index ["netid"], name: "index_users_on_netid", unique: true
   end
 
+  create_table "whiteboards", force: :cascade do |t|
+    t.bigint "lobby_id", null: false
+    t.string "name"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "svg_data"
+    t.index ["lobby_id"], name: "index_whiteboards_on_lobby_id"
+  end
+
   add_foreign_key "leet_code_session_problems", "leet_code_problems"
   add_foreign_key "leet_code_session_problems", "leet_code_sessions"
   add_foreign_key "leet_code_sessions", "users"
   add_foreign_key "lobbies", "users", column: "owner_id"
   add_foreign_key "lobby_members", "lobbies"
   add_foreign_key "lobby_members", "users"
+  add_foreign_key "whiteboards", "lobbies"
 end

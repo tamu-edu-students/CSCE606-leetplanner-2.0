@@ -6,8 +6,10 @@ class Lobby < ApplicationRecord
 
   has_many :lobby_members
   has_many :users, through: :lobby_members
+  has_one :whiteboard, dependent: :destroy
 
   before_validation :generate_lobby_code, on: :create
+  after_create :create_default_whiteboard
 
   private
 
@@ -18,5 +20,9 @@ class Lobby < ApplicationRecord
       code = (chars + digits).sample(6).join
       break code unless Lobby.exists?(lobby_code: code)
     end
+  end
+
+  def create_default_whiteboard
+    self.create_whiteboard(name: "#{self.name} Whiteboard", description: "Shared whiteboard for #{self.name}")
   end
 end

@@ -18,6 +18,7 @@ gem "puma", ">= 5.0"
 gem "jbuilder"
 gem "google-api-client", "~> 0.53.0"
 gem "httparty"
+gem "nokogiri"
 
 # --- Authentication ---
 gem "omniauth"
