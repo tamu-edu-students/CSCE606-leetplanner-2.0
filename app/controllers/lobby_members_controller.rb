@@ -24,9 +24,9 @@ class LobbyMembersController < ApplicationController
     member = lobby.lobby_members.find_by(user: current_user)
 
     if member&.destroy
-      redirect_to root_path, notice: "You have left the lobby."
+      redirect_to lobbies_path, notice: "You have left the lobby."
     else
-      redirect_to root_path, alert: "You were not in that lobby."
+      redirect_to lobbies_path, alert: "You were not in that lobby."
     end
   end
 end
