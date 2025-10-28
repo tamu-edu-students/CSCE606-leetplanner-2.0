@@ -48,11 +48,10 @@ Rails.application.routes.draw do
   # Lobby Features
   # -------------------------------
   resources :lobbies
-  resources :lobby_participations, only: [ :create, :destroy ]
-  post 'join_by_code', to: 'lobby_members#create_by_code', as: :join_by_code
-  resources :lobby_participations, only: [ :destroy ] do
-    # Nested route for updating permissions on a specific participation
-    patch "permissions", on: :member, to: "lobby_permissions#update"
+  post 'join_lobby', to: 'lobby_members#create_by_code', as: :join_lobby
+  delete 'leave_lobby/:id', to: 'lobby_members#destroy', as: :leave_lobby
+  resources :lobby_members, only: [] do
+    patch 'permissions', on: :member, to: 'lobby_permissions#update', as: :update_permissions
   end
 
   # -------------------------------

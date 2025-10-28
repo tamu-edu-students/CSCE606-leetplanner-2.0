@@ -60,11 +60,18 @@
                 <hr>
 
                 <div class="lobby-actions">
-                    <% if current_user.id == lobby.owner_id %>
-                        <%= button_to "Destroy Lobby", lobby, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger" %>
-                    <% else %>
-                        <%= button_to "Leave Lobby", lobby_member_path(lobby), method: :delete, class: "btn btn-warning" %>
-                    <% end %>
+                  <% if current_user == @lobby.owner %>
+                    <%# If the user is the owner, show the "Destroy" button %>
+                    <%= button_to "Destroy this lobby", @lobby, 
+                                  method: :delete, 
+                                  class: "btn btn-danger", 
+                                  data: { confirm: 'Are you sure?' } %>
+                  <% else %>
+                    <%# Otherwise, show the "Leave" button %>
+                    <%= button_to "Leave this lobby", leave_lobby_path(@lobby), 
+                                  method: :delete, 
+                                  class: "btn btn-warning" %>
+                  <% end %>
                 </div>
             </div>
         </main>
