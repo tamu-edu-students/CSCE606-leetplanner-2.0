@@ -4,30 +4,35 @@
     <!-- Main Content -->
     <main class="main-content">
         <!-- Lobbies Page -->
-        <div id="lobbiesPage" class="page">
+        <div id="lobbiesPage" class="page", >
             <div class="page-header align">
                 <div>
                     <h1 class="page-title"><%= lobby.name ? lobby.name : 'UNNAMED LOBBY'%></h1>
-                    <p class="page-subtitle"> Host: <%= User.find_by(id: lobby.owner_id).full_name %> </p>
+                    <p class="page-subtitle"> Host: <%= User.find_by(id: lobby.owner_id).full_name %> | Visibility: <%=lobby.private ? 'Private' : 'Public' %> </p>
                 </div>
             </div>
-            <div class="content-area">
-          <h3 class="page-title">Description</h3>
-          <div class="lobby-description"><%= lobby.description %></div>
-          <br/>
-          <h3 class="page-title">Participants (<%= lobby.lobby_members.length%>)</h3>
-          <% if lobby.lobby_members.length >= 1%>
-            <ul class="lobby-members">
-            <% lobby.lobby_members.each do |member| %>
-              <li> <%= User.find_by(id: member.user_id).full_name %></li>
-            <% end %>
-            </ul>
-          <% end %>
-  <div>
-    <% if current_user.id == @lobby.owner_id%>
-    <%= button_to "Destroy this lobby", @lobby, method: :delete, class: "btn btn-primary" %>
-  <% end %>
-  </div>
+            <div class="content-area lobby-content-area">
+              <h3 class="page-title">Description</h3>
+              <div class="lobby-description"><%= lobby.description %></div>
+              <br/>
+              <div class="lobby-participants">
+              <h3 class="page-title">Participants (<%= lobby.lobby_members.length%>)</h3>
+              <% if lobby.lobby_members.length >= 1%>
+                <ul class="lobby-members">
+                <% lobby.lobby_members.each do |member| %>
+                  <li> <%= User.find_by(id: member.user_id).full_name %></li>
+                <% end %>
+                </ul>
+              <% end %>
+              </div>
+            <hr style="margin-top:24px; border:none; border-top:1px solid #e5e7eb; margin-bottom: 1rem">
+
+            <div class="lobby-button-box">
+              <% if current_user.id == @lobby.owner_id%>
+              <%= button_to "Destroy this lobby", @lobby, method: :delete, class: "btn btn-primary" %>
+              <% end %>
+              <%= button_to "Back to Lobbies", lobbies_path, class: "btn start" %>
+            </div>
         </div>
     </main>
 </div>
