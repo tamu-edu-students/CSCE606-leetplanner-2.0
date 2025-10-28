@@ -38,7 +38,7 @@ class LobbyPermissionsController < ApplicationController
 
   def lobby_permissions_params
     params.require(:lobby).permit(
-      lobby_members_attributes: [:id, :can_draw, :can_edit_notes]
+      lobby_members_attributes: [ :id, :can_draw, :can_edit_notes ]
     )
   end
 
