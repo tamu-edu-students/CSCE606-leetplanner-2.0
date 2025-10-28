@@ -29,13 +29,12 @@
                 <% if lobby.lobby_members.any? %>
                     <ul class="lobby-members">
                         <% lobby.lobby_members.each do |member| %>
-                            <%# This uses the association to avoid extra database queries %>
                             <li><%= member.user.full_name %></li>
                         <% end %>
                     </ul>
                 <% end %>
 
-                <%# --- Permissions Management Form (Owner Only) --- %>
+                <%# --- Permissions Management Form (Owner Only & More Than 1 Member) --- %>
                 <% if current_user == lobby.owner && lobby.lobby_members.length > 1 %>
                     <hr>
                     <h3 class="page-title">Manage Permissions</h3>
@@ -63,24 +62,31 @@
                                 <% end %>
                             </tbody>
                         </table>
-
                         <div class="lobby-actions">
                             <%= form.submit "Update All Permissions", class: "btn btn-primary" %>
-                            <%= link_to "Destroy Lobby", lobby, data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }, class: "btn btn-danger" %>
-                            <%= link_to "Back to Lobbies", lobbies_path, class: "btn btn-secondary" %>
                         </div>
                     <% end %>
                 <% end %>
 
                 <hr>
 
-                <%# --- Action Buttons for Participants --- %>
-                <% unless current_user == lobby.owner %>
-                    <div class="lobby-actions">
-                        <%= button_to "Leave Lobby", leave_lobby_path(lobby), method: :delete, class: "btn btn-warning" %>
-                        <%= link_to "Back to Lobbies", lobbies_path, class: "btn btn-secondary" %>
-                    </div>
-                <% end %>
+                <%# --- Main Action Buttons (Separated Logic for All Users) --- %>
+                <div class="lobby-actions">
+                    <% if current_user == lobby.owner %>
+                        <%# Owner sees the Destroy button %>
+                        <%= link_to "Destroy Lobby", lobby, 
+                                    data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }, 
+                                    class: "btn btn-danger" %>
+                    <% else %>
+                        <%# Participants see the Leave button %>
+                        <%= button_to "Leave Lobby", leave_lobby_path(lobby), 
+                                    method: :delete, 
+                                    class: "btn btn-warning" %>
+                    <% end %>
+                    
+                    <%# Everyone sees the "Back to Lobbies" button %>
+                    <%= link_to "Back to Lobbies", lobbies_path, class: "btn btn-secondary" %>
+                </div>
             </div>
         </main>
 </div>

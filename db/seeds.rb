@@ -57,6 +57,6 @@ ApplicationRecord.transaction do
       puts "  -> Created Participant Lobby: '#{lobby.name}'. Host: #{host.full_name}."
     end
   end
-  
+
   puts "Seeding finished!"
 end
