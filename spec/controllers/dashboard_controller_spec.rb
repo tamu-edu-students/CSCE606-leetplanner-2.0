@@ -34,7 +34,7 @@ RSpec.describe DashboardController, type: :controller do
               end: double('end', date_time: now + 30.minutes, date: nil),
               description: "A test event" # Add any other attributes your view might need
             )
-            response_items = double('response_items', items: [active_event])
+            response_items = double('response_items', items: [ active_event ])
             allow(google_service).to receive(:list_events).and_return(response_items)
 
             get :show
@@ -44,18 +44,16 @@ RSpec.describe DashboardController, type: :controller do
           end
         end
       end
-      
-      context 'when an all-day event is active' do
+          context 'when an all-day event is active' do
         it 'assigns the event and calculates time remaining until end of day' do
           travel_to Time.current.middle_of_day do # Set time to noon for clarity
             now = Time.current.utc
             all_day_event = instance_double(Google::Apis::CalendarV3::Event,
               start: double('start', date: now.to_date.to_s, date_time: nil),
-              # Google API returns the *next* day for an all-day event's end date
               end: double('end', date: (now.to_date + 1.day).to_s, date_time: nil),
               description: "An all-day event"
             )
-            response_items = double('response_items', items: [all_day_event])
+            response_items = double('response_items', items: [ all_day_event ])
             allow(google_service).to receive(:list_events).and_return(response_items)
 
             get :show
@@ -92,8 +90,7 @@ RSpec.describe DashboardController, type: :controller do
           expect(assigns(:time_remaining_hms)).to be_nil
         end
       end
-      
-      context 'when Google Calendar API fails' do
+          context 'when Google Calendar API fails' do
         before do
           allow(google_service).to receive(:list_events).and_raise(Google::Apis::ServerError.new('Service unavailable'))
           allow(Rails.logger).to receive(:error) # Stub logger to check if it's called
@@ -111,8 +108,7 @@ RSpec.describe DashboardController, type: :controller do
           allow(google_service).to receive(:list_events).and_raise(StandardError.new('Something went wrong'))
           allow(Rails.logger).to receive(:error)
         end
-        
-        it 'logs the error but does not crash' do
+              it 'logs the error but does not crash' do
           get :show
           expect(response).to have_http_status(:success)
           expect(Rails.logger).to have_received(:error).with(/Dashboard#show error: StandardError Something went wrong/)

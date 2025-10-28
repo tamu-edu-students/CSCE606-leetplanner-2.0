@@ -23,7 +23,7 @@ class UsersController < ApplicationController
       else
         # Re-render profile form with validation errors
         # Surface the first validation error in flash for feature tests that look for it
-        error_message = current_user.errors.full_messages.join(', ')
+        error_message = current_user.errors.full_messages.join(", ")
         # reload the user from DB to show persisted values in the form (tests expect old values)
         current_user.reload
         flash.now[:alert] = error_message

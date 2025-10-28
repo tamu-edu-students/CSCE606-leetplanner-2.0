@@ -14,7 +14,6 @@ end
 
 When('I update my profile with:') do |table|
   profile_data = table.rows_hash
-  
   within('#profileForm') do
     profile_data.each do |field, value|
       fill_in field.humanize, with: value
@@ -29,7 +28,6 @@ Then('my profile should show the updated information') do
     'last_name' => 'Doe',
     'leetcode_username' => 'leetcoder123'
   }
-  
   profile_data.each do |field, value|
     expect(page).to have_field(field.humanize, with: value)
   end
@@ -42,8 +40,8 @@ end
 
 Given('I send a JSON profile update request with:') do |table|
   @update_data = table.rows_hash
-  page.driver.submit :patch, 
-                    user_path(@current_user), 
+  page.driver.submit :patch,
+                    user_path(@current_user),
                     { user: @update_data, format: :json }
 end
 
@@ -137,13 +135,13 @@ Then('I should see the profile form') do
   end
 
   begin
-    unless field_detected?('First Name', ['user_first_name'])
+    unless field_detected?('First Name', [ 'user_first_name' ])
       raise RSpec::Expectations::ExpectationNotMetError, "First name field not found"
     end
-    unless field_detected?('Last Name', ['user_last_name'])
+    unless field_detected?('Last Name', [ 'user_last_name' ])
       raise RSpec::Expectations::ExpectationNotMetError, "Last name field not found"
     end
-    unless field_detected?('LeetCode Username', ['user_leetcode_username'])
+    unless field_detected?('LeetCode Username', [ 'user_leetcode_username' ])
       raise RSpec::Expectations::ExpectationNotMetError, "LeetCode username field not found"
     end
   rescue RSpec::Expectations::ExpectationNotMetError => e

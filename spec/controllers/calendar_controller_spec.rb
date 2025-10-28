@@ -65,10 +65,8 @@ RSpec.describe CalendarController, type: :controller do
 
       it 'handles token refresh failure' do
         allow(signet_client_double).to receive(:refresh!).and_raise(Signet::AuthorizationError.new('invalid_grant'))
-        
-        get :show
-        
-        expect(response).to redirect_to(login_google_path)
+              get :show
+              expect(response).to redirect_to(login_google_path)
         expect(flash[:alert]).to eq('Authentication expired, please log in again.')
         expect(session[:user_id]).to be_nil
       end
@@ -88,8 +86,7 @@ RSpec.describe CalendarController, type: :controller do
         expect(assigns(:current_date)).to eq(Date.today)
         expect(response).to have_http_status(:success)
       end
-      
-      it 'correctly maps all-day events' do
+          it 'correctly maps all-day events' do
         all_day_event = instance_double(Google::Apis::CalendarV3::Event,
           id: '456',
           summary: 'All Day Event',
@@ -98,10 +95,8 @@ RSpec.describe CalendarController, type: :controller do
         )
         response_items = double('response_items', items: [ all_day_event ])
         allow(service_double).to receive(:list_events).and_return(response_items)
-        
-        get :show
-        
-        expect(assigns(:events).first[:summary]).to eq('All Day Event')
+              get :show
+              expect(assigns(:events).first[:summary]).to eq('All Day Event')
         expect(assigns(:events).first[:is_all_day]).to be true
         expect(assigns(:events).first[:start]).to eq(Date.parse('2025-10-28'))
       end
@@ -185,10 +180,8 @@ RSpec.describe CalendarController, type: :controller do
         end: double('end', date_time: nil, date: '2025-10-29')
       )
       allow(service_double).to receive(:get_event).with('primary', event_id).and_return(google_event)
-      
-      get :edit, params: { id: event_id }
-      
-      expect(assigns(:event)[:summary]).to eq('All Day Edit')
+          get :edit, params: { id: event_id }
+          expect(assigns(:event)[:summary]).to eq('All Day Edit')
       expect(assigns(:event)[:is_all_day]).to be true
       expect(assigns(:event)[:start]).to eq(DateTime.parse('2025-10-28 00:00'))
     end
@@ -226,8 +219,7 @@ RSpec.describe CalendarController, type: :controller do
         date_obj = Date.today
         expect(controller.send(:parse_date, date_obj)).to eq(date_obj)
       end
-      
-      it 'returns nil for an invalid date string' do
+          it 'returns nil for an invalid date string' do
         expect(controller.send(:parse_date, "not-a-date")).to be_nil
       end
     end

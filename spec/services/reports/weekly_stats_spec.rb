@@ -67,16 +67,14 @@ RSpec.describe Reports::WeeklyStats do
       it "calculates a consecutive two-day streak" do
         create_solved_problem(week_start + 1.day) # Monday
         create_solved_problem(week_start + 2.days) # Tuesday
-        
-        result = service.call
+              result = service.call
         expect(result[:current_streak_days]).to eq(2)
       end
 
       it "handles a broken streak" do
         create_solved_problem(week_start + 1.day) # Monday
         create_solved_problem(week_start + 3.days) # Wednesday (skips Tuesday)
-        
-        result = service.call
+              result = service.call
         # The longest streak is 1 day, either Monday or Wednesday
         expect(result[:current_streak_days]).to eq(1)
       end
@@ -85,8 +83,7 @@ RSpec.describe Reports::WeeklyStats do
         create_solved_problem(week_start + 1.day)  # Monday
         create_solved_problem(week_start + 2.days)  # Tuesday (Streak of 2)
         create_solved_problem(week_start + 4.days)  # Thursday (Streak of 1)
-        
-        result = service.call
+              result = service.call
         expect(result[:current_streak_days]).to eq(2)
       end
     end
@@ -94,8 +91,7 @@ RSpec.describe Reports::WeeklyStats do
     context "with problems outside the week" do
       it "does not count problems outside the week for weekly stats but does for total" do
         create_solved_problem(week_start - 1.day) # Saturday before
-        
-        result = service.call
+              result = service.call
         expect(result[:weekly_solved_count]).to eq(0)
         expect(result[:total_solved_all_time]).to eq(1)
       end

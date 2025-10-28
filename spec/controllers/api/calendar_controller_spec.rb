@@ -162,7 +162,7 @@ RSpec.describe Api::CalendarController, type: :controller do
           travel_to(1.day.from_now) do # Simulate current time being in the future
             # This event is now in the past relative to the traveled time
             post :create, params: { event: { summary: 'Past Event', start_date: Date.current.yesterday.to_s, start_time: '10:00' } }
-            
+
             expect(LeetCodeSession).to have_received(:create!).with(hash_including(status: 'completed'))
           end
         end
@@ -238,7 +238,7 @@ RSpec.describe Api::CalendarController, type: :controller do
         it 'updates with a default end time if only start time is provided' do
           # Add a summary to the params to pass the before_action
           patch :update, params: { id: event_id, event: { summary: 'Event with no end time', start_time: '16:00' } }
-          
+
           expect(google_service).to have_received(:update_event) do |_, _, patch|
             start_time = Time.zone.parse(patch.start.date_time)
             end_time = Time.zone.parse(patch.end.date_time)
@@ -353,7 +353,7 @@ RSpec.describe Api::CalendarController, type: :controller do
             end: '2025-10-29'
           )
         end
-        
+
         it 'converts Google event to hash format' do
           result = controller.send(:serialize_event, mock_event)
           expect(result).to include(

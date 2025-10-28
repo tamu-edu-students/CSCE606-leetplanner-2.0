@@ -65,10 +65,10 @@ Rails.application.routes.draw do
 
   # Test-only helpers
   if Rails.env.test?
-    get '/test/clear_session', to: 'test_helpers#clear_session'
-    get '/test/clear_session_with_alert', to: 'test_helpers#clear_session_with_alert'
-    get '/test/clear_timer', to: 'test_helpers#clear_timer'
-    get '/test/set_timer', to: 'test_helpers#set_timer'
-    get '/test/login_as', to: 'test_helpers#login_as'
+    get "/test/clear_session", to: "test_helpers#clear_session"
+    get "/test/clear_session_with_alert", to: "test_helpers#clear_session_with_alert"
+    get "/test/clear_timer", to: "test_helpers#clear_timer"
+    get "/test/set_timer", to: "test_helpers#set_timer"
+    get "/test/login_as", to: "test_helpers#login_as"
   end
 end

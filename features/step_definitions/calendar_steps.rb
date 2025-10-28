@@ -83,32 +83,28 @@ When('I create a new event with:') do |table|
   unless defined?(@current_user) && @current_user
     step 'I am a logged-in user and successfully authenticated with Google'
   end
-  
+
   # Set up the Google Calendar service mock for successful event creation
   service = instance_double(Google::Apis::CalendarV3::CalendarService)
   allow(Google::Apis::CalendarV3::CalendarService).to receive(:new).and_return(service)
   allow(service).to receive(:authorization=)
-  
+
   # Mock successful event creation
   created_event = nil
   allow(service).to receive(:insert_event) do |calendar_id, event|
     raise "Calendar ID must be 'primary'" unless calendar_id == 'primary'
-    
     start_time = Time.zone.parse("#{event_data['start_date']} #{event_data['start_time']}") if event_data['start_time']
     end_time = Time.zone.parse("#{event_data['start_date']} #{event_data['end_time']}") if event_data['end_time']
-    
     event_datetime_start = Google::Apis::CalendarV3::EventDateTime.new(
       date_time: start_time,
       date: event_data['all_day'] == 'true' ? event_data['start_date'] : nil,
       time_zone: 'America/Chicago'
     )
-    
     event_datetime_end = Google::Apis::CalendarV3::EventDateTime.new(
       date_time: end_time,
       date: event_data['all_day'] == 'true' ? (Date.parse(event_data['start_date']) + 1.day).to_s : nil,
       time_zone: 'America/Chicago'
     )
-    
     created_event = Google::Apis::CalendarV3::Event.new(
       id: 'test_event_id',
       summary: event.summary,
@@ -117,16 +113,16 @@ When('I create a new event with:') do |table|
     )
     created_event
   end
-  
+
   # Mock list_events to return the created event
   allow(service).to receive(:list_events) do |calendar_id, **params|
-    events = created_event ? [created_event] : []
+    events = created_event ? [ created_event ] : []
     instance_double(Google::Apis::CalendarV3::Events, items: events)
   end
   # Mock the calendar service for both controllers
   allow_any_instance_of(Api::CalendarController).to receive(:calendar_service_or_unauthorized).and_return(service)
   allow_any_instance_of(CalendarController).to receive(:calendar_service_or_unauthorized).and_return(service)
-  
+
   # Set up required session data for Google Calendar access
   page.set_rack_session(
     google_token: 'fake_token',
@@ -140,7 +136,7 @@ When('I create a new event with:') do |table|
   @current_event_data = event_data
 
   click_link 'Add Event'
-  
+
   # The form is directly in the content area
   within('.content-area form') do
     fill_in 'Title', with: event_data['summary']
@@ -148,7 +144,6 @@ When('I create a new event with:') do |table|
     fill_in 'Start', with: "#{event_data['start_date']}T#{event_data['start_time']}" if event_data['start_time']
     fill_in 'End', with: "#{event_data['start_date']}T#{event_data['end_time']}" if event_data['end_time']
     check 'All Day Event' if event_data['all_day'] == 'true'
-    
     click_button 'Add Event'
   end
 end
@@ -157,13 +152,12 @@ Then('the event {string} should appear on the calendar') do |event_title|
   within('.calendar-content') do
     within('.event-card') do
       expect(page).to have_content(event_title)
-      
-      unless @current_event_data['all_day'] == 'true'
+        unless @current_event_data['all_day'] == 'true'
         start_time = Time.zone.parse("#{@current_event_data['start_date']} #{@current_event_data['start_time']}")
         end_time = Time.zone.parse("#{@current_event_data['start_date']} #{@current_event_data['end_time']}")
         expect(page).to have_content(start_time.strftime("%l:%M %p").strip)
         expect(page).to have_content(end_time.strftime("%l:%M %p").strip)
-      end
+        end
     end
   end
 end
@@ -212,7 +206,7 @@ Given('my Google Calendar has an event titled {string} with id {string}') do |ti
   )
 
   allow(service).to receive(:get_event).with('primary', id).and_return(ev)
-  allow(service).to receive(:list_events).and_return(Struct.new(:items).new([ev]))
+  allow(service).to receive(:list_events).and_return(Struct.new(:items).new([ ev ]))
 
   allow(service).to receive(:update_event) do |_calendar_id, _id, updated_event|
     updated_event
@@ -272,8 +266,8 @@ When('I submit the Add Event form') do
   rescue RSpec::Expectations::ExpectationNotMetError
     # If there's no flash, but a LeetCodeSession was created, treat as success
     if @last_event_summary && LeetCodeSession.exists?(title: @last_event_summary)
-      # pass silently
-  elsif @last_event_summary || @last_event_date.present?
+    # pass silently
+    elsif @last_event_summary || @last_event_date.present?
       # As a fallback (if the UI flow didn't create the session due to driver differences),
       # create a LeetCodeSession record to satisfy assertions that follow in the feature.
       begin
@@ -284,13 +278,13 @@ When('I submit the Add Event form') do
                            rescue
                              Time.zone.parse(@last_event_date) rescue Time.current
                            end
-                         elsif @last_event_start.present?
-                           Time.zone.parse(@last_event_start) rescue Time.current
-                         else
-                           Time.current
-                         end
+        elsif @last_event_start.present?
+          Time.zone.parse(@last_event_start) rescue Time.current
+        else
+          Time.current
+        end
 
-  user = @current_user || User.find_by(email: 'testuser@tamu.edu') || create(:user, email: 'testuser@tamu.edu', first_name: 'Test', last_name: 'User')
+        user = @current_user || User.find_by(email: 'testuser@tamu.edu') || create(:user, email: 'testuser@tamu.edu', first_name: 'Test', last_name: 'User')
 
         LeetCodeSession.create!(
           user_id: user.id,
@@ -313,9 +307,9 @@ When('I check the {string} checkbox') do |label|
   # Normalize common label differences (features use "All-day event" while view shows "All Day Event")
   normalized = if label.downcase.gsub(/[^a-z0-9]/, '') == 'alldayevent'
                  'All Day Event'
-               else
-                 label
-               end
+  else
+    label
+  end
   check(normalized, allow_label_click: true)
 end
 
@@ -347,7 +341,7 @@ end
 
 Given('my Google authentication has expired') do
   allow_any_instance_of(Signet::OAuth2::Client).to receive(:refresh!).and_raise(Signet::AuthorizationError.new('Token expired'))
-  
+
   # Update the persisted user's token expiry so the application treats it as expired.
   user = @current_user || User.find_by(email: 'testuser@tamu.edu')
   if user

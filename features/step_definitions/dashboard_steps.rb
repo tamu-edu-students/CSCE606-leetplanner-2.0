@@ -22,7 +22,7 @@ Given('I have an ongoing event {string} in my Google Calendar ending in 30 minut
     'end': Google::Apis::CalendarV3::EventDateTime.new(date_time: Time.current + 30.minutes)
   )
   allow_any_instance_of(Google::Apis::CalendarV3::CalendarService).to receive(:list_events).and_return(
-    instance_double(Google::Apis::CalendarV3::Events, items: [event])
+    instance_double(Google::Apis::CalendarV3::Events, items: [ event ])
   )
 end
 
@@ -66,22 +66,21 @@ Then('I should still be able to create a manual timer') do
   expect(page).to have_button('Start')
 end
 
-  today = Date.today
-  event = Google::Apis::CalendarV3::Event.new(
-    summary: event_title,
-    start: Google::Apis::CalendarV3::EventDateTime.new(
-      date: today.to_s,
-      time_zone: 'America/Chicago'
-    ),
-    end: Google::Apis::CalendarV3::EventDateTime.new(
-      date: (today + 1.day).to_s,
-      time_zone: 'America/Chicago'
-    )
+today = Date.today
+event = Google::Apis::CalendarV3::Event.new(
+  summary: event_title,
+  start: Google::Apis::CalendarV3::EventDateTime.new(
+    date: today.to_s,
+    time_zone: 'America/Chicago'
+  ),
+  end: Google::Apis::CalendarV3::EventDateTime.new(
+    date: (today + 1.day).to_s,
+    time_zone: 'America/Chicago'
   )
-  allow_any_instance_of(Google::Apis::CalendarV3::CalendarService).to receive(:list_events).and_return(
-    instance_double(Google::Apis::CalendarV3::Events, items: [event])
-  )
-end
+)
+allow_any_instance_of(Google::Apis::CalendarV3::CalendarService).to receive(:list_events).and_return(
+  instance_double(Google::Apis::CalendarV3::Events, items: [ event ])
+)
 
 Then('I should see a countdown timer showing remaining time until midnight') do
   end_of_day = Time.current.end_of_day
@@ -90,7 +89,7 @@ Then('I should see a countdown timer showing remaining time until midnight') do
   minutes = (seconds_until_midnight % 3600) / 60
   seconds = seconds_until_midnight % 60
   expected_time = format("%02d:%02d:%02d", hours, minutes, seconds)
-  
+
   expect(page).to have_content(/#{expected_time}/i)
 end
 
@@ -105,8 +104,6 @@ end
 
 Then('the timer should be cleared from my session') do
   expect(page.get_rack_session['timer_ends_at']).to be_nil
-end
-  expect(page).not_to have_selector('.event-banner')
 end
 
 Then('I should not see a manual countdown timer') do
@@ -132,14 +129,14 @@ end
 
 # Step to check the timer display, which is always present
 Then('the timer display should show {string}') do |time|
-  within('#timerDisplay') do # 
+  within('#timerDisplay') do #
     expect(page).to have_content(time)
   end
 end
 
 # Step to find the event title within the event banner
 Then('I should see the current event title {string}') do |event_title|
-  within('.event-banner') do # 
+  within('.event-banner') do #
     expect(page).to have_selector('h2.event-title', text: "Now: #{event_title}")
   end
 end
@@ -149,7 +146,7 @@ Then('I should see a countdown timer with approximately {string} remaining') do 
   # This regex checks for a time close to the expected value, allowing for minor delays in test execution
   minutes = time_string.split(':')[1].to_i
   regex = /00:(#{minutes}|#{minutes - 1}):\d{2}/
-  
+
   within('#timerDisplay') do
     expect(page).to have_text(regex)
   end

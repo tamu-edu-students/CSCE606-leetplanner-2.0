@@ -45,9 +45,9 @@ class TestHelpersController < ApplicationController
     return head :bad_request if email.blank?
 
     user = User.find_or_initialize_by(email: email)
-    user.netid ||= email.split('@').first
-    user.first_name ||= 'Test'
-    user.last_name  ||= 'User'
+    user.netid ||= email.split("@").first
+    user.first_name ||= "Test"
+    user.last_name  ||= "User"
     user.last_login_at = Time.current
     user.save! if user.changed?
 
