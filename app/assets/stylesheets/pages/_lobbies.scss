@@ -1,78 +1,63 @@
-/* .lobby-card{ */
-/*   background-color: #F8F9FF; */
-/*   color: green; */
-/* } */
-/**/
-.content-area {
-  padding: 2rem;
+.join-lobby-form {
+  margin-bottom: 2rem;
+  .join-form-fields {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
 }
 
-.lobbies-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
+.card-invite-code {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e0e0e0;
+  width: 100%;
+  font-size: 0.9rem;
+  span {
+    font-weight: bold;
+    font-family: 'SF Mono', Monaco, monospace;
+    color: var(--tamu-red);
+  }
 }
 
-.lobby-card {
-  background: #f5f8fe;
+.lobby-code-display {
+  background: var(--gray-lighter);
+  border: 1px solid var(--gray-border);
+  padding: 1rem;
   border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-  display: flex;
-  flex-direction: column;
-  align-items: start;
+  font-size: 1.1rem;
+  display: inline-block;
+  span {
+    font-weight: bold;
+    font-family: 'SF Mono', Monaco, monospace;
+    color: var(--tamu-red);
+  }
 }
 
-.card-title {
-  font-weight: bold;
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
+.permissions-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+  th, td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--gray-light);
+  }
+  th {
+    font-weight: 600;
+  }
+  td input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+  }
 }
 
-.card-subtitle {
-  font-size: 1rem;
-  color: #555;
-  margin-bottom: 1rem;
+.lobby-actions {
+  margin-top: 2rem;
 }
 
-.card-actions {
-  margin-top: auto;
-  display: flex;
-  gap: 0.5rem;
-}
-
-.join-btn,
-.share-btn {
-  padding: 0.5rem 1.2rem;
+hr {
   border: none;
-  border-radius: 4px;
-  background: #4285f4;
-  color: #fff;
-  cursor: pointer;
-  font-size: 0.95rem;
-}
-
-.share-btn {
-  background: #f4b400;
-  color: #111;
-}
-
-
-.lobby-card-link{
-  text-decoration: none;
-  color: #111;
-}
-
-.lobby-description{
-  background: #f5f8fe;
-  margin-top: auto;
-  max-width: 50rem;
-  padding: 1rem;
-}
-
-.lobby-members{
-  /* background: #f5f8fe; */
-  /* margin-left: 1rem; */
-  /* max-width: 50rem; */
-  padding: 1rem;
+  border-top: 1px solid #e5e7eb;
+  margin: 2rem 0;
 }

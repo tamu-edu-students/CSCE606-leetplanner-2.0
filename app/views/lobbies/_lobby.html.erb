@@ -5,26 +5,27 @@
         <div id="lobbiesPage" class="page">
             <div class="page-header align">
                 <div>
-                    [cite_start]<h1 class="page-title"><%= lobby.name ? lobby.name : 'UNNAMED LOBBY' %></h1> [cite: 2]
-                    <p class="page-subtitle"> Host: <%= User.find_by(id: lobby.owner_id).full_name %> </p>
+                    <h1 class="page-title"><%= lobby.name.presence || 'UNNAMED LOBBY' %></h1>
+                    <p class="page-subtitle"> Host: <%= lobby.owner.full_name %> </p>
                 </div>
             </div>
             <div class="content-area">
                 <h3 class="page-title">Description</h3>
                 <div class="lobby-description"><%= lobby.description %></div>
-                [cite_start]<br/> [cite: 3]
+                <br/>
 
                 <% if current_user.id == lobby.owner_id %>
                     <div class="lobby-code-display">
-                        <strong>Lobby Code:</strong> <%= lobby.lobby_code %>
+                        <strong>Lobby Code:</strong> <span><%= lobby.lobby_code %></span>
                     </div>
                     <br/>
                 <% end %>
-                [cite_start]<h3 class="page-title">Participants (<%= lobby.lobby_members.length %>)</h3> [cite: 3]
+
+                <h3 class="page-title">Participants (<%= lobby.lobby_members.length %>)</h3>
                 <% if lobby.lobby_members.any? %>
                     <ul class="lobby-members">
                         <% lobby.lobby_members.each do |member| %>
-                            [cite_start]<li> <%= User.find_by(id: member.user_id).full_name %></li> [cite: 4]
+                            <li> <%= member.user.full_name %></li>
                         <% end %>
                     </ul>
                 <% end %>
@@ -43,26 +44,28 @@
                         </thead>
                         <tbody>
                             <% lobby.lobby_members.each do |member| %>
-                                <% next if member.user_id == lobby.owner_id %>
+                                <% next if member.user == lobby.owner %>
                                 <tr>
                                     <%= form_with(model: member, url: permissions_lobby_member_path(member), method: :patch) do |form| %>
                                         <td><%= member.user.full_name %></td>
                                         <td><%= form.check_box :can_draw %></td>
                                         <td><%= form.check_box :can_edit_notes %></td>
-                                        <td><%= form.submit "Save", class: "btn btn-small" %></td>
+                                        <td><%= form.submit "Save", class: "btn btn-primary btn-small" %></td>
                                     <% end %>
                                 </tr>
                             <% end %>
                         </tbody>
                     </table>
                 <% end %>
+                <hr>
+
                 <div class="lobby-actions">
                     <% if current_user.id == lobby.owner_id %>
-                        <%= button_to "Destroy this lobby", lobby, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger" %>
+                        <%= button_to "Destroy Lobby", lobby, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger" %>
                     <% else %>
-                        <%= button_to "Leave this lobby", lobby_member_path(lobby), method: :delete, class: "btn btn-warning" %>
+                        <%= button_to "Leave Lobby", lobby_member_path(lobby), method: :delete, class: "btn btn-warning" %>
                     <% end %>
-                    </div>
+                </div>
             </div>
         </main>
 </div>
