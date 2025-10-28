@@ -17,8 +17,8 @@ RSpec.describe Lobby, type: :model do
     end
 
     it "returns all users who have joined the lobby" do
-      lobby.users << [user_bob, user_charlie]
-      
+      lobby.users << [ user_bob, user_charlie ]
+
       expect(lobby.users.count).to eq(3)
       expect(lobby.users).to include(owner, user_bob, user_charlie)
     end

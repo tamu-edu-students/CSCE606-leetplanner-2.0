@@ -13,7 +13,6 @@ RSpec.describe LobbyMember, type: :model do
     it "is invalid if a user is added to the same lobby twice" do
       create(:lobby_member, user: user, lobby: lobby) # First membership
       duplicate_member = build(:lobby_member, user: user, lobby: lobby) # Second attempt
-      
       expect(duplicate_member).not_to be_valid
       expect(duplicate_member.errors[:user_id]).to include("is already in this lobby")
     end
@@ -25,7 +24,6 @@ RSpec.describe LobbyMember, type: :model do
       expect(member.can_draw).to be_falsey
       expect(member.can_edit_notes).to be_falsey
     end
-    
     it "can update the can_draw permission" do
       member = create(:lobby_member, can_draw: false)
       member.update(can_draw: true)
