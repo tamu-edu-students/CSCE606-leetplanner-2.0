@@ -7,6 +7,7 @@ class Lobby < ApplicationRecord
   has_many :lobby_members
   has_many :users, through: :lobby_members
 
+  accepts_nested_attributes_for :lobby_members
   before_validation :generate_lobby_code, on: :create
 
   private

@@ -53,6 +53,7 @@ Rails.application.routes.draw do
   resources :lobby_members, only: [] do
     patch 'permissions', on: :member, to: 'lobby_permissions#update', as: :update_permissions
   end
+  patch 'lobbies/:id/update_all_permissions', to: 'lobby_permissions#update_all', as: :update_all_lobby_permissions
 
   # -------------------------------
   # API Namespace

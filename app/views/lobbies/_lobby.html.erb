@@ -31,44 +31,49 @@
                 <% end %>
 
                 <% if current_user.id == lobby.owner_id && lobby.lobby_members.length > 1 %>
-                    <hr>
-                    <h3 class="page-title">Manage Permissions</h3>
+                  <hr>
+                  <h3 class="page-title">Manage Permissions</h3>
+
+                  <%= form_with(model: lobby, url: update_all_lobby_permissions_path(lobby), method: :patch) do |form| %>
                     <table class="permissions-table">
-                        <thead>
-                            <tr>
-                                <th>Participant</th>
-                                <th>Can Draw</th>
-                                <th>Can Edit Notes</th>
-                                <th>Update</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% lobby.lobby_members.each do |member| %>
-                                <% next if member.user == lobby.owner %>
-                                <tr>
-                                    <%= form_with(model: member, url: permissions_lobby_member_path(member), method: :patch) do |form| %>
-                                        <td><%= member.user.full_name %></td>
-                                        <td><%= form.check_box :can_draw %></td>
-                                        <td><%= form.check_box :can_edit_notes %></td>
-                                        <td><%= form.submit "Save", class: "btn btn-primary btn-small" %></td>
-                                    <% end %>
-                                </tr>
-                            <% end %>
-                        </tbody>
+                      <thead>
+                        <tr>
+                          <th>Participant</th>
+                          <th>Can Draw</th>
+                          <th>Can Edit Notes</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <%= form.fields_for :lobby_members do |member_form| %>
+                          <% next if member_form.object.user == lobby.owner %>
+                          <tr>
+                            <td>
+                              <%= member_form.object.user.full_name %>
+                              <%= member_form.hidden_field :id %>
+                            </td>
+                            <td><%= member_form.check_box :can_draw %></td>
+                            <td><%= member_form.check_box :can_edit_notes %></td>
+                          </tr>
+                        <% end %>
+                      </tbody>
                     </table>
+
+                    <div class="form-actions" style="margin-top: 1rem;">
+                      <%= form.submit "Update All Permissions", class: "btn btn-primary" %>
+                    </div>
+                  <% end %>
                 <% end %>
+
                 <hr>
 
                 <div class="lobby-actions">
-                  <% if current_user == @lobby.owner %>
-                    <%# If the user is the owner, show the "Destroy" button %>
-                    <%= button_to "Destroy this lobby", @lobby, 
+                  <% if current_user == lobby.owner %>
+                    <%= button_to "Destroy this lobby", lobby, 
                                   method: :delete, 
                                   class: "btn btn-danger", 
                                   data: { confirm: 'Are you sure?' } %>
                   <% else %>
-                    <%# Otherwise, show the "Leave" button %>
-                    <%= button_to "Leave this lobby", leave_lobby_path(@lobby), 
+                    <%= button_to "Leave this lobby", leave_lobby_path(lobby), 
                                   method: :delete, 
                                   class: "btn btn-warning" %>
                   <% end %>
