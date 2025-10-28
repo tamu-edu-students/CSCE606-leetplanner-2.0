@@ -45,6 +45,7 @@ group :development, :test do
   gem "shoulda-matchers"
   gem "webmock", "~> 3.25"
   gem "vcr", "~> 6.3"
+  gem "faker"
 end
 
 # Gems used only for development

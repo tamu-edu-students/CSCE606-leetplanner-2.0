@@ -1,12 +1,4 @@
 Rails.application.routes.draw do
-  resources :lobbies do
-    resources :whiteboards, only: [] do
-      collection do
-        post :add_drawing
-        post :clear
-      end
-    end
-  end
   # Root page
   root "login#index"
 
@@ -14,10 +6,6 @@ Rails.application.routes.draw do
   # Authentication / Sessions
   # -------------------------------
   get "/login/google",          to: redirect("/auth/google_oauth2")
-  # Development login bypass - only available when ENABLE_DEV_LOGIN=true
-  if Rails.env.development? && ENV['ENABLE_DEV_LOGIN'] == 'true'
-    post "/login/dev_bypass",   to: "login#dev_bypass"
-  end
   get "/auth/:provider/callback", to: "sessions#create"
   get "sessions/create", to: "sessions#create", as: "sessions_create"
   get "/auth/failure",          to: "sessions#failure", as: "sessions_failure"
@@ -55,6 +43,24 @@ Rails.application.routes.draw do
   resources :leet_code_session_problems, except: [ :new, :edit ]
 
   resource  :statistics, only: [ :show ], controller: "statistics"
+
+  # -------------------------------
+  # Lobby Features with Whiteboard
+  # -------------------------------
+  resources :lobbies do
+    resources :whiteboards, only: [] do
+      collection do
+        post :add_drawing
+        post :clear
+      end
+    end
+  end
+  post "join_lobby", to: "lobby_members#create_by_code", as: :join_lobby
+  delete "leave_lobby/:id", to: "lobby_members#destroy", as: :leave_lobby
+  resources :lobby_members, only: [] do
+    patch "permissions", on: :member, to: "lobby_permissions#update", as: :update_permissions
+  end
+  patch "lobbies/:id/update_all_permissions", to: "lobby_permissions#update_all", as: :update_all_lobby_permissions
 
   # -------------------------------
   # API Namespace

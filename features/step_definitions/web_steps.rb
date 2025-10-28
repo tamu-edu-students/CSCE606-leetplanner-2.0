@@ -1,6 +1,5 @@
-When('I click the {string} button') do |link_or_button_text|
-  element = find(:link_or_button, link_or_button_text)
-  execute_script("arguments[0].click();", element)
+When('I click the {string} button') do |button_text|
+  click_link_or_button(button_text)
 end
 
 When('I press {string}') do |link_or_button_text|

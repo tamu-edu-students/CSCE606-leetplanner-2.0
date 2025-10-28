@@ -3,11 +3,14 @@ class LobbiesController < ApplicationController
 
   # GET /lobbies or /lobbies.json
   def index
-    @lobbies = current_user.lobbies
+    joined_lobbies = current_user.lobbies
+    public_unjoined_lobbies = Lobby.where(private: false).where.not(id: joined_lobbies.pluck(:id))
+    @lobbies =  joined_lobbies + public_unjoined_lobbies
   end
 
   # GET /lobbies/1 or /lobbies/1.json
   def show
+    @lobby = Lobby.includes(lobby_members: :user).find(params[:id])
   end
 
   # GET /lobbies/new
@@ -76,6 +79,6 @@ class LobbiesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def lobby_params
-      params.expect(lobby: [ :owner_id, :description, :lobby_code, :name ])
+      params.expect(lobby: [ :owner_id, :description, :lobby_code, :name, :private ])
     end
 end
