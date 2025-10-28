@@ -1,3 +1,46 @@
+.lobbies-grid .lobby-card {
+  background: #f8f9ff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid #e5e7eb;
+}
+
+.lobbies-grid .lobby-card .card-title {
+  font-weight: 600;
+  font-size: 1.25rem;
+  margin-bottom: 0.25rem;
+  color: #1d1d1f;
+}
+
+.lobbies-grid .lobby-card .card-subtitle {
+  font-size: 0.95rem;
+  color: #86868b;
+  margin-bottom: 1.5rem;
+}
+
+.lobbies-grid .lobby-card .card-invite-code {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+  font-size: 0.9rem;
+  color: #6b6b70;
+
+  span {
+    font-weight: bold;
+    font-family: 'SF Mono', Monaco, monospace;
+    color: var(--tamu-red);
+    background-color: #f5f5f7;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    letter-spacing: 1px;
+  }
+}
+
 .join-lobby-form {
   margin-bottom: 2rem;
   .join-form-fields {
@@ -60,4 +103,20 @@ hr {
   border: none;
   border-top: 1px solid #e5e7eb;
   margin: 2rem 0;
+}
+
+.lobby-description {
+  margin-bottom: 1.5rem;
+}
+
+.lobby-code-display {
+  margin-bottom: 1.5rem;
+}
+
+.content-area > h3.page-title {
+  margin-top: 1rem;
+}
+
+.lobby-members {
+  margin-bottom: 2rem;
 }

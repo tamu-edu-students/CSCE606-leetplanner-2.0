@@ -7,12 +7,14 @@ class LobbyMembersController < ApplicationController
     if lobby
       @member = lobby.lobby_members.build(user: current_user)
       if @member.save
+        # User successfully joins
         redirect_to lobby, notice: "Successfully joined the lobby!"
       else
-        redirect_to root_path, alert: "You are already in this lobby."
+        # The user is already a member, so the flash alert is shown.
+        redirect_to lobbies_path, alert: "You are already in this lobby."
       end
     else
-      redirect_to root_path, alert: "Invalid lobby code. Please try again."
+      redirect_to lobbies_path, alert: "Invalid lobby code. Please try again."
     end
   end
 
