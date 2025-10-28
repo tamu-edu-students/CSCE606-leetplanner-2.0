@@ -201,6 +201,7 @@ hr {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  min-width: 200px;
 }
 
 .tool-label {
@@ -213,6 +214,56 @@ hr {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
+}
+
+/* Custom Text Form */
+.custom-text-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.text-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.form-row.coordinates {
+  gap: 0.5rem;
+}
+
+.text-input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  min-width: 200px;
+}
+
+.coord-input {
+  padding: 0.5rem;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  width: 100px;
+  text-align: center;
+}
+
+.color-input {
+  padding: 0.25rem;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  width: 50px;
+  height: 35px;
+  cursor: pointer;
 }
 
 .inline-form {

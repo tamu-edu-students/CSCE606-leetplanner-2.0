@@ -25,7 +25,7 @@
 
                     <!-- Center Column: Shared Whiteboard -->
                     <div class="lobby-section whiteboard-section">
-                        <h3 class="section-title">🎨 Shared Whiteboard</h3>
+                        <h3 class="section-title">Shared Whiteboard</h3>
                         
                         <!-- SVG Canvas -->
                         <div class="whiteboard-canvas">
@@ -39,17 +39,81 @@
                                         </pattern>
                                     </defs>
                                     <rect width="100%" height="100%" fill="url(#grid)"/>
+                                    <!-- Coordinate helpers -->
+                                    <text x="10" y="20" fill="#666" font-family="Arial" font-size="12" opacity="0.7">X: 0-800, Y: 0-300</text>
                                     <text x="400" y="150" text-anchor="middle" fill="#888" font-family="Arial" font-size="16" opacity="0.8">
-                                        🚀 Collaborative Whiteboard - Click tools below to add shapes
+                                        Collaborative Whiteboard - Use tools below to add content
                                     </text>
+                                    <!-- Coordinate markers -->
+                                    <circle cx="100" cy="50" r="2" fill="#666" opacity="0.5"/>
+                                    <text x="105" y="55" fill="#666" font-size="10" opacity="0.7">100,50</text>
+                                    <circle cx="400" cy="150" r="2" fill="#666" opacity="0.5"/>
+                                    <text x="405" y="155" fill="#666" font-size="10" opacity="0.7">400,150</text>
+                                    <circle cx="700" cy="250" r="2" fill="#666" opacity="0.5"/>
+                                    <text x="705" y="255" fill="#666" font-size="10" opacity="0.7">700,250</text>
                                 </svg>
                             <% end %>
                         </div>
                         
                         <!-- Whiteboard Tools -->
                         <div class="whiteboard-toolbar">
+                            <!-- Custom Text Tool -->
                             <div class="tool-group">
-                                <label class="tool-label">Add Shapes:</label>
+                                <label class="tool-label">Add Custom Text:</label>
+                                <div class="custom-text-form">
+                                    <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "text-form" do |f| %>
+                                        <%= f.hidden_field :tool, value: "text" %>
+                                        <div class="form-row">
+                                            <%= f.text_field :text, placeholder: "Enter your text...", class: "text-input", value: "", required: true %>
+                                        </div>
+                                        <div class="form-row coordinates">
+                                            <%= f.number_field :x, placeholder: "X position (0-800)", class: "coord-input", min: 0, max: 800, value: 400 %>
+                                            <%= f.number_field :y, placeholder: "Y position (0-300)", class: "coord-input", min: 0, max: 300, value: 150 %>
+                                        </div>
+                                        <div class="form-row">
+                                            <%= f.color_field :color, value: "#000000", class: "color-input" %>
+                                            <%= f.submit "Add Text", class: "tool-btn primary" %>
+                                        </div>
+                                    <% end %>
+                                </div>
+                            </div>
+                            
+                            <!-- Quick Text Positions -->
+                            <div class="tool-group">
+                                <label class="tool-label">Quick Text Positions:</label>
+                                <div class="tool-buttons">
+                                    <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>
+                                        <%= f.hidden_field :tool, value: "text" %>
+                                        <%= f.hidden_field :x, value: 100 %>
+                                        <%= f.hidden_field :y, value: 50 %>
+                                        <%= f.hidden_field :text, value: "Top Left" %>
+                                        <%= f.hidden_field :color, value: "#0066cc" %>
+                                        <%= f.submit "📍 Top Left", class: "tool-btn text" %>
+                                    <% end %>
+                                    
+                                    <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>
+                                        <%= f.hidden_field :tool, value: "text" %>
+                                        <%= f.hidden_field :x, value: 400 %>
+                                        <%= f.hidden_field :y, value: 100 %>
+                                        <%= f.hidden_field :text, value: "Center Top" %>
+                                        <%= f.hidden_field :color, value: "#cc6600" %>
+                                        <%= f.submit "📍 Center", class: "tool-btn text" %>
+                                    <% end %>
+                                    
+                                    <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>
+                                        <%= f.hidden_field :tool, value: "text" %>
+                                        <%= f.hidden_field :x, value: 700 %>
+                                        <%= f.hidden_field :y, value: 250 %>
+                                        <%= f.hidden_field :text, value: "Bottom Right" %>
+                                        <%= f.hidden_field :color, value: "#cc0066" %>
+                                        <%= f.submit "📍 Bottom Right", class: "tool-btn text" %>
+                                    <% end %>
+                                </div>
+                            </div>
+                            
+                            <!-- Quick Shape Tools -->
+                            <div class="tool-group">
+                                <label class="tool-label">Quick Shapes:</label>
                                 <div class="tool-buttons">
                                     <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>
                                         <%= f.hidden_field :tool, value: "rectangle" %>
@@ -68,15 +132,6 @@
                                         <%= f.hidden_field :radius, value: 35 %>
                                         <%= f.hidden_field :color, value: "#44ff44" %>
                                         <%= f.submit "⭕ Circle", class: "tool-btn primary" %>
-                                    <% end %>
-                                    
-                                    <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>
-                                        <%= f.hidden_field :tool, value: "text" %>
-                                        <%= f.hidden_field :x, value: rand(80..500) %>
-                                        <%= f.hidden_field :y, value: rand(80..220) %>
-                                        <%= f.hidden_field :text, value: "💡 Idea" %>
-                                        <%= f.hidden_field :color, value: "#ffff44" %>
-                                        <%= f.submit "💡 Text", class: "tool-btn primary" %>
                                     <% end %>
                                     
                                     <%= form_with url: clear_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>
