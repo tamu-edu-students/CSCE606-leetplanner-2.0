@@ -1919,6 +1919,24 @@
   },
   "RSpec": {
     "coverage": {
+      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/channels/application_cable/channel.rb": {
+        "lines": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "branches": {}
+      },
+      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/channels/application_cable/connection.rb": {
+        "lines": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "branches": {}
+      },
       "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/controllers/api/calendar_controller.rb": {
         "lines": [
           null,
@@ -3020,6 +3038,42 @@
         ],
         "branches": {}
       },
+      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/controllers/lobby_participations_controller.rb": {
+        "lines": [
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          null,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0
+        ],
+        "branches": {}
+      },
       "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/controllers/login_controller.rb": {
         "lines": [
           null,
@@ -3544,6 +3598,7 @@
           null,
           0,
           0,
+          0,
           null,
           0,
           null,
@@ -3599,6 +3654,7 @@
           0,
           null,
           null,
+          0,
           0,
           0,
           0,
@@ -4083,6 +4139,6 @@
         "branches": {}
       }
     },
-    "timestamp": 1761611893
+    "timestamp": 1761615046
   }
 }
