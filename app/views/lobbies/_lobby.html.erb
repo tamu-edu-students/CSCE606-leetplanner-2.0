@@ -41,26 +41,34 @@
 
                     <%= form_with(model: lobby, url: update_all_lobby_permissions_path(lobby), method: :patch) do |form| %>
                         <table class="permissions-table">
-                            <thead>
-                                <tr>
-                                    <th>Participant</th>
-                                    <th>Can Draw</th>
-                                    <th>Can Edit Notes</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <%= form.fields_for :lobby_members do |member_form| %>
-                                    <% next if member_form.object.user == lobby.owner %>
-                                    <tr>
-                                        <td>
-                                            <%= member_form.object.user.full_name %>
-                                            <%= member_form.hidden_field :id %>
-                                        </td>
-                                        <td><%= member_form.check_box :can_draw %></td>
-                                        <td><%= member_form.check_box :can_edit_notes %></td>
-                                    </tr>
-                                <% end %>
-                            </tbody>
+                        <thead>
+                            <tr>
+                            <th>Participant</th>
+                            <th>Can Draw</th>
+                            <th>Can Edit Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <%= form.fields_for :lobby_members do |member_form| %>
+                            <% next if member_form.object.user == lobby.owner %>
+                            <tr>
+                                <td>
+                                <%= member_form.object.user.full_name %>
+                                <%= member_form.hidden_field :id %>
+                                </td>
+                                <td>
+                                <%# Add a hidden label that Capybara can find %>
+                                <%= member_form.label :can_draw, "Can Draw", class: "visually-hidden" %>
+                                <%= member_form.check_box :can_draw %>
+                                </td>
+                                <td>
+                                <%# Add a hidden label for the other checkbox as well %>
+                                <%= member_form.label :can_edit_notes, "Can Edit Notes", class: "visually-hidden" %>
+                                <%= member_form.check_box :can_edit_notes %>
+                                </td>
+                            </tr>
+                            <% end %>
+                        </tbody>
                         </table>
                         <div class="lobby-actions">
                             <%= form.submit "Update All Permissions", class: "btn btn-primary" %>
