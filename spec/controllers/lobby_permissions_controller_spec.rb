@@ -46,6 +46,20 @@ RSpec.describe LobbyPermissionsController, type: :controller do
         expect(flash[:alert]).to eq('You are not authorized to perform this action.')
       end
     end
+
+    context 'when the update fails' do
+      before do
+        allow(controller).to receive(:current_user).and_return(owner)
+        # Force the update method to return false
+        allow_any_instance_of(LobbyMember).to receive(:update).and_return(false)
+      end
+
+      it 'redirects to the lobby with an alert' do
+        patch :update, params: { id: member.id, lobby_member: { can_draw: true } }
+        expect(response).to redirect_to(lobby_path(lobby))
+        expect(flash[:alert]).to eq('Could not update permissions.')
+      end
+    end
   end
 
   describe 'PATCH #update_all' do
@@ -102,6 +116,23 @@ RSpec.describe LobbyPermissionsController, type: :controller do
         }
         expect(response).to redirect_to(lobby_path(lobby))
         expect(flash[:alert]).to eq('You are not authorized to perform this action.')
+      end
+    end
+
+    context 'when the update fails' do
+      before do
+        allow(controller).to receive(:current_user).and_return(owner)
+        # Force the lobby's update method to return false
+        allow_any_instance_of(Lobby).to receive(:update).and_return(false)
+      end
+
+      it 'redirects to the lobby with an alert' do
+        patch :update_all, params: {
+          id: lobby.id,
+          lobby: { lobby_members_attributes: { '0' => { id: member.id, can_draw: '1' } } }
+        }
+        expect(response).to redirect_to(lobby_path(lobby))
+        expect(flash[:alert]).to eq('Could not update permissions.')
       end
     end
   end

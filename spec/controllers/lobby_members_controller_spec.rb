@@ -60,17 +60,29 @@ RSpec.describe LobbyMembersController, type: :controller do
   end
 
   describe "DELETE #destroy" do
-    let!(:member) { create(:lobby_member, user: participant, lobby: lobby) }
+    context "when the user is a member of the lobby" do
+      # This setup only applies to the success case
+      let!(:member) { create(:lobby_member, user: participant, lobby: lobby) }
 
-    it "removes the current user's membership from the lobby" do
-      expect {
+      it "removes the current user's membership from the lobby" do
+        expect {
+          delete :destroy, params: { id: lobby.id }
+        }.to change(LobbyMember, :count).by(-1)
+      end
+
+      it "redirects to the lobbies index page" do
         delete :destroy, params: { id: lobby.id }
-      }.to change(LobbyMember, :count).by(-1)
+        expect(response).to redirect_to(lobbies_path)
+      end
     end
 
-    it "redirects to the lobbies index page" do
-      delete :destroy, params: { id: lobby.id }
-      expect(response).to redirect_to(lobbies_path)
+    context "when the user is not a member of the lobby" do
+      it "redirects to lobbies_path with an alert" do
+        # The signed-in 'participant' is not a member of this 'lobby'
+        delete :destroy, params: { id: lobby.id }
+        expect(flash[:alert]).to eq("You were not in that lobby.")
+        expect(response).to redirect_to(lobbies_path)
+      end
     end
   end
 end
