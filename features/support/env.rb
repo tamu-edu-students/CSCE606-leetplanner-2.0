@@ -18,6 +18,8 @@ require "rake"
 require "google/apis/calendar_v3"
 require 'capybara/cucumber'
 require 'selenium/webdriver'
+require 'rack_session_access'
+require 'rack_session_access/capybara'
 
 # By default, any exception happening in your Rails application will bubble up
 # to Cucumber so that your scenario will fail. This is a different from how

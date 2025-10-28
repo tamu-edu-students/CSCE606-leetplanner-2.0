@@ -30,3 +30,27 @@ Feature: Dashboard
     When I create a manual timer for "0" minutes
     Then I should be redirected to the dashboard
     And I should not see a manual countdown timer
+
+  Scenario: Handling Google Calendar API failure gracefully
+    Given the Google Calendar API is experiencing issues
+    When I am on the dashboard page
+    Then I should see a calendar sync error message
+    And I should still be able to create a manual timer
+
+  Scenario: Viewing the dashboard with an all-day event
+    Given I have an all-day event "Team Workshop" in my Google Calendar
+    When I am on the dashboard page
+    Then I should see "Current Event: Team Workshop"
+    And I should see a countdown timer showing remaining time until midnight
+
+  Scenario: Expired timer handling
+    Given I am on the dashboard page
+    And I have a timer that expired 5 minutes ago
+    When I refresh the page
+    Then I should not see a manual countdown timer
+    And the timer should be cleared from my session
+
+  Scenario: Timer remaining time display
+    Given I am on the dashboard page
+    When I create a manual timer for "120" minutes
+    Then I should see a manual countdown timer with approximately "02:00:00" remaining

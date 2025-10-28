@@ -51,8 +51,61 @@ Then('I should see a welcome message') do
   end
 end
 
-Then('I should not see an event countdown timer') do
-  # When there's no current calendar event the event banner is not shown
+Given('the Google Calendar API is experiencing issues') do
+  allow_any_instance_of(Google::Apis::CalendarV3::CalendarService)
+    .to receive(:list_events)
+    .and_raise(Google::Apis::ServerError.new('Backend Error'))
+end
+
+Then('I should see a calendar sync error message') do
+  expect(page).to have_selector('.flash-alert', text: 'Unable to sync with Google Calendar')
+end
+
+Then('I should still be able to create a manual timer') do
+  expect(page).to have_selector('#customTimerInput')
+  expect(page).to have_button('Start')
+end
+
+  today = Date.today
+  event = Google::Apis::CalendarV3::Event.new(
+    summary: event_title,
+    start: Google::Apis::CalendarV3::EventDateTime.new(
+      date: today.to_s,
+      time_zone: 'America/Chicago'
+    ),
+    end: Google::Apis::CalendarV3::EventDateTime.new(
+      date: (today + 1.day).to_s,
+      time_zone: 'America/Chicago'
+    )
+  )
+  allow_any_instance_of(Google::Apis::CalendarV3::CalendarService).to receive(:list_events).and_return(
+    instance_double(Google::Apis::CalendarV3::Events, items: [event])
+  )
+end
+
+Then('I should see a countdown timer showing remaining time until midnight') do
+  end_of_day = Time.current.end_of_day
+  seconds_until_midnight = (end_of_day - Time.current).to_i
+  hours = seconds_until_midnight / 3600
+  minutes = (seconds_until_midnight % 3600) / 60
+  seconds = seconds_until_midnight % 60
+  expected_time = format("%02d:%02d:%02d", hours, minutes, seconds)
+  
+  expect(page).to have_content(/#{expected_time}/i)
+end
+
+Given('I have a timer that expired 5 minutes ago') do
+  expired_time = (Time.current - 5.minutes).iso8601
+  page.set_rack_session(timer_ends_at: expired_time)
+end
+
+When('I refresh the page') do
+  visit current_path
+end
+
+Then('the timer should be cleared from my session') do
+  expect(page.get_rack_session['timer_ends_at']).to be_nil
+end
   expect(page).not_to have_selector('.event-banner')
 end
 

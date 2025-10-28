@@ -12,6 +12,57 @@ Then('I should be on the user profile page') do
   expect(page).to have_current_path(path_for('profile'))
 end
 
+When('I update my profile with:') do |table|
+  profile_data = table.rows_hash
+  
+  within('#profileForm') do
+    profile_data.each do |field, value|
+      fill_in field.humanize, with: value
+    end
+    click_button 'Update Profile'
+  end
+end
+
+Then('my profile should show the updated information') do
+  profile_data = {
+    'first_name' => 'John',
+    'last_name' => 'Doe',
+    'leetcode_username' => 'leetcoder123'
+  }
+  
+  profile_data.each do |field, value|
+    expect(page).to have_field(field.humanize, with: value)
+  end
+end
+
+Then('my profile should retain the previous values') do
+  expect(page).to have_field('First name', with: @current_user.first_name)
+  expect(page).to have_field('Last name', with: @current_user.last_name)
+end
+
+Given('I send a JSON profile update request with:') do |table|
+  @update_data = table.rows_hash
+  page.driver.submit :patch, 
+                    user_path(@current_user), 
+                    { user: @update_data, format: :json }
+end
+
+When('the server processes the request') do
+  # The request is already processed by the previous step
+  # This step is for readability in the feature file
+end
+
+Then('I should receive a JSON success response') do
+  expect(page.status_code).to eq(200)
+  @json_response = JSON.parse(page.body)
+end
+
+Then('the response should include the updated user data') do
+  @update_data.each do |key, value|
+    expect(@json_response['user'][key]).to eq(value)
+  end
+end
+
 Then('my {string} should be {string}') do |field, value|
   @current_user.reload
   expect(@current_user.public_send(field.parameterize.underscore)).to eq(value)

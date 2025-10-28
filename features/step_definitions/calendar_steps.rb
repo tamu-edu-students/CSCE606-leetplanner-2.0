@@ -76,6 +76,125 @@ Then('I should see the error message {string}') do |message|
   expect(page).to have_content(message)
 end
 
+When('I create a new event with:') do |table|
+  event_data = table.rows_hash
+  # Ensure we are logged in and have valid Google credentials for the session.
+  # Reuse the existing step which performs an OmniAuth callback and sets @current_user.
+  unless defined?(@current_user) && @current_user
+    step 'I am a logged-in user and successfully authenticated with Google'
+  end
+  
+  # Set up the Google Calendar service mock for successful event creation
+  service = instance_double(Google::Apis::CalendarV3::CalendarService)
+  allow(Google::Apis::CalendarV3::CalendarService).to receive(:new).and_return(service)
+  allow(service).to receive(:authorization=)
+  
+  # Mock successful event creation
+  created_event = nil
+  allow(service).to receive(:insert_event) do |calendar_id, event|
+    raise "Calendar ID must be 'primary'" unless calendar_id == 'primary'
+    
+    start_time = Time.zone.parse("#{event_data['start_date']} #{event_data['start_time']}") if event_data['start_time']
+    end_time = Time.zone.parse("#{event_data['start_date']} #{event_data['end_time']}") if event_data['end_time']
+    
+    event_datetime_start = Google::Apis::CalendarV3::EventDateTime.new(
+      date_time: start_time,
+      date: event_data['all_day'] == 'true' ? event_data['start_date'] : nil,
+      time_zone: 'America/Chicago'
+    )
+    
+    event_datetime_end = Google::Apis::CalendarV3::EventDateTime.new(
+      date_time: end_time,
+      date: event_data['all_day'] == 'true' ? (Date.parse(event_data['start_date']) + 1.day).to_s : nil,
+      time_zone: 'America/Chicago'
+    )
+    
+    created_event = Google::Apis::CalendarV3::Event.new(
+      id: 'test_event_id',
+      summary: event.summary,
+      start: event_datetime_start,
+      end: event_datetime_end
+    )
+    created_event
+  end
+  
+  # Mock list_events to return the created event
+  allow(service).to receive(:list_events) do |calendar_id, **params|
+    events = created_event ? [created_event] : []
+    instance_double(Google::Apis::CalendarV3::Events, items: events)
+  end
+  # Mock the calendar service for both controllers
+  allow_any_instance_of(Api::CalendarController).to receive(:calendar_service_or_unauthorized).and_return(service)
+  allow_any_instance_of(CalendarController).to receive(:calendar_service_or_unauthorized).and_return(service)
+  
+  # Set up required session data for Google Calendar access
+  page.set_rack_session(
+    google_token: 'fake_token',
+    google_refresh_token: 'fake_refresh_token',
+    user_id: @current_user.id
+  )
+  # Refresh the calendar page explicitly (set_rack_session navigates to /rack_session)
+  visit calendar_path
+
+  # Store the event data for later verification
+  @current_event_data = event_data
+
+  click_link 'Add Event'
+  
+  # The form is directly in the content area
+  within('.content-area form') do
+    fill_in 'Title', with: event_data['summary']
+    fill_in 'Date', with: event_data['start_date']
+    fill_in 'Start', with: "#{event_data['start_date']}T#{event_data['start_time']}" if event_data['start_time']
+    fill_in 'End', with: "#{event_data['start_date']}T#{event_data['end_time']}" if event_data['end_time']
+    check 'All Day Event' if event_data['all_day'] == 'true'
+    
+    click_button 'Add Event'
+  end
+end
+
+Then('the event {string} should appear on the calendar') do |event_title|
+  within('.calendar-content') do
+    within('.event-card') do
+      expect(page).to have_content(event_title)
+      
+      unless @current_event_data['all_day'] == 'true'
+        start_time = Time.zone.parse("#{@current_event_data['start_date']} #{@current_event_data['start_time']}")
+        end_time = Time.zone.parse("#{@current_event_data['start_date']} #{@current_event_data['end_time']}")
+        expect(page).to have_content(start_time.strftime("%l:%M %p").strip)
+        expect(page).to have_content(end_time.strftime("%l:%M %p").strip)
+      end
+    end
+  end
+end
+
+Then('the event {string} should appear as an all-day event') do |event_title|
+  within('.calendar-content') do
+    expect(page).to have_css('.event-card', text: event_title)
+    expect(page).to have_content('(All day)')
+  end
+end
+
+Given('my Google Calendar authorization has expired') do
+  allow_any_instance_of(Google::Apis::CalendarV3::CalendarService)
+    .to receive(:list_events)
+    .and_raise(Google::Apis::AuthorizationError.new('Token expired'))
+end
+
+When('I try to sync my calendar') do
+  click_link 'Refresh'
+end
+
+Then('I should be redirected to the Google login page') do
+  expect(current_path).to eq(login_google_path)
+end
+
+Given('the Google Calendar API is temporarily unavailable') do
+  allow_any_instance_of(Google::Apis::CalendarV3::CalendarService)
+    .to receive(:insert_event)
+    .and_raise(Google::Apis::ServerError.new('Service unavailable'))
+end
+
 Given('my Google Calendar has an event titled {string} with id {string}') do |title, id|
   # Stub service to return a specific event for edit/delete flows
   service = instance_double(Google::Apis::CalendarV3::CalendarService)
