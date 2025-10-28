@@ -18,7 +18,8 @@ class User < ApplicationRecord
   # Associations with other models
   has_many :leet_code_sessions, dependent: :destroy  # User can have multiple coding sessions, destroy when user is deleted
   has_many :events                                   # User can have multiple calendar events
-  has_many :lobby_members
+  has_many :hosted_lobbies, class_name: "Lobby", foreign_key: "owner_id"
+  has_many :lobby_members, dependent: :destroy
   has_many :lobbies, through: :lobby_members
 
   # Scopes for common queries

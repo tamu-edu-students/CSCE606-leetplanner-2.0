@@ -1,38 +1,100 @@
 <div class="app-container">
     <%= render 'shared/navbar' %>
 
-    <!-- Main Content -->
     <main class="main-content">
-        <!-- Lobbies Page -->
-        <div id="lobbiesPage" class="page", >
+        <div id="lobbiesPage" class="page">
             <div class="page-header align">
                 <div>
-                    <h1 class="page-title"><%= lobby.name ? lobby.name : 'UNNAMED LOBBY'%></h1>
-                    <p class="page-subtitle"> Host: <%= User.find_by(id: lobby.owner_id).full_name %> | Visibility: <%=lobby.private ? 'Private' : 'Public' %> </p>
+                    <h1 class="page-title"><%= lobby.name.presence || 'UNNAMED LOBBY' %></h1>
+                    <p class="page-subtitle">
+                        Host: <%= lobby.owner.full_name %> | Visibility: <%= lobby.private? ? 'Private' : 'Public' %>
+                    </p>
                 </div>
             </div>
-            <div class="content-area lobby-content-area">
-              <h3 class="page-title">Description</h3>
-              <div class="lobby-description"><%= lobby.description %></div>
-              <br/>
-              <div class="lobby-participants">
-              <h3 class="page-title">Participants (<%= lobby.lobby_members.length%>)</h3>
-              <% if lobby.lobby_members.length >= 1%>
-                <ul class="lobby-members">
-                <% lobby.lobby_members.each do |member| %>
-                  <li> <%= User.find_by(id: member.user_id).full_name %></li>
-                <% end %>
-                </ul>
-              <% end %>
-              </div>
-            <hr style="margin-top:24px; border:none; border-top:1px solid #e5e7eb; margin-bottom: 1rem">
 
-            <div class="lobby-button-box">
-              <% if current_user.id == @lobby.owner_id%>
-              <%= button_to "Destroy this lobby", @lobby, method: :delete, class: "btn btn-primary" %>
-              <% end %>
-              <%= button_to "Back to Lobbies", lobbies_path, class: "btn start" %>
+            <div class="content-area">
+                <h3 class="page-title">Description</h3>
+                <div class="lobby-description"><%= lobby.description %></div>
+                <br/>
+
+                <%# Shows the lobby code to the owner for sharing %>
+                <% if current_user == lobby.owner %>
+                    <div class="lobby-code-display">
+                        <strong>Lobby Code:</strong> <span><%= lobby.lobby_code %></span>
+                    </div>
+                    <br/>
+                <% end %>
+
+                <h3 class="page-title">Participants (<%= lobby.lobby_members.length %>)</h3>
+                <% if lobby.lobby_members.any? %>
+                    <ul class="lobby-members">
+                        <% lobby.lobby_members.each do |member| %>
+                            <li><%= member.user.full_name %></li>
+                        <% end %>
+                    </ul>
+                <% end %>
+
+                <%# --- Permissions Management Form (Owner Only & More Than 1 Member) --- %>
+                <% if current_user == lobby.owner && lobby.lobby_members.length > 1 %>
+                    <hr>
+                    <h3 class="page-title">Manage Permissions</h3>
+
+                    <%= form_with(model: lobby, url: update_all_lobby_permissions_path(lobby), method: :patch) do |form| %>
+                        <table class="permissions-table">
+                        <thead>
+                            <tr>
+                            <th>Participant</th>
+                            <th>Can Draw</th>
+                            <th>Can Edit Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <%= form.fields_for :lobby_members do |member_form| %>
+                            <% next if member_form.object.user == lobby.owner %>
+                            <tr>
+                                <td>
+                                <%= member_form.object.user.full_name %>
+                                <%= member_form.hidden_field :id %>
+                                </td>
+                                <td>
+                                <%# Add a hidden label that Capybara can find %>
+                                <%= member_form.label :can_draw, "Can Draw", class: "visually-hidden" %>
+                                <%= member_form.check_box :can_draw %>
+                                </td>
+                                <td>
+                                <%# Add a hidden label for the other checkbox as well %>
+                                <%= member_form.label :can_edit_notes, "Can Edit Notes", class: "visually-hidden" %>
+                                <%= member_form.check_box :can_edit_notes %>
+                                </td>
+                            </tr>
+                            <% end %>
+                        </tbody>
+                        </table>
+                        <div class="lobby-actions">
+                            <%= form.submit "Update All Permissions", class: "btn btn-primary" %>
+                        </div>
+                    <% end %>
+                <% end %>
+
+                <hr>
+
+                <%# --- Main Action Buttons (Separated Logic for All Users) --- %>
+                <div class="lobby-actions">
+                    <% if current_user == lobby.owner %>
+                        <%# Owner sees the Destroy button %>
+                        <%= link_to "Destroy Lobby", lobby, 
+                                    data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }, 
+                                    class: "btn btn-danger" %>
+                    <% else %>
+                        <%# Participants see the Leave button %>
+                        <%= button_to "Leave Lobby", leave_lobby_path(lobby), 
+                                    method: :delete, 
+                                    class: "btn btn-warning" %>
+                    <% end %>
+                    
+                    <%# Everyone sees the "Back to Lobbies" button %>
+                    <%= link_to "Back to Lobbies", lobbies_path, class: "btn btn-secondary" %>
+                </div>
             </div>
-        </div>
-    </main>
+        </main>
 </div>

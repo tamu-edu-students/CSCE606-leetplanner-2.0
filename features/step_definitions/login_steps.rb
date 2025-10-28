@@ -41,14 +41,6 @@ Then('I should be redirected to the dashboard') do
   expect(page).to have_current_path(dashboard_path)
 end
 
-Then('I should see a success message {string}') do |message|
-  expect(page).to have_content(message)
-end
-
-Then('I should see an error message {string}') do |message|
-  expect(page).to have_content(message)
-end
-
 Then('I should still be on the login page') do
   expect(page).to have_current_path(root_path)
 end

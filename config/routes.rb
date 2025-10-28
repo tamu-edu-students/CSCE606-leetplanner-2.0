@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  resources :lobbies
   # Root page
   root "login#index"
 
@@ -44,6 +43,17 @@ Rails.application.routes.draw do
   resources :leet_code_session_problems, except: [ :new, :edit ]
 
   resource  :statistics, only: [ :show ], controller: "statistics"
+
+  # -------------------------------
+  # Lobby Features
+  # -------------------------------
+  resources :lobbies
+  post "join_lobby", to: "lobby_members#create_by_code", as: :join_lobby
+  delete "leave_lobby/:id", to: "lobby_members#destroy", as: :leave_lobby
+  resources :lobby_members, only: [] do
+    patch "permissions", on: :member, to: "lobby_permissions#update", as: :update_permissions
+  end
+  patch "lobbies/:id/update_all_permissions", to: "lobby_permissions#update_all", as: :update_all_lobby_permissions
 
   # -------------------------------
   # API Namespace

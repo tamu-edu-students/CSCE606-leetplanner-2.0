@@ -10,6 +10,7 @@ class LobbiesController < ApplicationController
 
   # GET /lobbies/1 or /lobbies/1.json
   def show
+    @lobby = Lobby.includes(lobby_members: :user).find(params[:id])
   end
 
   # GET /lobbies/new
