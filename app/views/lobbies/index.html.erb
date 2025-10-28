@@ -1,42 +1,46 @@
 <div class="app-container">
     <%= render 'shared/navbar' %>
 
-    <!-- Main Content -->
     <main class="main-content">
-        <!-- Lobbies Page -->
         <div id="lobbiesPage" class="page">
 
             <div class="page-header align">
                 <div>
                     <h1 class="page-title">Collaborative Lobbies</h1>
-                    <p class="page-subtitle">Connect and code together</p>
+                    [cite_start]<p class="page-subtitle">Connect and code together</p> [cite: 17]
                 </div>
             </div>
-            
 
             <div class="content-area">
-
-          <h3 class="page-title">Your Lobbies</h1>
-            <div class="lobbies-grid">
-            <%current_user.lobbies.each do |lobby| %>
-              <div class="lobby-card">
-            <%= link_to lobby_path(lobby), class: 'lobby-card-link' do %>
-                <div class="card-title"><%=lobby.name ? lobby.name : 'UNNAMED LOBBY'%></div>
-            <% end %>
-                <div class="card-subtitle">Host: <%= User.find_by(id: lobby.owner_id).full_name%></div>
-                <div class="card-actions">
-                  <button class="join-btn btn btn-primary">Join</button>
-                <% if lobby.owner_id == current_user.id %>
-                  <button class="btn btn-share-link">Share Invite</button>
-                <% end %>
+                <div class="join-lobby-form">
+                  <h3 class="page-title">Join a Lobby</h3>
+                  <%= form_with(url: join_by_code_path, method: :post, class: "join-form-fields") do |form| %>
+                    <%= form.text_field :lobby_code, placeholder: "Enter Lobby Code", class: "form-input", required: true %>
+                    <%= form.submit "Join", class: "btn btn-primary" %>
+                  <% end %>
                 </div>
-              </div>
-            <% end %>
-
-            </div>
-          <hr style="margin-top:24px; border:none; border-top:1px solid #e5e7eb;">
-          <br/>
-            <%= link_to "+ Create New Lobby", new_lobby_path(), class: "btn btn-primary" %>
+                <hr style="margin-top:24px; border:none; border-top:1px solid #e5e7eb;">
+                <h3 class="page-title">Your Lobbies</h3>
+                <div class="lobbies-grid">
+                    <% current_user.lobbies.each do |lobby| [cite_start]%> [cite: 18]
+                        <div class="lobby-card">
+                            <%= link_to lobby_path(lobby), class: 'lobby-card-link' do %>
+                                [cite_start]<div class="card-title"><%= lobby.name ? lobby.name : 'UNNAMED LOBBY' %></div> [cite: 20]
+                            <% end %>
+                            <div class="card-subtitle">Host: <%= User.find_by(id: lobby.owner_id).full_name %></div>
+                            
+                            <% if lobby.owner_id == current_user.id %>
+                                <div class="card-invite-code">
+                                    <strong>Invite Code:</strong> <span><%= lobby.lobby_code %></span>
+                                </div>
+                            <% end %>
+                            </div>
+                    <% end %>
+                </div>
+         
+                [cite_start]<hr style="margin-top:24px; border:none; border-top:1px solid #e5e7eb;"> [cite: 22]
+                <br/>
+                <%= link_to "+ Create New Lobby", new_lobby_path(), class: "btn btn-primary" %>
             </div>
         </div>
     </main>

@@ -1,33 +1,68 @@
 <div class="app-container">
     <%= render 'shared/navbar' %>
 
-    <!-- Main Content -->
     <main class="main-content">
-        <!-- Lobbies Page -->
         <div id="lobbiesPage" class="page">
             <div class="page-header align">
                 <div>
-                    <h1 class="page-title"><%= lobby.name ? lobby.name : 'UNNAMED LOBBY'%></h1>
+                    [cite_start]<h1 class="page-title"><%= lobby.name ? lobby.name : 'UNNAMED LOBBY' %></h1> [cite: 2]
                     <p class="page-subtitle"> Host: <%= User.find_by(id: lobby.owner_id).full_name %> </p>
                 </div>
             </div>
             <div class="content-area">
-          <h3 class="page-title">Description</h3>
-          <div class="lobby-description"><%= lobby.description %></div>
-          <br/>
-          <h3 class="page-title">Participants (<%= lobby.lobby_members.length%>)</h3>
-          <% if lobby.lobby_members.length >= 1%>
-            <ul class="lobby-members">
-            <% lobby.lobby_members.each do |member| %>
-              <li> <%= User.find_by(id: member.user_id).full_name %></li>
-            <% end %>
-            </ul>
-          <% end %>
-  <div>
-    <% if current_user.id == @lobby.owner_id%>
-    <%= button_to "Destroy this lobby", @lobby, method: :delete, class: "btn btn-primary" %>
-  <% end %>
-  </div>
-        </div>
-    </main>
+                <h3 class="page-title">Description</h3>
+                <div class="lobby-description"><%= lobby.description %></div>
+                [cite_start]<br/> [cite: 3]
+
+                <% if current_user.id == lobby.owner_id %>
+                    <div class="lobby-code-display">
+                        <strong>Lobby Code:</strong> <%= lobby.lobby_code %>
+                    </div>
+                    <br/>
+                <% end %>
+                [cite_start]<h3 class="page-title">Participants (<%= lobby.lobby_members.length %>)</h3> [cite: 3]
+                <% if lobby.lobby_members.any? %>
+                    <ul class="lobby-members">
+                        <% lobby.lobby_members.each do |member| %>
+                            [cite_start]<li> <%= User.find_by(id: member.user_id).full_name %></li> [cite: 4]
+                        <% end %>
+                    </ul>
+                <% end %>
+
+                <% if current_user.id == lobby.owner_id && lobby.lobby_members.length > 1 %>
+                    <hr>
+                    <h3 class="page-title">Manage Permissions</h3>
+                    <table class="permissions-table">
+                        <thead>
+                            <tr>
+                                <th>Participant</th>
+                                <th>Can Draw</th>
+                                <th>Can Edit Notes</th>
+                                <th>Update</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% lobby.lobby_members.each do |member| %>
+                                <% next if member.user_id == lobby.owner_id %>
+                                <tr>
+                                    <%= form_with(model: member, url: permissions_lobby_member_path(member), method: :patch) do |form| %>
+                                        <td><%= member.user.full_name %></td>
+                                        <td><%= form.check_box :can_draw %></td>
+                                        <td><%= form.check_box :can_edit_notes %></td>
+                                        <td><%= form.submit "Save", class: "btn btn-small" %></td>
+                                    <% end %>
+                                </tr>
+                            <% end %>
+                        </tbody>
+                    </table>
+                <% end %>
+                <div class="lobby-actions">
+                    <% if current_user.id == lobby.owner_id %>
+                        <%= button_to "Destroy this lobby", lobby, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger" %>
+                    <% else %>
+                        <%= button_to "Leave this lobby", lobby_member_path(lobby), method: :delete, class: "btn btn-warning" %>
+                    <% end %>
+                    </div>
+            </div>
+        </main>
 </div>
