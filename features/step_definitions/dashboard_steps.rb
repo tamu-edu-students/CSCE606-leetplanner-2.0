@@ -18,7 +18,7 @@ Given('my Google Calendar has an ongoing event {string} ending in 30 minutes') d
     'end': Google::Apis::CalendarV3::EventDateTime.new(date_time: Time.current + 30.minutes)
   )
   allow_any_instance_of(Google::Apis::CalendarV3::CalendarService).to receive(:list_events).and_return(
-    instance_double(Google::Apis::CalendarV3::Events, items: [event])
+    instance_double(Google::Apis::CalendarV3::Events, items: [ event ])
   )
 end
 
@@ -30,7 +30,7 @@ Given('my Google Calendar has an ongoing all-day event {string}') do |event_titl
     'end': Google::Apis::CalendarV3::EventDateTime.new(date: (today + 1.day).to_s)
   )
   allow_any_instance_of(Google::Apis::CalendarV3::CalendarService).to receive(:list_events).and_return(
-    instance_double(Google::Apis::CalendarV3::Events, items: [event])
+    instance_double(Google::Apis::CalendarV3::Events, items: [ event ])
   )
 end
 
@@ -41,7 +41,7 @@ Given('my Google Calendar has an event {string} that just ended') do |event_titl
     'end': Google::Apis::CalendarV3::EventDateTime.new(date_time: Time.current - 1.minute)
   )
   allow_any_instance_of(Google::Apis::CalendarV3::CalendarService).to receive(:list_events).and_return(
-    instance_double(Google::Apis::CalendarV3::Events, items: [event])
+    instance_double(Google::Apis::CalendarV3::Events, items: [ event ])
   )
 end
 
