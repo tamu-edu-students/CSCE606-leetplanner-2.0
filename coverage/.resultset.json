@@ -1919,23 +1919,281 @@
   },
   "RSpec": {
     "coverage": {
-      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/channels/application_cable/channel.rb": {
+      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/helpers/application_helper.rb": {
         "lines": [
-          0,
-          0,
-          0,
-          0
-        ],
-        "branches": {}
+          null,
+          null,
+          1,
+          null,
+          null,
+          null
+        ]
       },
-      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/channels/application_cable/connection.rb": {
+      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/helpers/calendar_helper.rb": {
         "lines": [
+          null,
+          null,
+          1,
+          null,
+          null,
+          null
+        ]
+      },
+      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/helpers/dashboard_helper.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          null,
+          null,
+          null
+        ]
+      },
+      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/helpers/home_helper.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          null,
+          null,
+          null
+        ]
+      },
+      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/helpers/leet_code_problems_helper.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          null,
+          null,
+          null
+        ]
+      },
+      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/helpers/leet_code_session_problems_helper.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          null,
+          null,
+          null
+        ]
+      },
+      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/helpers/leet_code_sessions_helper.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          null,
+          null,
+          null
+        ]
+      },
+      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/helpers/lobbies_helper.rb": {
+        "lines": [
+          1,
+          null
+        ]
+      },
+      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/helpers/login_helper.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          null,
+          null,
+          null
+        ]
+      },
+      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/helpers/sessions_helper.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          null,
+          null,
+          null
+        ]
+      },
+      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/helpers/users_helper.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          null,
+          null,
+          null
+        ]
+      },
+      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/controllers/lobby_members_controller.rb": {
+        "lines": [
+          1,
+          1,
+          null,
+          1,
+          6,
+          null,
+          6,
+          4,
+          4,
+          null,
+          2,
+          null,
+          null,
+          2,
+          null,
+          null,
+          2,
+          null,
+          null,
+          null,
+          1,
+          2,
+          null,
+          2,
+          null,
+          2,
+          2,
+          null,
+          0,
+          null,
+          null,
+          null
+        ]
+      },
+      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/controllers/application_controller.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          null,
+          1,
+          null,
+          null,
+          1,
+          null,
+          null,
+          1,
+          null,
+          1,
+          null,
+          null,
+          null,
+          1,
           0,
           0,
+          null,
           0,
-          0
-        ],
-        "branches": {}
+          null,
+          null,
+          0,
+          0,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null,
+          null,
+          1,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null,
+          null,
+          1,
+          null
+        ]
+      },
+      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/models/user.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          null,
+          1,
+          1,
+          1,
+          1,
+          null,
+          null,
+          1,
+          1,
+          null,
+          null,
+          1,
+          1,
+          null,
+          null,
+          1,
+          1,
+          1,
+          1,
+          1,
+          null,
+          null,
+          1,
+          1,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null
+        ]
+      },
+      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/models/application_record.rb": {
+        "lines": [
+          null,
+          null,
+          null,
+          1,
+          1,
+          null
+        ]
+      },
+      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/models/lobby_member.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          null,
+          1,
+          null
+        ]
+      },
+      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/models/lobby.rb": {
+        "lines": [
+          1,
+          1,
+          null,
+          1,
+          1,
+          null,
+          1,
+          1,
+          null,
+          1,
+          1,
+          null,
+          1,
+          null,
+          1,
+          6,
+          6,
+          6,
+          6,
+          6,
+          null,
+          null,
+          null
+        ]
       },
       "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/controllers/api/calendar_controller.rb": {
         "lines": [
@@ -2342,57 +2600,6 @@
           0,
           0,
           0,
-          0,
-          0
-        ],
-        "branches": {}
-      },
-      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/controllers/application_controller.rb": {
-        "lines": [
-          null,
-          null,
-          0,
-          null,
-          0,
-          null,
-          null,
-          0,
-          null,
-          null,
-          0,
-          null,
-          0,
-          null,
-          null,
-          null,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0,
-          0,
-          null,
-          null,
-          null,
-          0,
-          0,
-          0,
-          null,
-          null,
-          0,
-          null,
-          null,
-          0,
-          0,
-          0,
-          null,
-          null,
           0,
           0
         ],
@@ -2961,8 +3168,11 @@
           0,
           0,
           0,
+          0,
+          0,
           null,
           null,
+          0,
           0,
           0,
           null,
@@ -3038,11 +3248,44 @@
         ],
         "branches": {}
       },
-      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/controllers/lobby_participations_controller.rb": {
+      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/controllers/lobby_permissions_controller.rb": {
         "lines": [
           0,
           0,
+          null,
           0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          null,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          null,
+          null,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
           0,
           null,
           0,
@@ -3055,21 +3298,6 @@
           0,
           0,
           0,
-          0,
-          0,
-          null,
-          0,
-          null,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          null,
           0
         ],
         "branches": {}
@@ -3310,123 +3538,6 @@
         ],
         "branches": {}
       },
-      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/helpers/application_helper.rb": {
-        "lines": [
-          null,
-          null,
-          0,
-          null,
-          null,
-          0
-        ],
-        "branches": {}
-      },
-      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/helpers/calendar_helper.rb": {
-        "lines": [
-          null,
-          null,
-          0,
-          null,
-          null,
-          0
-        ],
-        "branches": {}
-      },
-      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/helpers/dashboard_helper.rb": {
-        "lines": [
-          null,
-          null,
-          0,
-          null,
-          null,
-          0
-        ],
-        "branches": {}
-      },
-      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/helpers/home_helper.rb": {
-        "lines": [
-          null,
-          null,
-          0,
-          null,
-          null,
-          0
-        ],
-        "branches": {}
-      },
-      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/helpers/leet_code_problems_helper.rb": {
-        "lines": [
-          null,
-          null,
-          0,
-          null,
-          null,
-          0
-        ],
-        "branches": {}
-      },
-      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/helpers/leet_code_session_problems_helper.rb": {
-        "lines": [
-          null,
-          null,
-          0,
-          null,
-          null,
-          0
-        ],
-        "branches": {}
-      },
-      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/helpers/leet_code_sessions_helper.rb": {
-        "lines": [
-          null,
-          null,
-          0,
-          null,
-          null,
-          0
-        ],
-        "branches": {}
-      },
-      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/helpers/lobbies_helper.rb": {
-        "lines": [
-          0,
-          0
-        ],
-        "branches": {}
-      },
-      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/helpers/login_helper.rb": {
-        "lines": [
-          null,
-          null,
-          0,
-          null,
-          null,
-          0
-        ],
-        "branches": {}
-      },
-      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/helpers/sessions_helper.rb": {
-        "lines": [
-          null,
-          null,
-          0,
-          null,
-          null,
-          0
-        ],
-        "branches": {}
-      },
-      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/helpers/users_helper.rb": {
-        "lines": [
-          null,
-          null,
-          0,
-          null,
-          null,
-          0
-        ],
-        "branches": {}
-      },
       "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/jobs/application_job.rb": {
         "lines": [
           null,
@@ -3517,17 +3628,6 @@
         ],
         "branches": {}
       },
-      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/models/application_record.rb": {
-        "lines": [
-          null,
-          null,
-          null,
-          0,
-          0,
-          0
-        ],
-        "branches": {}
-      },
       "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/models/leet_code_problem.rb": {
         "lines": [
           null,
@@ -3582,90 +3682,6 @@
           0,
           null,
           null,
-          0,
-          0,
-          0
-        ],
-        "branches": {}
-      },
-      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/models/lobby.rb": {
-        "lines": [
-          0,
-          0,
-          null,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          null,
-          0,
-          null,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
-        "branches": {}
-      },
-      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/models/lobby_member.rb": {
-        "lines": [
-          0,
-          0,
-          0,
-          0
-        ],
-        "branches": {}
-      },
-      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/models/lobby_participation.rb": {
-        "lines": [
-          0,
-          0,
-          0,
-          0
-        ],
-        "branches": {}
-      },
-      "/home/hp/.rbenv/projects/CSCE606-leetplanner-2.0/app/models/user.rb": {
-        "lines": [
-          null,
-          null,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0,
-          null,
-          null,
-          0,
-          0,
-          null,
-          null,
-          0,
-          0,
-          null,
-          null,
-          0,
-          0,
-          0,
-          0,
-          0,
-          null,
-          null,
-          0,
-          0,
-          null,
-          null,
-          0,
           0,
           0,
           0
@@ -4139,6 +4155,6 @@
         "branches": {}
       }
     },
-    "timestamp": 1761615046
+    "timestamp": 1761670201
   }
 }
