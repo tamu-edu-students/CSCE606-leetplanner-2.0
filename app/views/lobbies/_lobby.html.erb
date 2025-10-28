@@ -10,259 +10,513 @@
 
             <div class="page-header align">            <div class="page-header align">
 
-                <div>                <div>
+                <div>
 
-                    <h1 class="page-title"><%= lobby.name.presence || 'UNNAMED LOBBY' %></h1>                    <h1 class="page-title"><%= lobby.name.presence || 'UNNAMED LOBBY' %></h1>
+                    <h1 class="page-title"><%= lobby.name.presence || 'UNNAMED LOBBY' %></h1>                <div>                <div>
 
-                    <p class="page-subtitle">                    <p class="page-subtitle">
+                    <p class="page-subtitle">
+
+                        Host: <%= lobby.owner.full_name %> | Visibility: <%= lobby.private? ? 'Private' : 'Public' %>                    <h1 class="page-title"><%= lobby.name.presence || 'UNNAMED LOBBY' %></h1>                    <h1 class="page-title"><%= lobby.name.presence || 'UNNAMED LOBBY' %></h1>
+
+                    </p>
+
+                </div>                    <p class="page-subtitle">                    <p class="page-subtitle">
+
+            </div>
 
                         Host: <%= lobby.owner.full_name %> | Visibility: <%= lobby.private? ? 'Private' : 'Public' %>                        Host: <%= lobby.owner.full_name %> | Visibility: <%= lobby.private? ? 'Private' : 'Public' %>
 
-                    </p>                    </p>
+            <div class="content-area">
 
-                </div>                </div>
+                <!-- Three Column Layout -->                    </p>                    </p>
 
-            </div>            </div>
+                <div class="lobby-layout">
 
-
-
-            <div class="content-area">            <div class="content-area">
-
-                <!-- Three Column Layout -->                <h3 class="page-title">Description</h3>
-
-                <div class="lobby-layout">                <div class="lobby-description"><%= lobby.description %></div>
-
-                    <!-- Left Column: Shared Notes -->                <br/>
+                    <!-- Left Column: Shared Notes -->                </div>                </div>
 
                     <div class="lobby-section">
 
-                        <h3 class="section-title">Shared Notes</h3>                <%# Shows the lobby code to the owner for sharing %>
+                        <h3 class="section-title">Shared Notes</h3>            </div>            </div>
 
-                        <div class="notes-area">                <% if current_user == lobby.owner %>
+                        <div class="notes-area">
 
-                            <textarea placeholder="Take shared notes here..." rows="10"></textarea>                    <div class="lobby-code-display">
+                            <textarea placeholder="Take shared notes here..." rows="10"></textarea>
 
-                        </div>                        <strong>Lobby Code:</strong> <span><%= lobby.lobby_code %></span>
+                        </div>
 
-                    </div>                    </div>
+                    </div>            <div class="content-area">            <div class="content-area">
 
-                    <br/>
 
-                    <!-- Center Column: Shared Whiteboard -->                <% end %>
+
+                    <!-- Center Column: Shared Whiteboard -->                <!-- Three Column Layout -->                <h3 class="page-title">Description</h3>
 
                     <div class="lobby-section whiteboard-section">
 
-                        <h3 class="section-title">🎨 Shared Whiteboard</h3>                <h3 class="page-title">Participants (<%= lobby.lobby_members.length %>)</h3>
+                        <h3 class="section-title">🎨 Shared Whiteboard</h3>                <div class="lobby-layout">                <div class="lobby-description"><%= lobby.description %></div>
 
-                                        <% if lobby.lobby_members.any? %>
+                        
 
-                        <!-- SVG Canvas -->                    <ul class="lobby-members">
+                        <!-- SVG Canvas -->                    <!-- Left Column: Shared Notes -->                <br/>
 
-                        <div class="whiteboard-canvas">                        <% lobby.lobby_members.each do |member| %>
+                        <div class="whiteboard-canvas">
 
-                            <% if lobby.whiteboard&.svg_data.present? %>                            <li><%= member.user.full_name %></li>
+                            <% if lobby.whiteboard&.svg_data.present? %>                    <div class="lobby-section">
 
-                                <%= lobby.whiteboard.svg_data.html_safe %>                        <% end %>
+                                <%= lobby.whiteboard.svg_data.html_safe %>
 
-                            <% else %>                    </ul>
+                            <% else %>                        <h3 class="section-title">Shared Notes</h3>                <%# Shows the lobby code to the owner for sharing %>
 
-                                <svg width="100%" height="300" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" class="whiteboard-svg">                <% end %>
+                                <svg width="100%" height="300" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" class="whiteboard-svg">
 
-                                    <defs>
+                                    <defs>                        <div class="notes-area">                <% if current_user == lobby.owner %>
 
-                                        <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">                <%# --- Permissions Management Form (Owner Only & More Than 1 Member) --- %>
+                                        <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
 
-                                            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#444" stroke-width="0.5" opacity="0.5"/>                <% if current_user == lobby.owner && lobby.lobby_members.length > 1 %>
+                                            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#444" stroke-width="0.5" opacity="0.5"/>                            <textarea placeholder="Take shared notes here..." rows="10"></textarea>                    <div class="lobby-code-display">
 
-                                        </pattern>                    <hr>
+                                        </pattern>
 
-                                    </defs>                    <h3 class="page-title">Manage Permissions</h3>
+                                    </defs>                        </div>                        <strong>Lobby Code:</strong> <span><%= lobby.lobby_code %></span>
 
                                     <rect width="100%" height="100%" fill="url(#grid)"/>
 
-                                    <text x="400" y="150" text-anchor="middle" fill="#888" font-family="Arial" font-size="16" opacity="0.8">                    <%= form_with(model: lobby, url: update_all_lobby_permissions_path(lobby), method: :patch) do |form| %>
+                                    <text x="400" y="150" text-anchor="middle" fill="#888" font-family="Arial" font-size="16" opacity="0.8">                    </div>                    </div>
 
-                                        🚀 Collaborative Whiteboard - Click tools below to add shapes                        <table class="permissions-table">
+                                        🚀 Collaborative Whiteboard - Click tools below to add shapes
 
-                                    </text>                        <thead>
+                                    </text>                    <br/>
 
-                                </svg>                            <tr>
+                                </svg>
 
-                            <% end %>                            <th>Participant</th>
+                            <% end %>                    <!-- Center Column: Shared Whiteboard -->                <% end %>
 
-                        </div>                            <th>Can Draw</th>
+                        </div>
 
-                                                    <th>Can Edit Notes</th>
+                                            <div class="lobby-section whiteboard-section">
 
-                        <!-- Compact Tool Bar -->                            </tr>
+                        <!-- Compact Tool Bar -->
 
-                        <div class="whiteboard-toolbar">                        </thead>
+                        <div class="whiteboard-toolbar">                        <h3 class="section-title">🎨 Shared Whiteboard</h3>                <h3 class="page-title">Participants (<%= lobby.lobby_members.length %>)</h3>
 
-                            <!-- Basic Shapes -->                        <tbody>
+                            <!-- Basic Shapes -->
 
-                            <div class="tool-group">                            <%= form.fields_for :lobby_members do |member_form| %>
+                            <div class="tool-group">                                        <% if lobby.lobby_members.any? %>
 
-                                <label class="tool-label">Basic Shapes:</label>                            <% next if member_form.object.user == lobby.owner %>
+                                <label class="tool-label">Basic Shapes:</label>
 
-                                <div class="tool-buttons">                            <tr>
+                                <div class="tool-buttons">                        <!-- SVG Canvas -->                    <ul class="lobby-members">
 
-                                    <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>                                <td>
+                                    <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>
 
-                                        <%= f.hidden_field :tool, value: "rectangle" %>                                <%= member_form.object.user.full_name %>
+                                        <%= f.hidden_field :tool, value: "rectangle" %>                        <div class="whiteboard-canvas">                        <% lobby.lobby_members.each do |member| %>
 
-                                        <%= f.hidden_field :x, value: rand(50..400) %>                                <%= member_form.hidden_field :id %>
+                                        <%= f.hidden_field :x, value: rand(50..400) %>
 
-                                        <%= f.hidden_field :y, value: rand(40..180) %>                                </td>
+                                        <%= f.hidden_field :y, value: rand(40..180) %>                            <% if lobby.whiteboard&.svg_data.present? %>                            <li><%= member.user.full_name %></li>
 
-                                        <%= f.hidden_field :width, value: 80 %>                                <td>
+                                        <%= f.hidden_field :width, value: 80 %>
 
-                                        <%= f.hidden_field :height, value: 50 %>                                <%# Add a hidden label that Capybara can find %>
+                                        <%= f.hidden_field :height, value: 50 %>                                <%= lobby.whiteboard.svg_data.html_safe %>                        <% end %>
 
-                                        <%= f.hidden_field :color, value: "#ffffff" %>                                <%= member_form.label :can_draw, "Can Draw", class: "visually-hidden" %>
+                                        <%= f.hidden_field :color, value: "#ffffff" %>
 
-                                        <%= f.submit "⬜ Rectangle", class: "tool-btn primary" %>                                <%= member_form.check_box :can_draw %>
+                                        <%= f.submit "⬜ Rectangle", class: "tool-btn primary" %>                            <% else %>                    </ul>
 
-                                    <% end %>                                </td>
+                                    <% end %>
 
-                                                                    <td>
+                                                                    <svg width="100%" height="300" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" class="whiteboard-svg">                <% end %>
 
-                                    <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>                                <%# Add a hidden label for the other checkbox as well %>
+                                    <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>
 
-                                        <%= f.hidden_field :tool, value: "circle" %>                                <%= member_form.label :can_edit_notes, "Can Edit Notes", class: "visually-hidden" %>
+                                        <%= f.hidden_field :tool, value: "circle" %>                                    <defs>
 
-                                        <%= f.hidden_field :x, value: rand(80..500) %>                                <%= member_form.check_box :can_edit_notes %>
+                                        <%= f.hidden_field :x, value: rand(80..500) %>
 
-                                        <%= f.hidden_field :y, value: rand(60..200) %>                                </td>
+                                        <%= f.hidden_field :y, value: rand(60..200) %>                                        <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">                <%# --- Permissions Management Form (Owner Only & More Than 1 Member) --- %>
 
-                                        <%= f.hidden_field :radius, value: 35 %>                            </tr>
+                                        <%= f.hidden_field :radius, value: 35 %>
 
-                                        <%= f.hidden_field :color, value: "#44ff44" %>                            <% end %>
+                                        <%= f.hidden_field :color, value: "#44ff44" %>                                            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#444" stroke-width="0.5" opacity="0.5"/>                <% if current_user == lobby.owner && lobby.lobby_members.length > 1 %>
 
-                                        <%= f.submit "⭕ Circle", class: "tool-btn primary" %>                        </tbody>
+                                        <%= f.submit "⭕ Circle", class: "tool-btn primary" %>
 
-                                    <% end %>                        </table>
+                                    <% end %>                                        </pattern>                    <hr>
 
-                                                            <div class="lobby-actions">
+                                    
 
-                                    <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>                            <%= form.submit "Update All Permissions", class: "btn btn-primary" %>
+                                    <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>                                    </defs>                    <h3 class="page-title">Manage Permissions</h3>
 
-                                        <%= f.hidden_field :tool, value: "text" %>                        </div>
+                                        <%= f.hidden_field :tool, value: "text" %>
 
-                                        <%= f.hidden_field :x, value: rand(80..500) %>                    <% end %>
+                                        <%= f.hidden_field :x, value: rand(80..500) %>                                    <rect width="100%" height="100%" fill="url(#grid)"/>
 
-                                        <%= f.hidden_field :y, value: rand(80..220) %>                <% end %>
+                                        <%= f.hidden_field :y, value: rand(80..220) %>
 
-                                        <%= f.hidden_field :text, value: "💡 Idea" %>
+                                        <%= f.hidden_field :text, value: "💡 Idea" %>                                    <text x="400" y="150" text-anchor="middle" fill="#888" font-family="Arial" font-size="16" opacity="0.8">                    <%= form_with(model: lobby, url: update_all_lobby_permissions_path(lobby), method: :patch) do |form| %>
 
-                                        <%= f.hidden_field :color, value: "#ffff44" %>                <hr>
+                                        <%= f.hidden_field :color, value: "#ffff44" %>
 
-                                        <%= f.submit "💡 Text", class: "tool-btn primary" %>
+                                        <%= f.submit "💡 Text", class: "tool-btn primary" %>                                        🚀 Collaborative Whiteboard - Click tools below to add shapes                        <table class="permissions-table">
+
+                                    <% end %>
+
+                                </div>                                    </text>                        <thead>
+
+                            </div>
+
+                                                            </svg>                            <tr>
+
+                            <!-- Quick Colors -->
+
+                            <div class="tool-group">                            <% end %>                            <th>Participant</th>
+
+                                <label class="tool-label">Quick Colors:</label>
+
+                                <div class="tool-buttons">                        </div>                            <th>Can Draw</th>
+
+                                    <% [
+
+                                        { name: "Red", value: "#ff4444", emoji: "🔴" },                                                    <th>Can Edit Notes</th>
+
+                                        { name: "Blue", value: "#4444ff", emoji: "🔵" },
+
+                                        { name: "Green", value: "#44ff44", emoji: "🟢" },                        <!-- Compact Tool Bar -->                            </tr>
+
+                                        { name: "Yellow", value: "#ffff44", emoji: "🟡" }
+
+                                    ].each do |color| %>                        <div class="whiteboard-toolbar">                        </thead>
+
+                                        <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>
+
+                                            <%= f.hidden_field :tool, value: "circle" %>                            <!-- Basic Shapes -->                        <tbody>
+
+                                            <%= f.hidden_field :x, value: rand(80..500) %>
+
+                                            <%= f.hidden_field :y, value: rand(60..200) %>                            <div class="tool-group">                            <%= form.fields_for :lobby_members do |member_form| %>
+
+                                            <%= f.hidden_field :radius, value: 30 %>
+
+                                            <%= f.hidden_field :color, value: color[:value] %>                                <label class="tool-label">Basic Shapes:</label>                            <% next if member_form.object.user == lobby.owner %>
+
+                                            <%= f.submit color[:emoji], class: "tool-btn color", title: color[:name] %>
+
+                                        <% end %>                                <div class="tool-buttons">                            <tr>
+
+                                    <% end %>
+
+                                </div>                                    <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>                                <td>
+
+                            </div>
+
+                                                                    <%= f.hidden_field :tool, value: "rectangle" %>                                <%= member_form.object.user.full_name %>
+
+                            <!-- Quick Text -->
+
+                            <div class="tool-group">                                        <%= f.hidden_field :x, value: rand(50..400) %>                                <%= member_form.hidden_field :id %>
+
+                                <label class="tool-label">Quick Text:</label>
+
+                                <div class="tool-buttons">                                        <%= f.hidden_field :y, value: rand(40..180) %>                                </td>
+
+                                    <% ["Algorithm", "Big O", "Solution"].each do |text| %>
+
+                                        <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>                                        <%= f.hidden_field :width, value: 80 %>                                <td>
+
+                                            <%= f.hidden_field :tool, value: "text" %>
+
+                                            <%= f.hidden_field :x, value: rand(50..500) %>                                        <%= f.hidden_field :height, value: 50 %>                                <%# Add a hidden label that Capybara can find %>
+
+                                            <%= f.hidden_field :y, value: rand(80..220) %>
+
+                                            <%= f.hidden_field :text, value: text %>                                        <%= f.hidden_field :color, value: "#ffffff" %>                                <%= member_form.label :can_draw, "Can Draw", class: "visually-hidden" %>
+
+                                            <%= f.hidden_field :color, value: "#ffffff" %>
+
+                                            <%= f.submit text, class: "tool-btn text" %>                                        <%= f.submit "⬜ Rectangle", class: "tool-btn primary" %>                                <%= member_form.check_box :can_draw %>
+
+                                        <% end %>
+
+                                    <% end %>                                    <% end %>                                </td>
+
+                                </div>
+
+                            </div>                                                                    <td>
+
+                            
+
+                            <!-- Controls -->                                    <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>                                <%# Add a hidden label for the other checkbox as well %>
+
+                            <div class="tool-group">
+
+                                <div class="tool-buttons">                                        <%= f.hidden_field :tool, value: "circle" %>                                <%= member_form.label :can_edit_notes, "Can Edit Notes", class: "visually-hidden" %>
+
+                                    <%= form_with url: clear_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>
+
+                                        <%= f.submit "🗑️ Clear", class: "tool-btn danger",                                         <%= f.hidden_field :x, value: rand(80..500) %>                                <%= member_form.check_box :can_edit_notes %>
+
+                                            data: { confirm: "Clear the whiteboard?" } %>
+
+                                    <% end %>                                        <%= f.hidden_field :y, value: rand(60..200) %>                                </td>
+
+                                </div>
+
+                            </div>                                        <%= f.hidden_field :radius, value: 35 %>                            </tr>
+
+                        </div>
+
+                    </div>                                        <%= f.hidden_field :color, value: "#44ff44" %>                            <% end %>
+
+
+
+                    <!-- Right Column: Participants, Voice Chat, Analytics -->                                        <%= f.submit "⭕ Circle", class: "tool-btn primary" %>                        </tbody>
+
+                    <div class="lobby-section">
+
+                        <h3 class="section-title">Participants (<%= lobby.lobby_members.length %>)</h3>                                    <% end %>                        </table>
+
+                        <div class="participants-list">
+
+                            <% if lobby.lobby_members.any? %>                                                            <div class="lobby-actions">
+
+                                <ul class="lobby-members">
+
+                                    <% lobby.lobby_members.each do |member| %>                                    <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>                            <%= form.submit "Update All Permissions", class: "btn btn-primary" %>
+
+                                        <li class="participant-item">
+
+                                            <div class="participant-avatar">                                        <%= f.hidden_field :tool, value: "text" %>                        </div>
+
+                                                <%= member.user.first_name.first.upcase %>
+
+                                            </div>                                        <%= f.hidden_field :x, value: rand(80..500) %>                    <% end %>
+
+                                            <span class="participant-name"><%= member.user.full_name %></span>
+
+                                            <div class="participant-status">                                        <%= f.hidden_field :y, value: rand(80..220) %>                <% end %>
+
+                                                <span class="status-dot online" title="Online"></span>
+
+                                            </div>                                        <%= f.hidden_field :text, value: "💡 Idea" %>
+
+                                        </li>
+
+                                    <% end %>                                        <%= f.hidden_field :color, value: "#ffff44" %>                <hr>
+
+                                </ul>
+
+                            <% end %>                                        <%= f.submit "💡 Text", class: "tool-btn primary" %>
+
+                        </div>
 
                                     <% end %>                <%# --- Main Action Buttons (Separated Logic for All Users) --- %>
 
-                                </div>                <div class="lobby-actions">
+                        <!-- Voice Chat Section -->
 
-                            </div>                    <% if current_user == lobby.owner %>
+                        <div class="voice-chat-section">                                </div>                <div class="lobby-actions">
 
-                                                    <%# Owner sees the Destroy button %>
+                            <h4 class="section-title">Voice Chat</h4>
 
-                            <!-- Quick Colors -->                        <%= link_to "Destroy Lobby", lobby, 
+                            <div class="voice-controls">                            </div>                    <% if current_user == lobby.owner %>
 
-                            <div class="tool-group">                                    data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }, 
+                                <button class="voice-btn" id="mute-btn">🎤 Mute</button>
 
-                                <label class="tool-label">Quick Colors:</label>                                    class: "btn btn-danger" %>
+                                <button class="voice-btn" id="leave-btn">📞 Leave</button>                                                    <%# Owner sees the Destroy button %>
 
-                                <div class="tool-buttons">                    <% else %>
+                            </div>
 
-                                    <% [                        <%# Participants see the Leave button %>
+                        </div>                            <!-- Quick Colors -->                        <%= link_to "Destroy Lobby", lobby, 
 
-                                        { name: "Red", value: "#ff4444", emoji: "🔴" },                        <%= button_to "Leave Lobby", leave_lobby_path(lobby), 
 
-                                        { name: "Blue", value: "#4444ff", emoji: "🔵" },                                    method: :delete, 
 
-                                        { name: "Green", value: "#44ff44", emoji: "🟢" },                                    class: "btn btn-warning" %>
+                        <!-- Lobby Analytics -->                            <div class="tool-group">                                    data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }, 
 
-                                        { name: "Yellow", value: "#ffff44", emoji: "🟡" }                    <% end %>
+                        <div class="lobby-analytics">
 
-                                    ].each do |color| %>                    
+                            <h4 class="section-title">Lobby Analytics</h4>                                <label class="tool-label">Quick Colors:</label>                                    class: "btn btn-danger" %>
+
+                            <div class="analytics-item">
+
+                                <span>Session Duration:</span>                                <div class="tool-buttons">                    <% else %>
+
+                                <span class="analytics-value">1h 30m</span>
+
+                            </div>                                    <% [                        <%# Participants see the Leave button %>
+
+                            <div class="analytics-item">
+
+                                <span>Active Users:</span>                                        { name: "Red", value: "#ff4444", emoji: "🔴" },                        <%= button_to "Leave Lobby", leave_lobby_path(lobby), 
+
+                                <span class="analytics-value"><%= lobby.lobby_members.length %>/5</span>
+
+                            </div>                                        { name: "Blue", value: "#4444ff", emoji: "🔵" },                                    method: :delete, 
+
+                            <div class="analytics-item">
+
+                                <span>Problems Solved:</span>                                        { name: "Green", value: "#44ff44", emoji: "🟢" },                                    class: "btn btn-warning" %>
+
+                                <span class="analytics-value">0</span>
+
+                            </div>                                        { name: "Yellow", value: "#ffff44", emoji: "🟡" }                    <% end %>
+
+                        </div>
+
+                    </div>                                    ].each do |color| %>                    
+
+                </div>
 
                                         <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>                    <%# Everyone sees the "Back to Lobbies" button %>
 
-                                            <%= f.hidden_field :tool, value: "circle" %>                    <%= link_to "Back to Lobbies", lobbies_path, class: "btn btn-secondary" %>
+                <!-- Description and Permissions Section -->
 
-                                            <%= f.hidden_field :x, value: rand(80..500) %>                </div>
+                <div class="lobby-details">                                            <%= f.hidden_field :tool, value: "circle" %>                    <%= link_to "Back to Lobbies", lobbies_path, class: "btn btn-secondary" %>
 
-                                            <%= f.hidden_field :y, value: rand(60..200) %>            </div>
+                    <h3 class="section-title">Description</h3>
 
-                                            <%= f.hidden_field :radius, value: 30 %>        </main>
+                    <div class="lobby-description"><%= lobby.description %></div>                                            <%= f.hidden_field :x, value: rand(80..500) %>                </div>
 
-                                            <%= f.hidden_field :color, value: color[:value] %></div>
-                                            <%= f.submit color[:emoji], class: "tool-btn color", title: color[:name] %>
+                    
+
+                    <%# Shows the lobby code to the owner for sharing %>                                            <%= f.hidden_field :y, value: rand(60..200) %>            </div>
+
+                    <% if current_user == lobby.owner %>
+
+                        <div class="lobby-code-display">                                            <%= f.hidden_field :radius, value: 30 %>        </main>
+
+                            <strong>Lobby Code:</strong> <span><%= lobby.lobby_code %></span>
+
+                        </div>                                            <%= f.hidden_field :color, value: color[:value] %></div>
+
+                    <% end %>                                            <%= f.submit color[:emoji], class: "tool-btn color", title: color[:name] %>
+
                                         <% end %>
-                                    <% end %>
-                                </div>
-                            </div>
-                            
+
+                    <%# --- Permissions Management Form (Owner Only & More Than 1 Member) --- %>                                    <% end %>
+
+                    <% if current_user == lobby.owner && lobby.lobby_members.length > 1 %>                                </div>
+
+                        <hr>                            </div>
+
+                        <h3 class="page-title">Manage Permissions</h3>                            
+
                             <!-- Quick Text -->
-                            <div class="tool-group">
-                                <label class="tool-label">Quick Text:</label>
-                                <div class="tool-buttons">
-                                    <% ["Algorithm", "Big O", "Solution"].each do |text| %>
-                                        <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>
-                                            <%= f.hidden_field :tool, value: "text" %>
-                                            <%= f.hidden_field :x, value: rand(50..500) %>
-                                            <%= f.hidden_field :y, value: rand(80..220) %>
-                                            <%= f.hidden_field :text, value: text %>
-                                            <%= f.hidden_field :color, value: "#ffffff" %>
-                                            <%= f.submit text, class: "tool-btn text" %>
-                                        <% end %>
-                                    <% end %>
-                                </div>
-                            </div>
-                            
-                            <!-- Controls -->
-                            <div class="tool-group">
-                                <div class="tool-buttons">
-                                    <%= form_with url: clear_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>
-                                        <%= f.submit "🗑️ Clear", class: "tool-btn danger", 
-                                            data: { confirm: "Clear the whiteboard?" } %>
-                                    <% end %>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Right Column: Participants, Voice Chat, Analytics -->
-                    <div class="lobby-section">
-                        <h3 class="section-title">Participants (<%= lobby.lobby_members.length %>)</h3>
-                        <div class="participants-list">
-                            <% if lobby.lobby_members.any? %>
-                                <ul class="lobby-members">
-                                    <% lobby.lobby_members.each do |member| %>
-                                        <li class="participant-item">
+                        <%= form_with(model: lobby, url: update_all_lobby_permissions_path(lobby), method: :patch) do |form| %>                            <div class="tool-group">
+
+                            <table class="permissions-table">                                <label class="tool-label">Quick Text:</label>
+
+                            <thead>                                <div class="tool-buttons">
+
+                                <tr>                                    <% ["Algorithm", "Big O", "Solution"].each do |text| %>
+
+                                <th>Participant</th>                                        <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>
+
+                                <th>Can Draw</th>                                            <%= f.hidden_field :tool, value: "text" %>
+
+                                <th>Can Edit Notes</th>                                            <%= f.hidden_field :x, value: rand(50..500) %>
+
+                                </tr>                                            <%= f.hidden_field :y, value: rand(80..220) %>
+
+                            </thead>                                            <%= f.hidden_field :text, value: text %>
+
+                            <tbody>                                            <%= f.hidden_field :color, value: "#ffffff" %>
+
+                                <%= form.fields_for :lobby_members do |member_form| %>                                            <%= f.submit text, class: "tool-btn text" %>
+
+                                <% next if member_form.object.user == lobby.owner %>                                        <% end %>
+
+                                <tr>                                    <% end %>
+
+                                    <td>                                </div>
+
+                                    <%= member_form.object.user.full_name %>                            </div>
+
+                                    <%= member_form.hidden_field :id %>                            
+
+                                    </td>                            <!-- Controls -->
+
+                                    <td>                            <div class="tool-group">
+
+                                    <%# Add a hidden label that Capybara can find %>                                <div class="tool-buttons">
+
+                                    <%= member_form.label :can_draw, "Can Draw", class: "visually-hidden" %>                                    <%= form_with url: clear_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>
+
+                                    <%= member_form.check_box :can_draw %>                                        <%= f.submit "🗑️ Clear", class: "tool-btn danger", 
+
+                                    </td>                                            data: { confirm: "Clear the whiteboard?" } %>
+
+                                    <td>                                    <% end %>
+
+                                    <%# Add a hidden label for the other checkbox as well %>                                </div>
+
+                                    <%= member_form.label :can_edit_notes, "Can Edit Notes", class: "visually-hidden" %>                            </div>
+
+                                    <%= member_form.check_box :can_edit_notes %>                        </div>
+
+                                    </td>                    </div>
+
+                                </tr>
+
+                                <% end %>                    <!-- Right Column: Participants, Voice Chat, Analytics -->
+
+                            </tbody>                    <div class="lobby-section">
+
+                            </table>                        <h3 class="section-title">Participants (<%= lobby.lobby_members.length %>)</h3>
+
+                            <div class="lobby-actions">                        <div class="participants-list">
+
+                                <%= form.submit "Update All Permissions", class: "btn btn-primary" %>                            <% if lobby.lobby_members.any? %>
+
+                            </div>                                <ul class="lobby-members">
+
+                        <% end %>                                    <% lobby.lobby_members.each do |member| %>
+
+                    <% end %>                                        <li class="participant-item">
+
                                             <div class="participant-avatar">
-                                                <%= member.user.first_name.first.upcase %>
-                                            </div>
-                                            <span class="participant-name"><%= member.user.full_name %></span>
-                                            <div class="participant-status">
-                                                <span class="status-dot online" title="Online"></span>
-                                            </div>
-                                        </li>
-                                    <% end %>
-                                </ul>
-                            <% end %>
-                        </div>
 
-                        <!-- Voice Chat Section -->
-                        <div class="voice-chat-section">
-                            <h4 class="section-title">Voice Chat</h4>
-                            <div class="voice-controls">
-                                <button class="voice-btn" id="mute-btn">🎤 Mute</button>
-                                <button class="voice-btn" id="leave-btn">📞 Leave</button>
-                            </div>
-                        </div>
+                    <%# --- Main Action Buttons (Separated Logic for All Users) --- %>                                                <%= member.user.first_name.first.upcase %>
 
-                        <!-- Lobby Analytics -->
+                    <div class="lobby-actions">                                            </div>
+
+                        <% if current_user == lobby.owner %>                                            <span class="participant-name"><%= member.user.full_name %></span>
+
+                            <%# Owner sees the Destroy button %>                                            <div class="participant-status">
+
+                            <%= link_to "Destroy Lobby", lobby,                                                 <span class="status-dot online" title="Online"></span>
+
+                                        data: { turbo_method: :delete, turbo_confirm: "Are you sure?" },                                             </div>
+
+                                        class: "btn btn-danger" %>                                        </li>
+
+                        <% else %>                                    <% end %>
+
+                            <%# Participants see the Leave button %>                                </ul>
+
+                            <%= button_to "Leave Lobby", leave_lobby_path(lobby),                             <% end %>
+
+                                        method: :delete,                         </div>
+
+                                        class: "btn btn-warning" %>
+
+                        <% end %>                        <!-- Voice Chat Section -->
+
+                                                <div class="voice-chat-section">
+
+                        <%# Everyone sees the "Back to Lobbies" button %>                            <h4 class="section-title">Voice Chat</h4>
+
+                        <%= link_to "Back to Lobbies", lobbies_path, class: "btn btn-secondary" %>                            <div class="voice-controls">
+
+                    </div>                                <button class="voice-btn" id="mute-btn">🎤 Mute</button>
+
+                </div>                                <button class="voice-btn" id="leave-btn">📞 Leave</button>
+
+            </div>                            </div>
+
+        </div>                        </div>
+
+    </main>
+
+</div>                        <!-- Lobby Analytics -->
                         <div class="lobby-analytics">
                             <h4 class="section-title">Lobby Analytics</h4>
                             <div class="analytics-item">
