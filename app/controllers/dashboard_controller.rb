@@ -86,7 +86,7 @@ class DashboardController < ApplicationController
         end
       elsif session[:timer_ends_at]
         # If no current calendar event, check for manual timer
-        @timer_ends_at = Time.parse(session[:timer_ends_at])
+        @timer_ends_at = Time.zone.parse(session[:timer_ends_at])
 
         if @timer_ends_at <= Time.now.utc
           # Timer has expired, clean up session
