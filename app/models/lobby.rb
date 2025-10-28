@@ -6,6 +6,7 @@ class Lobby < ApplicationRecord
 
   has_many :lobby_members
   has_many :users, through: :lobby_members
+  has_many :lobby_participations, dependent: :destroy
 
   before_validation :generate_lobby_code, on: :create
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_04_225611) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_28_003812) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -51,6 +51,39 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_04_225611) do
     t.index ["user_id"], name: "index_leet_code_sessions_on_user_id"
   end
 
+  create_table "lobbies", force: :cascade do |t|
+    t.bigint "owner_id", null: false
+    t.text "description"
+    t.string "lobby_code", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "name"
+    t.index ["lobby_code"], name: "index_lobbies_on_lobby_code", unique: true
+    t.index ["owner_id"], name: "index_lobbies_on_owner_id"
+  end
+
+  create_table "lobby_members", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "lobby_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["lobby_id"], name: "index_lobby_members_on_lobby_id"
+    t.index ["user_id"], name: "index_lobby_members_on_user_id"
+  end
+
+  create_table "lobby_participations", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "lobby_id", null: false
+    t.boolean "can_draw", default: false
+    t.boolean "can_edit_notes", default: false
+    t.boolean "can_speak", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["lobby_id"], name: "index_lobby_participations_on_lobby_id"
+    t.index ["user_id", "lobby_id"], name: "index_lobby_participations_on_user_id_and_lobby_id", unique: true
+    t.index ["user_id"], name: "index_lobby_participations_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "netid"
     t.string "email"
@@ -77,4 +110,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_04_225611) do
   add_foreign_key "leet_code_session_problems", "leet_code_problems"
   add_foreign_key "leet_code_session_problems", "leet_code_sessions"
   add_foreign_key "leet_code_sessions", "users"
+  add_foreign_key "lobbies", "users", column: "owner_id"
+  add_foreign_key "lobby_members", "lobbies"
+  add_foreign_key "lobby_members", "users"
+  add_foreign_key "lobby_participations", "lobbies"
+  add_foreign_key "lobby_participations", "users"
 end
