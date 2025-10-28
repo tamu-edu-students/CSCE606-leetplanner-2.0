@@ -50,7 +50,11 @@ Rails.application.routes.draw do
   resources :lobbies
   resources :lobby_participations, only: [:create, :destroy]
   post 'join_lobby', to: 'lobby_participations#create_by_code', as: :join_lobby_by_code
-
+  resources :lobby_participations, only: [:destroy] do
+    # Nested route for updating permissions on a specific participation
+    patch 'permissions', on: :member, to: 'lobby_permissions#update'
+  end
+  
   # -------------------------------
   # API Namespace
   # -------------------------------
