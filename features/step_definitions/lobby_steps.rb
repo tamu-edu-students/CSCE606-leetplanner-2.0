@@ -16,7 +16,7 @@ Given("I am logged in as {string}") do |name|
   first_name, last_name = name.split(' ', 2)
   last_name ||= 'User' # Default last name
   @current_user = FactoryBot.create(:user, first_name: first_name, last_name: last_name)
-  
+
   # Use the same OmniAuth mock
   OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new({
     provider: 'google_oauth2',
@@ -186,10 +186,10 @@ Given("I am logged in as {string} and am viewing the lobby") do |name|
   OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new({
     provider: 'google_oauth2',
     uid: SecureRandom.hex(4),
-    info: { 
-      email: @current_user.email, 
-      first_name: @current_user.first_name, 
-      last_name: @current_user.last_name 
+    info: {
+      email: @current_user.email,
+      first_name: @current_user.first_name,
+      last_name: @current_user.last_name
     }
   })
   visit '/auth/google_oauth2/callback'
