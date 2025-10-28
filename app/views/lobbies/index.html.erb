@@ -18,26 +18,26 @@
                         <%= form.submit "Join", class: "btn btn-primary" %>
                     <% end %>
                 </div>
-                <hr>
 
-                <h3 class="page-title">Your Lobbies</h3>
+                <hr> <h3 class="page-title">Your Lobbies</h3>
                 <div class="lobbies-grid">
-                    <% current_user.lobbies.each do |lobby| %>
+                    <% @lobbies.each do |lobby| %>
                         <div class="lobby-card">
-                          <%= link_to lobby_path(lobby), class: "lobby-card-link" do %>
-                            <div class="card-title"><%= lobby.name.presence || 'UNNAMED LOBBY' %></div>
-                            <div class="card-subtitle">Host: <%= lobby.owner.full_name %></div>
-                          <% end %>
+                            <%= link_to lobby_path(lobby), class: 'lobby-card-link' do %>
+                                <div class="card-title"><%= lobby.name.presence || 'UNNAMED LOBBY' %></div>
+                                <div class="card-subtitle">Host: <%= lobby.owner.full_name %></div>
+                            <% end %>
                             
-                          <% if lobby.owner_id == current_user.id %>
-                            <div class="card-invite-code">
-                              <strong>Invite Code:</strong> <span><%= lobby.lobby_code %></span>
-                            </div>
-                          <% end %>
+                            <%# Display the invite code directly if the current user is the owner %>
+                            <% if lobby.owner_id == current_user.id %>
+                                <div class="card-invite-code">
+                                    <strong>Invite Code:</strong> <span><%= lobby.lobby_code %></span>
+                                </div>
+                            <% end %>
                         </div>
                     <% end %>
                 </div>
-         
+
                 <hr>
                 <br/>
                 <%= link_to "+ Create New Lobby", new_lobby_path(), class: "btn btn-primary" %>

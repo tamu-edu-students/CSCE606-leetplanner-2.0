@@ -87,6 +87,28 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_28_020120) do
     t.index [ "user_id" ], name: "index_lobby_participations_on_user_id"
   end
 
+  create_table "lobbies", force: :cascade do |t|
+    t.bigint "owner_id", null: false
+    t.text "description"
+    t.string "lobby_code", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "name"
+    t.boolean "private", default: false
+    t.index ["lobby_code"], name: "index_lobbies_on_lobby_code", unique: true
+    t.index ["owner_id"], name: "index_lobbies_on_owner_id"
+    t.index ["private"], name: "index_lobbies_on_private"
+  end
+
+  create_table "lobby_members", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "lobby_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["lobby_id"], name: "index_lobby_members_on_lobby_id"
+    t.index ["user_id"], name: "index_lobby_members_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "netid"
     t.string "email"
