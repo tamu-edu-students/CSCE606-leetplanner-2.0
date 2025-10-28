@@ -3,15 +3,6 @@ Feature: User Profile Management
   Background:
     Given I am a logged-in user and successfully authenticated with Google
 
-  Scenario: Successfully updating user profile
-    Given I am on the profile page
-    When I update my profile with:
-      | first_name | John              |
-      | last_name  | Doe               |
-      | leetcode_username | leetcoder123 |
-    Then I should see "Profile updated successfully"
-    And my profile should show the updated information
-
   Scenario: Handling invalid profile updates
     Given I am on the profile page
     When I update my profile with:

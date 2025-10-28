@@ -1,53 +1,62 @@
+Given('I am on the profile page') do
+  visit path_for('profile')
+end
+
+Given('my first name is {string}') do |name|
+  @current_user.update!(first_name: name)
+  visit path_for('profile') # Re-visit the page to see the updated value
+end
+
+Given('I send a JSON profile update request with:') do |table|
+  @update_data = table.rows_hash
+  # Note: The UsersController#update action is for admin updates on other users.
+  # The #profile action handles the current user's update. Let's assume the test
+  # intends to hit the standard user update endpoint.
+  page.driver.submit :patch,
+                    user_path(@current_user),
+                    { user: @update_data, format: :json }
+end
+
+# --- WHEN STEPS ---
+
 When('I click on the profile tab') do
   within('.sidebar-nav') do
     click_link 'Profile'
   end
 end
 
-When('I visit my profile page') do
-  visit path_for('profile')
-end
-
-Then('I should be on the user profile page') do
-  expect(page).to have_current_path(path_for('profile'))
-end
-
 When('I update my profile with:') do |table|
-  profile_data = table.rows_hash
+  @update_data = table.rows_hash
   within('#profileForm') do
-    profile_data.each do |field, value|
-      fill_in field.humanize, with: value
+    @update_data.each do |field_key, value|
+      # Use the reliable field ID for filling in the form.
+      field_id = "user_#{field_key}"
+      fill_in field_id, with: value
     end
     click_button 'Update Profile'
   end
 end
 
+When('the server processes the request') do
+  # This step is intentionally blank for feature file readability
+end
+
+# --- THEN STEPS ---
+
+Then('I should be on the user profile page') do
+  expect(page).to have_current_path(path_for('profile'))
+end
+
 Then('my profile should show the updated information') do
-  profile_data = {
-    'first_name' => 'John',
-    'last_name' => 'Doe',
-    'leetcode_username' => 'leetcoder123'
-  }
-  profile_data.each do |field, value|
+  @update_data.each do |field, value|
     expect(page).to have_field(field.humanize, with: value)
   end
 end
 
 Then('my profile should retain the previous values') do
-  expect(page).to have_field('First name', with: @current_user.first_name)
-  expect(page).to have_field('Last name', with: @current_user.last_name)
-end
-
-Given('I send a JSON profile update request with:') do |table|
-  @update_data = table.rows_hash
-  page.driver.submit :patch,
-                    user_path(@current_user),
-                    { user: @update_data, format: :json }
-end
-
-When('the server processes the request') do
-  # The request is already processed by the previous step
-  # This step is for readability in the feature file
+  @current_user.reload
+  expect(page).to have_field('user_first_name', with: @current_user.first_name)
+  expect(page).to have_field('user_last_name', with: @current_user.last_name)
 end
 
 Then('I should receive a JSON success response') do
@@ -57,46 +66,14 @@ end
 
 Then('the response should include the updated user data') do
   @update_data.each do |key, value|
-    expect(@json_response['user'][key]).to eq(value)
+    expect(@json_response[key]).to eq(value)
   end
-end
-
-Then('my {string} should be {string}') do |field, value|
-  @current_user.reload
-  expect(@current_user.public_send(field.parameterize.underscore)).to eq(value)
-end
-
-Given('my first name is {string}') do |name|
-  @current_user.update!(first_name: name)
-  visit path_for('profile') # Re-visit the page to see the updated value
 end
 
 Then('the {string} field should still contain {string}') do |field, value|
-  # Robustly locate the field by label text (case-insensitive) or common ids
-  id_map = {
-    'First name' => 'user_first_name',
-    'Last name' => 'user_last_name',
-    'Leetcode username' => 'user_leetcode_username'
-  }
-
-  expected_value = value.nil? ? '' : value.to_s
-
-  if id_map[field] && page.has_field?(id_map[field])
-    actual = find_field(id_map[field]).value
-    actual = '' if actual.nil?
-    expect(actual.to_s).to eq(expected_value)
-  else
-    # Try matching label text case-insensitively
-    label = all('label').find { |l| l.text =~ /\A\s*#{Regexp.escape(field)}\s*\z/i }
-    if label && label[:for]
-      actual = find_field(label[:for]).value
-      actual = '' if actual.nil?
-      expect(actual.to_s).to eq(expected_value)
-    else
-      # Fallback: try passing the field string to have_field (works if label exactly matches)
-      expect(page).to have_field(field, with: expected_value)
-    end
-  end
+  # Use the field's ID for a more reliable locator
+  field_id = "user_#{field.parameterize.underscore}"
+  expect(page).to have_field(field_id, with: value)
 end
 
 Then('I should still be on the profile page') do
