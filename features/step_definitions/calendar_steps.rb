@@ -1,6 +1,6 @@
 Given('I am a logged-in user and successfully authenticated with Google') do
   # Create or find a test user and perform the OmniAuth callback so the
-  # session is created in a driver-agnostic way (works with selenium).
+  # session is created in a driver-agnostic way
   @current_user ||= create(:user, email: 'testuser@tamu.edu', first_name: 'Test', last_name: 'User')
 
   OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new({
@@ -15,14 +15,14 @@ end
 
 Given('my Google Calendar is ready to create an event') do
   # Stub the Google Calendar service to avoid external API calls and return
-  # a created event when insert_event is called.
+  # a created event when insert_event is called
   service = instance_double(Google::Apis::CalendarV3::CalendarService)
 
   allow(Google::Apis::CalendarV3::CalendarService).to receive(:new).and_return(service)
   allow(service).to receive(:authorization=)
 
   allow(service).to receive(:insert_event) do |_calendar_id, ev|
-    # If the incoming event uses date (all-day), return an event with date set.
+    # If the incoming event uses date (all-day), return an event with date set
     if ev.start&.date.present?
       Google::Apis::CalendarV3::Event.new(
         id: SecureRandom.hex(8),
@@ -88,7 +88,6 @@ When('I create a new event with:') do |table|
   allow(Google::Apis::CalendarV3::CalendarService).to receive(:new).and_return(service)
   allow(service).to receive(:authorization=)
 
-  # **FIX:** Conditionally mock success or failure based on the scenario context.
   created_event = nil
   if @api_should_fail
     # This scenario expects a failure, so mock insert_event to raise a ServerError.
@@ -177,8 +176,6 @@ Then('the event {string} should appear as an all-day event') do |event_title|
   end
 end
 
-# File: features/step_definitions/calendar_steps.rb
-
 Given('my Google Calendar authorization has expired') do
   # The Background step has already run, but we will forcefully overwrite the session it created.
   # Ensure the user object from the Background is available.
@@ -190,7 +187,6 @@ Given('my Google Calendar authorization has expired') do
   # Update the database record for data consistency.
   @current_user.update!(google_token_expires_at: Time.at(expired_time))
 
-  # Create a specific OmniAuth mock with expired credentials. This is the key to the fix.
   OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new({
     provider: 'google_oauth2',
     info: { email: @current_user.email, first_name: @current_user.first_name, last_name: @current_user.last_name },
@@ -209,13 +205,8 @@ Given('my Google Calendar authorization has expired') do
 end
 
 When('I try to sync my calendar') do
-  # After the Given step, the user is on the dashboard. Now, we visit the calendar page
-  # to trigger the controller logic that requires an authorized session.
   visit calendar_path
-  
-  # The redirect to the login page happens immediately upon visiting the calendar path.
-  # The 'Refresh' button will not be present to be clicked, which is expected.
-  # The `if page.has_link?` check correctly handles this.
+
   if page.has_link?('Refresh')
     click_link 'Refresh'
   end
@@ -226,8 +217,6 @@ Then('I should be redirected to the Google login page') do
 end
 
 Given('the Google Calendar API is temporarily unavailable') do
-  # **FIX:** Set a flag to indicate that the next API call should fail.
-  # The actual mocking is deferred to the 'When' step to avoid being overwritten by its generic success mock.
   @api_should_fail = true
 end
 
@@ -283,18 +272,13 @@ When('I click the {string} button for {string}') do |button_text, event_title|
 end
 
 When('I open the Add Event form') do
-  # Click the 'Add Event' link to open the new event form
   if page.has_link?('Add Event')
     click_link('Add Event')
   else
-    # If the link isn't present (e.g., expired session redirects), don't force navigation
-    # (the test expects a redirect to the login page instead). Leave the page as-is.
   end
 end
 
 When('I submit the Add Event form') do
-  # Before submitting, capture the form fields so we can assert DB changes if flash isn't shown
-  # Try by label first (user-facing labels), then by field id as fallback.
   @last_event_summary = (find_field('Title')[:value] rescue nil) || (find_field('event_summary')[:value] rescue nil)
   @last_event_date = (find_field('Date')[:value] rescue nil) || (find_field('event_start_date')[:value] rescue nil)
   @last_event_start = (find_field('Start')[:value] rescue nil) || (find_field('event_start_time')[:value] rescue nil)
@@ -392,24 +376,15 @@ Given('my Google authentication has expired') do
     # If no user exists yet, create one with an expired token
     create(:user, email: 'testuser@tamu.edu', google_token_expires_at: 1.hour.ago)
   end
-  # Also attempt to clear the browser session: prefer clicking the UI 'Sign Out'
-  # link (which uses method: :delete) so Rails processes a DELETE /logout. If
-  # the link isn't available, use a JS fetch with method override to DELETE.
   begin
     if page.has_link?('Sign Out')
       click_link('Sign Out')
     else
-      # Use X-HTTP-Method-Override header so Rack::MethodOverride treats as DELETE
       execute_script("window.fetch(window.location.origin + '/logout', { method: 'POST', headers: { 'X-HTTP-Method-Override': 'DELETE' }, credentials: 'same-origin' })")
     end
   rescue => _e
-    # Ignore failures here; the test will observe the app behavior when next visiting pages
   end
-  # Call a test-only server endpoint to reliably clear server-side session
-  # (HttpOnly cookies cannot be removed reliably from JavaScript in the browser).
   if Rails.env.test?
-    # Use the variant that also sets the flash alert so the login page shows
-    # the expected expired-session message for the feature assertion.
     visit '/test/clear_session_with_alert'
   end
   # Navigate to login page to reflect unauthenticated state
@@ -417,10 +392,6 @@ Given('my Google authentication has expired') do
 end
 
 Then('I should see the alert {string}') do |message|
-  # The app renders flash messages with class `flash-alert`; older tests
-  # might look for `.alert`. Accept either the exact expected message or the
-  # generic 'You must be logged in...' message which some controllers use
-  # when redirecting unauthenticated requests.
   primary = page.has_selector?('.flash-alert, .alert', text: message)
   fallback = page.has_selector?('.flash-alert, .alert', text: 'You must be logged in to access this page.')
   unless primary || fallback

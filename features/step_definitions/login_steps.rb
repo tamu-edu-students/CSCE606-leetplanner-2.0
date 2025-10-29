@@ -46,12 +46,10 @@ Then('I should see a confirmation message {string}') do |message|
   expect(page).to have_content(message)
 end
 
-# FIX: This is now the single, authoritative step for success messages.
 Then('I should see a success message {string}') do |message|
   expect(page).to have_selector('.flash-success', text: message)
 end
 
-# FIX: This is now the single, authoritative step for error messages.
 Then('I should see an error message {string}') do |message|
   expect(page).to have_selector('.flash-alert', text: message)
 end

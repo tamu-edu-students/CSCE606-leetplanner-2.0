@@ -83,7 +83,7 @@ module Api
       begin
         Date.parse(start_date) if start_date.present?
       rescue Date::Error
-        return render json: { error: 'Invalid date format' }, status: :unprocessable_entity
+        return render json: { error: "Invalid date format" }, status: :unprocessable_entity
       end
 
       start_time = params.dig(:event, :start_time).presence || current_time.strftime("%H:%M")
