@@ -11,7 +11,7 @@ So that I can securely access my personal information
 Scenario: Successful login via Google
 Given a student with the email "student@tamu.edu" can be authenticated by Google
 And I am on the login page
-When I click the "Sign in with Google" button
+When I sign in with Google
 Then I should be redirected to the dashboard
 And I should see a success message "Signed in as student@tamu.edu"
 
@@ -25,6 +25,6 @@ And I should not see a "Sign Out"
 Scenario: Failed login with a non-allowed email domain
 Given a student with the email "student@example.com" can be authenticated by Google
 And I am on the login page
-When I click the "Sign in with Google" button
+When I sign in with Google
 Then I should still be on the login page
 And I should see an error message "Login restricted to TAMU emails"

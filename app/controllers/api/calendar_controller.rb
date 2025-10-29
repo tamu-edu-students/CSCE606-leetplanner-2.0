@@ -78,7 +78,14 @@ module Api
       # Set default values for date/time if not provided
       current_time = Time.current
       current_date = current_time.to_date.to_s  # Always get current date
-      start_date = params.dig(:event, :start_date).presence || current_date
+      start_date = params.dig(:event, :start_date)
+
+      begin
+        Date.parse(start_date) if start_date.present?
+      rescue Date::Error
+        return render json: { error: "Invalid date format" }, status: :unprocessable_entity
+      end
+
       start_time = params.dig(:event, :start_time).presence || current_time.strftime("%H:%M")
       start_time_param = params.dig(:event, :start_time).presence || current_time.strftime("%H:%M")
 
@@ -126,6 +133,7 @@ module Api
       begin
         # Create event in Google Calendar
         created = service.insert_event("primary", ev)
+        flash[:notice] = "Event successfully created."
 
         # === CREATE CORRESPONDING LEETCODE SESSION ===
         # Calculate start and end times for LeetCode session
@@ -165,12 +173,12 @@ module Api
           format.html { redirect_to calendar_path, notice: "Event successfully created." }
           format.json { render json: serialize_event(created), status: :created }
         end
-      rescue Google::Apis::ClientError => e
+      rescue Google::Apis::ClientError, Google::Apis::ServerError => e
         # Handle Google API errors
         error_message = e.respond_to?(:message) ? e.message : "Failed to create event"
         Rails.logger.error("Calendar create: #{error_message}")
         respond_to do |format|
-          format.html { redirect_to calendar_path, alert: error_message }
+          format.html { redirect_to calendar_path, alert: "Failed to create event" }
           format.json { render json: { error: error_message }, status: :unprocessable_entity }
         end
       end
