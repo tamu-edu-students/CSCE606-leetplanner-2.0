@@ -82,8 +82,8 @@
                 <div class="lobby-actions">
                     <% if current_user == lobby.owner %>
                         <%# Owner sees the Destroy button %>
-                        <%= link_to "Destroy Lobby", lobby, 
-                                    data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }, 
+                        <%= link_to "Destroy Lobby", lobby,
+                                    data: { turbo_method: :delete, turbo_confirm: "Are you sure?" },
                                     class: "btn btn-danger" %>
                     <% else %>
                         <%# Participants see the Leave button %>
@@ -94,7 +94,9 @@
                     
                     <%# Everyone sees the "Back to Lobbies" button %>
                     <%= link_to "Back to Lobbies", lobbies_path, class: "btn btn-secondary" %>
+                    <%= link_to "Notes", lobby_note_path(@lobby), class: "btn btn-primary" %>
                 </div>
             </div>
-        </main>
+        </div>
+    </main>
 </div>

@@ -1,0 +1,48 @@
+.notes-form {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.notes-form__editor-group {
+  margin-bottom: 1.5rem;
+}
+
+.notes-form__textarea {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  font-size: 1rem;
+  font-family: inherit;
+  line-height: 1.6;
+  color: var(--text-dark, #333);
+  background: #ffffff;
+  border: 1px solid var(--gray-border, #ccc);
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+  resize: vertical;
+  min-height: 400px;
+  box-sizing: border-box;
+}
+
+.notes-form__readonly-content {
+  background: var(--gray-lighter, #fafafa);
+  border: 1px solid var(--gray-border, #ccc);
+  padding: 1.5rem;
+  border-radius: 12px;
+  min-height: 400px;
+  font-family: 'SF Mono', Monaco, monospace;
+  font-size: 0.95rem;
+  color: #1d1d1f;
+  line-height: 1.7;
+  white-space: pre-line;
+  box-sizing: border-box;
+  margin-bottom: 1.5rem;
+}
+
+.notes-form__actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: flex-start;
+  padding-bottom: 2rem;
+}
