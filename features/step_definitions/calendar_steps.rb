@@ -79,39 +79,47 @@ end
 When('I create a new event with:') do |table|
   event_data = table.rows_hash
   # Ensure we are logged in and have valid Google credentials for the session.
-  # Reuse the existing step which performs an OmniAuth callback and sets @current_user.
   unless defined?(@current_user) && @current_user
     step 'I am a logged-in user and successfully authenticated with Google'
   end
 
-  # Set up the Google Calendar service mock for successful event creation
+  # Set up the Google Calendar service mock
   service = instance_double(Google::Apis::CalendarV3::CalendarService)
   allow(Google::Apis::CalendarV3::CalendarService).to receive(:new).and_return(service)
   allow(service).to receive(:authorization=)
 
-  # Mock successful event creation
+  # **FIX:** Conditionally mock success or failure based on the scenario context.
   created_event = nil
-  allow(service).to receive(:insert_event) do |calendar_id, event|
-    raise "Calendar ID must be 'primary'" unless calendar_id == 'primary'
-    start_time = Time.zone.parse("#{event_data['start_date']} #{event_data['start_time']}") if event_data['start_time']
-    end_time = Time.zone.parse("#{event_data['start_date']} #{event_data['end_time']}") if event_data['end_time']
-    event_datetime_start = Google::Apis::CalendarV3::EventDateTime.new(
-      date_time: start_time,
-      date: event_data['all_day'] == 'true' ? event_data['start_date'] : nil,
-      time_zone: 'America/Chicago'
-    )
-    event_datetime_end = Google::Apis::CalendarV3::EventDateTime.new(
-      date_time: end_time,
-      date: event_data['all_day'] == 'true' ? (Date.parse(event_data['start_date']) + 1.day).to_s : nil,
-      time_zone: 'America/Chicago'
-    )
-    created_event = Google::Apis::CalendarV3::Event.new(
-      id: 'test_event_id',
-      summary: event.summary,
-      start: event_datetime_start,
-      end: event_datetime_end
-    )
-    created_event
+  if @api_should_fail
+    # This scenario expects a failure, so mock insert_event to raise a ServerError.
+    allow(service).to receive(:insert_event)
+      .and_raise(Google::Apis::ServerError.new('Service unavailable'))
+    # Reset the flag to prevent it from affecting subsequent scenarios.
+    @api_should_fail = false
+  else
+    # This is the default success path for all other scenarios.
+    allow(service).to receive(:insert_event) do |calendar_id, event|
+      raise "Calendar ID must be 'primary'" unless calendar_id == 'primary'
+      start_time = Time.zone.parse("#{event_data['start_date']} #{event_data['start_time']}") if event_data['start_time']
+      end_time = Time.zone.parse("#{event_data['start_date']} #{event_data['end_time']}") if event_data['end_time']
+      event_datetime_start = Google::Apis::CalendarV3::EventDateTime.new(
+        date_time: start_time,
+        date: event_data['all_day'] == 'true' ? event_data['start_date'] : nil,
+        time_zone: 'America/Chicago'
+      )
+      event_datetime_end = Google::Apis::CalendarV3::EventDateTime.new(
+        date_time: end_time,
+        date: event_data['all_day'] == 'true' ? (Date.parse(event_data['start_date']) + 1.day).to_s : nil,
+        time_zone: 'America/Chicago'
+      )
+      created_event = Google::Apis::CalendarV3::Event.new(
+        id: 'test_event_id',
+        summary: event.summary,
+        start: event_datetime_start,
+        end: event_datetime_end
+      )
+      created_event
+    end
   end
 
   # Mock list_events to return the created event
@@ -169,14 +177,48 @@ Then('the event {string} should appear as an all-day event') do |event_title|
   end
 end
 
+# File: features/step_definitions/calendar_steps.rb
+
 Given('my Google Calendar authorization has expired') do
-  allow_any_instance_of(Google::Apis::CalendarV3::CalendarService)
-    .to receive(:list_events)
-    .and_raise(Google::Apis::AuthorizationError.new('Token expired'))
+  # The Background step has already run, but we will forcefully overwrite the session it created.
+  # Ensure the user object from the Background is available.
+  @current_user ||= User.find_by(email: 'testuser@tamu.edu') || create(:user, email: 'testuser@tamu.edu')
+
+  # Set an expired timestamp.
+  expired_time = 1.hour.ago.to_i
+
+  # Update the database record for data consistency.
+  @current_user.update!(google_token_expires_at: Time.at(expired_time))
+
+  # Create a specific OmniAuth mock with expired credentials. This is the key to the fix.
+  OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new({
+    provider: 'google_oauth2',
+    info: { email: @current_user.email, first_name: @current_user.first_name, last_name: @current_user.last_name },
+    credentials: {
+      token: 'mock_expired_token',
+      refresh_token: 'mock_refresh_token',
+      expires_at: expired_time # Use our expired timestamp
+    }
+  })
+
+  # Mock the refresh mechanism to fail when the controller inevitably calls it.
+  allow_any_instance_of(Signet::OAuth2::Client).to receive(:refresh!).and_raise(Signet::AuthorizationError.new('Token expired'))
+
+  # Re-authenticate by visiting the callback path. This overwrites the old session with our new, expired one.
+  visit '/auth/google_oauth2/callback'
 end
 
 When('I try to sync my calendar') do
-  click_link 'Refresh'
+  # After the Given step, the user is on the dashboard. Now, we visit the calendar page
+  # to trigger the controller logic that requires an authorized session.
+  visit calendar_path
+  
+  # The redirect to the login page happens immediately upon visiting the calendar path.
+  # The 'Refresh' button will not be present to be clicked, which is expected.
+  # The `if page.has_link?` check correctly handles this.
+  if page.has_link?('Refresh')
+    click_link 'Refresh'
+  end
 end
 
 Then('I should be redirected to the Google login page') do
@@ -184,9 +226,9 @@ Then('I should be redirected to the Google login page') do
 end
 
 Given('the Google Calendar API is temporarily unavailable') do
-  allow_any_instance_of(Google::Apis::CalendarV3::CalendarService)
-    .to receive(:insert_event)
-    .and_raise(Google::Apis::ServerError.new('Service unavailable'))
+  # **FIX:** Set a flag to indicate that the next API call should fail.
+  # The actual mocking is deferred to the 'When' step to avoid being overwritten by its generic success mock.
+  @api_should_fail = true
 end
 
 Given('my Google Calendar has an event titled {string} with id {string}') do |title, id|

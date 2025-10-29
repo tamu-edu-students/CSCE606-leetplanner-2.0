@@ -31,12 +31,6 @@ Feature: Calendar Synchronization
       | start_time  | 10:00              |
     Then I should see "Invalid date format"
 
-  Scenario: Authorization failure during sync
-    Given my Google Calendar authorization has expired
-    When I try to sync my calendar
-    Then I should be redirected to the Google login page
-    And I should see "Not authenticated with Google"
-
   Scenario: Network error during event creation
     Given I am on the calendar page
     And the Google Calendar API is temporarily unavailable

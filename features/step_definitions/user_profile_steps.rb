@@ -211,16 +211,6 @@ Then('the JSON response should contain my user details') do
   expect(json['leetcode_username']).to eq(@current_user.leetcode_username)
 end
 
-Given('I am not logged in') do
-  # Clear server-side session via test helper
-  if Rails.env.test?
-    visit '/test/clear_session'
-  else
-    # Try client-side sign out as a fallback
-    visit path_for('login')
-  end
-end
-
 When('a visitor visits the user profile API endpoint') do
   visit '/api/current_user.json'
 end
