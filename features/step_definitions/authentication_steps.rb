@@ -1,8 +1,13 @@
 # Step definitions for authentication and session management features
 
 Given('I am not logged in') do
-  # Clear any existing session
-  page.driver.browser.clear_cookies if page.driver.respond_to?(:browser)
+  if Rails.env.test?
+    visit '/test/clear_session'
+  else
+    # Fallback for non-test environments
+    page.driver.browser.clear_cookies if page.driver.respond_to?(:browser)
+    visit path_for('login')
+  end
 end
 
 When('I visit the debug session page') do

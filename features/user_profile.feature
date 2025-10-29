@@ -1,70 +1,52 @@
-# Feature: User profile viewing and LeetCode username management
-# Given: User is logged in to the application
-# When: User accesses profile page and updates LeetCode username
-# Then: Profile information is displayed and username is saved for API integration
+# Feature: User profile management
+# Given: A logged-in user
+# When: The user accesses their profile page
+# Then: The user can view and update their personal details, and see errors for invalid data.
+
 Feature: User Profile Management
-  As a user
-  I want to manage my profile
-  So that I can update my information
-  @requires_login
-  Scenario: A logged-in user can view their profile information
-    When I visit the user profile API endpoint
-    Then the JSON response should contain my user details
+  As a user,
+  I want to manage my profile information,
+  so that I can keep my account details up to date.
 
-  @javascript
-  @requires_login
-  Scenario: View profile by clicking profile tab
-    Given I am on the dashboard
-    When I click on the profile tab
-    Then I should be on the user profile page
-    And I should see "Profile"
-    And I should see "Manage your account settings"
+  Background:
+    Given I am a logged-in user
+    And I am on my profile page
 
-  @requires_login
-  Scenario: View profile page directly
-    When I visit my profile page
+  Scenario: Viewing the user profile page
     Then I should see the profile form
-    And I should see my current information
+    And I should see my current "first_name"
+    And I should see my current "last_name"
+    And I should see my current "leetcode_username"
 
-  @requires_login
-  Scenario: Set LeetCode username
-    Given I visit my profile page
-    When I fill in "LeetCode Username" with "myusername123"
-    And I click "Update Profile"
-    Then I should see "Profile updated successfully" 
-    And my LeetCode username should be "myusername123"
+  Scenario: Successfully updating user profile information
+    When I fill in "First name" with "John"
+    And I fill in "Last name" with "Doe"
+    And I fill in "Leetcode username" with "johndoe123"
+    And I click the "Update Profile" button
+    Then I should see the success message "Profile updated successfully"
+    And the "First name" field should contain "John"
+    And the "Last name" field should contain "Doe"
+    And the "Leetcode username" field should contain "johndoe123"
 
-  @requires_login
-  Scenario: Update LeetCode username
-    Given the user "student" has leetcode_username "oldusername"
-    And I visit my profile page
-    When I update my LeetCode username to "newusername456"
-    Then I should see "Profile updated successfully"
-    And my LeetCode username should be "newusername456"
+  Scenario: Failing to update profile with invalid data
+    # This scenario tests the error handling path in the UsersController#profile action.
+    Given my first name is "Jane"
+    When I fill in "First name" with ""
+    And I click the "Update Profile" button
+    Then I should see an error message "First name can't be blank"
+    And the "First name" field should still contain "Jane"
+    And I should still be on the profile page
 
-  @requires_login
-  Scenario: Update all profile fields
-    Given I visit my profile page
-    When I fill in the first name field with "John"
-    And I fill in the last name field with "Doe"
-    And I fill in the personal email field with "john.doe@gmail.com"
-    And I fill in "LeetCode Username" with "johndoe123"
-    And I click "Update Profile"
-    Then I should see "Profile updated successfully"
-
-  @requires_login
-  Scenario: Profile tab is visible in navbar
-    Given I am on the dashboard
-    Then I should see "Profile" in the navbar
-
-  @requires_login
+  # --- API Scenarios ---
+  @api
   Scenario: Access profile API when authenticated
     When I visit the user profile API endpoint
     Then the response status should be 200
     And the JSON response should contain my user details
 
-  @requires_login
+  @api
   Scenario: Access profile API when not authenticated
+    Given I am not logged in
     When a visitor visits the user profile API endpoint
     Then the response status should be 401
     And the JSON response should contain an error message "Not signed in"

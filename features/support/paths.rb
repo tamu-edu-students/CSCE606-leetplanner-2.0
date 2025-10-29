@@ -12,7 +12,7 @@ module NavigationHelpers
     when 'the leetCode page', 'leetcode'
       leetcode_path
     when 'the profile page', 'profile'
-      api_current_user_path
+      profile_path
     when 'sign out', 'logout'
       logout_path
     else

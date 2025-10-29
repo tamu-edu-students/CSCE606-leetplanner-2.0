@@ -77,10 +77,6 @@ Then("I should see my name {string} in the participant list") do |name|
   expect(page).to have_content(name)
 end
 
-Then("I should see an error message {string}") do |message|
-  expect(page).to have_selector('.flash-alert', text: message)
-end
-
 Then("I should be on the lobbies page") do
   expect(current_path).to eq(lobbies_path)
 end
@@ -100,10 +96,6 @@ end
 
 Then("I should be redirected to the lobbies page") do
   expect(current_path).to eq(lobbies_path)
-end
-
-Then("I should see a success message {string}") do |message|
-  expect(page).to have_selector('.flash-success', text: message)
 end
 
 ##

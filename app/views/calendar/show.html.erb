@@ -33,7 +33,7 @@
                                         <p>
                                             <%= event[:start].strftime("%d %B %Y") %>
                                             <% unless event[:is_all_day] %>
-                                                <%= event[:start].strftime("%l:%M %p") %> - <%= event[:end].strftime("%l:%M %p") %>
+                                                <%= format_event_time(event[:start]) %> - <%= format_event_time(event[:end]) %>
                                             <% else %>
                                                 (All day)
                                             <% end %>
