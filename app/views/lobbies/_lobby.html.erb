@@ -18,128 +18,326 @@
                     <!-- Left Column: Shared Notes -->
                     <div class="lobby-section">
                         <h3 class="section-title">Shared Notes</h3>
-                        <div class="notes-area">
-                            <textarea placeholder="Take shared notes here..." rows="10"></textarea>
-                        </div>
+                                                <div class="notes-area">
+                                                        <% if lobby.whiteboard %>
+                                                            <% editable_notes = (current_user == lobby.owner) || lobby.lobby_members.find_by(user: current_user)&.can_edit_notes %>
+                                                            <% if editable_notes %>
+                                                                <%= form_with model: lobby.whiteboard, url: update_notes_lobby_whiteboards_path(lobby), method: :patch, local: true do |f| %>
+                                                                    <%= f.text_area :notes, rows: 10, placeholder: "Take shared notes here...", value: lobby.whiteboard.notes, class: "shared-notes" %>
+                                                                    <div class="form-row">
+                                                                        <%= f.submit "Save Notes", class: "btn btn-primary" %>
+                                                                    </div>
+                                                                <% end %>
+                                                            <% else %>
+                                                                <textarea rows="10" readonly placeholder="No notes yet"> <%= lobby.whiteboard.notes %></textarea>
+                                                                <small>You don't have permission to edit notes.</small>
+                                                            <% end %>
+                                                        <% else %>
+                                                            <em>Whiteboard not initialized.</em>
+                                                        <% end %>
+                                                </div>
                     </div>
 
                     <!-- Center Column: Shared Whiteboard -->
                     <div class="lobby-section whiteboard-section">
                         <h3 class="section-title">Shared Whiteboard</h3>
                         
-                        <!-- SVG Canvas -->
-                        <div class="whiteboard-canvas">
-                            <% if lobby.whiteboard&.svg_data.present? %>
-                                <%= lobby.whiteboard.svg_data.html_safe %>
-                            <% else %>
-                                <svg width="100%" height="300" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" class="whiteboard-svg">
-                                    <defs>
-                                        <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-                                            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#444" stroke-width="0.5" opacity="0.5"/>
-                                        </pattern>
-                                    </defs>
-                                    <rect width="100%" height="100%" fill="url(#grid)"/>
-                                    <!-- Coordinate helpers -->
-                                    <text x="10" y="20" fill="#666" font-family="Arial" font-size="12" opacity="0.7">X: 0-800, Y: 0-300</text>
-                                    <text x="400" y="150" text-anchor="middle" fill="#888" font-family="Arial" font-size="16" opacity="0.8">
-                                        Collaborative Whiteboard - Use tools below to add content
-                                    </text>
-                                    <!-- Coordinate markers -->
-                                    <circle cx="100" cy="50" r="2" fill="#666" opacity="0.5"/>
-                                    <text x="105" y="55" fill="#666" font-size="10" opacity="0.7">100,50</text>
-                                    <circle cx="400" cy="150" r="2" fill="#666" opacity="0.5"/>
-                                    <text x="405" y="155" fill="#666" font-size="10" opacity="0.7">400,150</text>
-                                    <circle cx="700" cy="250" r="2" fill="#666" opacity="0.5"/>
-                                    <text x="705" y="255" fill="#666" font-size="10" opacity="0.7">700,250</text>
-                                </svg>
-                            <% end %>
+                        <!-- Simple Whiteboard -->
+                        <div class="whiteboard-container">
+                            <!-- Toolbar -->
+                            <div class="whiteboard-toolbar">
+                                <button id="pen-tool" class="tool-btn active">✏️ Draw</button>
+                                <button id="text-tool" class="tool-btn">📝 Text</button>
+                                <button id="rect-tool" class="tool-btn">⬜ Rectangle</button>
+                                <button id="circle-tool" class="tool-btn">⭕ Circle</button>
+                                <button id="sticky-tool" class="tool-btn">📌 Sticky</button>
+                                <button id="clear-btn" class="tool-btn danger">🗑️ Clear</button>
+                                <input type="color" id="color-picker" value="#000000">
+                                <input type="range" id="brush-size" min="1" max="10" value="3">
+                            </div>
+                            
+                            <!-- Canvas -->
+                            <canvas id="whiteboard-canvas" width="800" height="400" style="border: 1px solid #ccc; background: white; display: block; margin: 10px 0;"></canvas>
                         </div>
+
+                        <script>
+                        (function() {
+                            const canvas = document.getElementById('whiteboard-canvas');
+                            const ctx = canvas.getContext('2d');
+                            const canDraw = <%= current_user == lobby.owner || lobby.lobby_members.find_by(user: current_user)&.can_draw || false %>;
+                            
+                            let currentTool = 'pen';
+                            let isDrawing = false;
+                            let currentColor = '#000000';
+                            let currentSize = 3;
+                            
+                            // Add grid
+                            function drawGrid() {
+                                ctx.strokeStyle = '#f0f0f0';
+                                ctx.lineWidth = 1;
+                                for (let x = 0; x <= 800; x += 20) {
+                                    ctx.beginPath();
+                                    ctx.moveTo(x, 0);
+                                    ctx.lineTo(x, 400);
+                                    ctx.stroke();
+                                }
+                                for (let y = 0; y <= 400; y += 20) {
+                                    ctx.beginPath();
+                                    ctx.moveTo(0, y);
+                                    ctx.lineTo(800, y);
+                                    ctx.stroke();
+                                }
+                            }
+                            
+                            // Tool selection
+                            document.getElementById('pen-tool').onclick = () => selectTool('pen');
+                            document.getElementById('text-tool').onclick = () => selectTool('text');
+                            document.getElementById('rect-tool').onclick = () => selectTool('rect');
+                            document.getElementById('circle-tool').onclick = () => selectTool('circle');
+                            document.getElementById('sticky-tool').onclick = () => selectTool('sticky');
+                            document.getElementById('clear-btn').onclick = clearCanvas;
+                            
+                            document.getElementById('color-picker').onchange = (e) => currentColor = e.target.value;
+                            document.getElementById('brush-size').oninput = (e) => currentSize = e.target.value;
+                            
+                            function selectTool(tool) {
+                                currentTool = tool;
+                                document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+                                document.getElementById(tool + '-tool').classList.add('active');
+                            }
+                            
+                            function clearCanvas() {
+                                if (confirm('Clear whiteboard?')) {
+                                    ctx.clearRect(0, 0, 800, 400);
+                                    drawGrid();
+                                }
+                            }
+                            
+                            // Drawing
+                            let drawing = false;
+                            let currentPath = [];
+                            
+                            canvas.onmousedown = (e) => {
+                                if (!canDraw) return;
+                                const rect = canvas.getBoundingClientRect();
+                                const x = e.clientX - rect.left;
+                                const y = e.clientY - rect.top;
+                                
+                                if (currentTool === 'pen') {
+                                    drawing = true;
+                                    currentPath = [{x, y}];
+                                } else if (currentTool === 'text') {
+                                    const text = prompt('Enter text:');
+                                    if (text) {
+                                        ctx.fillStyle = currentColor;
+                                        ctx.font = (currentSize * 4) + 'px Arial';
+                                        ctx.fillText(text, x, y);
+                                    }
+                                } else if (currentTool === 'rect') {
+                                    ctx.strokeStyle = currentColor;
+                                    ctx.lineWidth = 2;
+                                    ctx.strokeRect(x, y, 100, 60);
+                                } else if (currentTool === 'circle') {
+                                    ctx.strokeStyle = currentColor;
+                                    ctx.lineWidth = 2;
+                                    ctx.beginPath();
+                                    ctx.arc(x, y, 30, 0, 2 * Math.PI);
+                                    ctx.stroke();
+                                } else if (currentTool === 'sticky') {
+                                    const text = prompt('Sticky note text:') || 'Note';
+                                    ctx.fillStyle = '#fff59d';
+                                    ctx.fillRect(x, y, 120, 80);
+                                    ctx.strokeStyle = '#f57f17';
+                                    ctx.lineWidth = 2;
+                                    ctx.strokeRect(x, y, 120, 80);
+                                    ctx.fillStyle = '#333';
+                                    ctx.font = '14px Arial';
+                                    ctx.fillText(text, x + 5, y + 20);
+                                }
+                            };
+                            
+                            canvas.onmousemove = (e) => {
+                                if (!drawing || currentTool !== 'pen') return;
+                                const rect = canvas.getBoundingClientRect();
+                                const x = e.clientX - rect.left;
+                                const y = e.clientY - rect.top;
+                                currentPath.push({x, y});
+                                
+                                // Draw current stroke
+                                ctx.strokeStyle = currentColor;
+                                ctx.lineWidth = currentSize;
+                                ctx.lineCap = 'round';
+                                ctx.beginPath();
+                                ctx.moveTo(currentPath[currentPath.length-2].x, currentPath[currentPath.length-2].y);
+                                ctx.lineTo(x, y);
+                                ctx.stroke();
+                            };
+                            
+                            canvas.onmouseup = () => {
+                                drawing = false;
+                                currentPath = [];
+                            };
+                            
+                            // Initialize
+                            drawGrid();
+                        })();
+                        </script>
+
+                        <style>
+                        .whiteboard-container {
+                            background: #f9f9f9;
+                            padding: 10px;
+                            border-radius: 8px;
+                            margin: 10px 0;
+                        }
+                        .whiteboard-toolbar {
+                            display: flex;
+                            gap: 10px;
+                            margin-bottom: 10px;
+                            align-items: center;
+                            flex-wrap: wrap;
+                        }
+                        .tool-btn {
+                            padding: 8px 12px;
+                            border: 1px solid #ccc;
+                            background: white;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            font-size: 14px;
+                        }
+                        .tool-btn:hover { background: #f0f0f0; }
+                        .tool-btn.active { background: #007bff; color: white; }
+                        .tool-btn.danger { background: #dc3545; color: white; }
+                        #color-picker { width: 40px; height: 35px; border: 1px solid #ccc; }
+                        #brush-size { width: 100px; }
+                        </style>
+                    </div>
                         
-                        <!-- Whiteboard Tools -->
-                        <div class="whiteboard-toolbar">
-                            <!-- Custom Text Tool -->
-                            <div class="tool-group">
-                                <label class="tool-label">Add Custom Text:</label>
-                                <div class="custom-text-form">
-                                    <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "text-form" do |f| %>
-                                        <%= f.hidden_field :tool, value: "text" %>
-                                        <div class="form-row">
-                                            <%= f.text_field :text, placeholder: "Enter your text...", class: "text-input", value: "", required: true %>
-                                        </div>
-                                        <div class="form-row coordinates">
-                                            <%= f.number_field :x, placeholder: "X position (0-800)", class: "coord-input", min: 0, max: 800, value: 400 %>
-                                            <%= f.number_field :y, placeholder: "Y position (0-300)", class: "coord-input", min: 0, max: 300, value: 150 %>
-                                        </div>
-                                        <div class="form-row">
-                                            <%= f.color_field :color, value: "#000000", class: "color-input" %>
-                                            <%= f.submit "Add Text", class: "tool-btn primary" %>
-                                        </div>
-                                    <% end %>
+                        <!-- Legacy Stimulus Whiteboard Container (Hidden by default) -->
+                        </style>
+                    </div>
+
+                    <!-- Right Column: Participants -->                            <!-- Enhanced Controls (Hidden by default, shown when JS loads and user can draw) -->
+                            <div class="whiteboard-advanced-controls" data-whiteboard-target="advancedControls" style="display: none;">
+                                <div class="toolbar-enhanced">
+                                    <div class="tool-group">
+                                        <button class="tool-btn" data-tool="select" data-action="click->whiteboard#selectTool" title="Select (V)">
+                                            👆 Select
+                                        </button>
+                                        <button class="tool-btn" data-tool="pen" data-action="click->whiteboard#selectTool" title="Freehand (P)">
+                                            ✏️ Draw
+                                        </button>
+                                        <button class="tool-btn" data-tool="text" data-action="click->whiteboard#selectTool">
+                                            📝 Text
+                                        </button>
+                                        <button class="tool-btn" data-tool="rectangle" data-action="click->whiteboard#selectTool">
+                                            ⬜ Rectangle
+                                        </button>
+                                        <button class="tool-btn" data-tool="circle" data-action="click->whiteboard#selectTool">
+                                            ⭕ Circle
+                                        </button>
+                                        <button class="tool-btn" data-tool="sticky" data-action="click->whiteboard#selectTool" title="Sticky Note (N)">
+                                            📌 Sticky
+                                        </button>
+                                        <button class="tool-btn" data-action="click->whiteboard#undo" title="Undo (Ctrl+Z)">↶ Undo</button>
+                                        <button class="tool-btn" data-action="click->whiteboard#redo" title="Redo (Ctrl+Y)">↷ Redo</button>
+                                        <button class="tool-btn" data-tool="pan" data-action="click->whiteboard#selectTool" title="Pan (Space drag)">🖐️ Pan</button>
+                                        <button class="tool-btn" data-action="click->whiteboard#zoomIn" title="Zoom In (+)">➕</button>
+                                        <button class="tool-btn" data-action="click->whiteboard#zoomOut" title="Zoom Out (-)">➖</button>
+                                        <button class="tool-btn danger" data-action="click->whiteboard#clearCanvas">
+                                            🗑️ Clear
+                                        </button>
+                                        <label class="inline-label">Color: <input type="color" value="#000000" data-whiteboard-target="color" data-action="input->whiteboard#changeColor change->whiteboard#changeColor"></label>
+                                        <label class="inline-label">Brush Size: <input type="range" min="1" max="20" value="3" data-whiteboard-target="brushSize" data-action="input->whiteboard#changeBrushSize change->whiteboard#changeBrushSize"></label>
+                                        <span class="status" data-whiteboard-target="status"></span>
+                                    </div>
+                                    <div class="whiteboard-help">
+                                        <small>💡 Click anywhere to add shapes/text, or use draw tool to sketch freely</small>
+                                    </div>
                                 </div>
                             </div>
-                            
-                            <!-- Quick Text Positions -->
-                            <div class="tool-group">
-                                <label class="tool-label">Quick Text Positions:</label>
-                                <div class="tool-buttons">
-                                    <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>
-                                        <%= f.hidden_field :tool, value: "text" %>
-                                        <%= f.hidden_field :x, value: 100 %>
-                                        <%= f.hidden_field :y, value: 50 %>
-                                        <%= f.hidden_field :text, value: "Top Left" %>
-                                        <%= f.hidden_field :color, value: "#0066cc" %>
-                                        <%= f.submit "📍 Top Left", class: "tool-btn text" %>
-                                    <% end %>
-                                    
-                                    <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>
-                                        <%= f.hidden_field :tool, value: "text" %>
-                                        <%= f.hidden_field :x, value: 400 %>
-                                        <%= f.hidden_field :y, value: 100 %>
-                                        <%= f.hidden_field :text, value: "Center Top" %>
-                                        <%= f.hidden_field :color, value: "#cc6600" %>
-                                        <%= f.submit "📍 Center", class: "tool-btn text" %>
-                                    <% end %>
-                                    
-                                    <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>
-                                        <%= f.hidden_field :tool, value: "text" %>
-                                        <%= f.hidden_field :x, value: 700 %>
-                                        <%= f.hidden_field :y, value: 250 %>
-                                        <%= f.hidden_field :text, value: "Bottom Right" %>
-                                        <%= f.hidden_field :color, value: "#cc0066" %>
-                                        <%= f.submit "📍 Bottom Right", class: "tool-btn text" %>
-                                    <% end %>
+
+                            <!-- Basic Controls (Always available, hidden when JS enhances) -->
+                            <% if current_user == lobby.owner || lobby.lobby_members.find_by(user: current_user)&.can_draw %>
+                                <div class="whiteboard-basic-controls" data-whiteboard-target="basicControls">
+                                    <details class="basic-controls-toggle">
+                                        <summary>📝 Add Content (Works without JavaScript)</summary>
+                                        <div class="basic-controls-content">
+                                            <!-- Custom Text Tool -->
+                                            <div class="tool-group">
+                                                <label class="tool-label">Add Custom Text:</label>
+                                                <div class="custom-text-form">
+                                                    <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "text-form" do |f| %>
+                                                        <%= f.hidden_field :tool, value: "text" %>
+                                                        <div class="form-row">
+                                                            <%= f.text_field :text, placeholder: "Enter your text...", class: "text-input", required: true %>
+                                                        </div>
+                                                        <div class="form-row coordinates">
+                                                            <%= f.number_field :x, placeholder: "X (0-800)", class: "coord-input", min: 0, max: 800, value: 400 %>
+                                                            <%= f.number_field :y, placeholder: "Y (0-300)", class: "coord-input", min: 0, max: 300, value: 150 %>
+                                                        </div>
+                                                        <div class="form-row">
+                                                            <%= f.color_field :color, value: "#000000", class: "color-input" %>
+                                                            <%= f.submit "Add Text", class: "tool-btn primary" %>
+                                                        </div>
+                                                    <% end %>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Quick Shapes / Line -->
+                                            <div class="tool-group">
+                                                <label class="tool-label">Quick Shapes:</label>
+                                                <div class="tool-buttons">
+                                                    <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>
+                                                        <%= f.hidden_field :tool, value: "rectangle" %>
+                                                        <%= f.hidden_field :x, value: rand(50..400) %>
+                                                        <%= f.hidden_field :y, value: rand(40..180) %>
+                                                        <%= f.hidden_field :width, value: 80 %>
+                                                        <%= f.hidden_field :height, value: 50 %>
+                                                        <%= f.hidden_field :color, value: "#000000" %>
+                                                        <%= f.submit "⬜ Rectangle", class: "tool-btn primary" %>
+                                                    <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>
+                                                        <%= f.hidden_field :tool, value: "line" %>
+                                                        <%= f.hidden_field :x1, value: rand(0..300) %>
+                                                        <%= f.hidden_field :y1, value: rand(0..150) %>
+                                                        <%= f.hidden_field :x2, value: rand(300..800) %>
+                                                        <%= f.hidden_field :y2, value: rand(150..300) %>
+                                                        <%= f.hidden_field :color, value: "#000000" %>
+                                                        <%= f.hidden_field :width, value: 2 %>
+                                                        <%= f.submit "Line", class: "tool-btn primary" %>
+                                                    <% end %>
+                                                    <% end %>
+                                                    
+                                                    <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>
+                                                        <%= f.hidden_field :tool, value: "circle" %>
+                                                        <%= f.hidden_field :x, value: rand(80..500) %>
+                                                        <%= f.hidden_field :y, value: rand(60..200) %>
+                                                        <%= f.hidden_field :radius, value: 35 %>
+                                                        <%= f.hidden_field :color, value: "#000000" %>
+                                                        <%= f.submit "⭕ Circle", class: "tool-btn primary" %>
+                                                    <% end %>
+                                                    
+                                                    <%= form_with url: clear_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>
+                                                        <%= f.submit "🗑️ Clear", class: "tool-btn danger", 
+                                                            data: { confirm: "Clear the whiteboard?" } %>
+                                                    <% end %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </details>
                                 </div>
-                            </div>
-                            
-                            <!-- Quick Shape Tools -->
-                            <div class="tool-group">
-                                <label class="tool-label">Quick Shapes:</label>
-                                <div class="tool-buttons">
-                                    <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>
-                                        <%= f.hidden_field :tool, value: "rectangle" %>
-                                        <%= f.hidden_field :x, value: rand(50..400) %>
-                                        <%= f.hidden_field :y, value: rand(40..180) %>
-                                        <%= f.hidden_field :width, value: 80 %>
-                                        <%= f.hidden_field :height, value: 50 %>
-                                        <%= f.hidden_field :color, value: "#ffffff" %>
-                                        <%= f.submit "⬜ Rectangle", class: "tool-btn primary" %>
-                                    <% end %>
-                                    
-                                    <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>
-                                        <%= f.hidden_field :tool, value: "circle" %>
-                                        <%= f.hidden_field :x, value: rand(80..500) %>
-                                        <%= f.hidden_field :y, value: rand(60..200) %>
-                                        <%= f.hidden_field :radius, value: 35 %>
-                                        <%= f.hidden_field :color, value: "#44ff44" %>
-                                        <%= f.submit "⭕ Circle", class: "tool-btn primary" %>
-                                    <% end %>
-                                    
-                                    <%= form_with url: clear_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>
-                                        <%= f.submit "🗑️ Clear", class: "tool-btn danger", 
-                                            data: { confirm: "Clear the whiteboard?" } %>
-                                    <% end %>
+                            <% else %>
+                                <div class="whiteboard-readonly-notice">
+                                    <small>👀 You can view the whiteboard but don't have permission to edit it.</small>
                                 </div>
-                            </div>
+                            <% end %>
+
+                            <!-- No JavaScript Fallback -->
+                            <noscript>
+                                <div class="no-js-notice">
+                                    <p><strong>JavaScript is disabled.</strong> You can still view and use the whiteboard with basic controls above.</p>
+                                </div>
+                            </noscript>
                         </div>
                     </div>
 

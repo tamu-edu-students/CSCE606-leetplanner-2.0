@@ -25,10 +25,12 @@ class LobbiesController < ApplicationController
   # POST /lobbies or /lobbies.json
   def create
     @lobby = Lobby.new(lobby_params)
-    LobbyMember.create(user: current_user, lobby: @lobby)
+    # Ensure owner is current_user for security regardless of passed params
+    @lobby.owner = current_user
 
     respond_to do |format|
       if @lobby.save
+        LobbyMember.create(user: current_user, lobby: @lobby)
         format.html { redirect_to @lobby, notice: "Lobby was successfully created." }
         format.json { render :show, status: :created, location: @lobby }
       else
@@ -74,11 +76,11 @@ class LobbiesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_lobby
-      @lobby = Lobby.find(params.expect(:id))
+      @lobby = Lobby.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def lobby_params
-      params.expect(lobby: [ :owner_id, :description, :lobby_code, :name, :private ])
+      params.require(:lobby).permit(:description, :lobby_code, :name, :private)
     end
 end

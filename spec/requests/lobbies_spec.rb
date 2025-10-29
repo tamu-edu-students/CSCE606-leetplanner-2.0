@@ -13,20 +13,19 @@ require 'rails_helper'
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
 RSpec.describe "/lobbies", type: :request do
-  # This should return the minimal set of attributes required to create a valid
-  # Lobby. As you add validations to Lobby, be sure to
-  # adjust the attributes here as well.
-  let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
-  }
+  let(:owner) { create(:user) }
+  let(:valid_attributes) { { name: "Study Lobby", description: "Algorithms practice", lobby_code: "ABC123" } }
+  let(:invalid_attributes) { { name: nil, description: "Algorithms practice" } }
 
-  let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
-  }
+  before do
+    # Stub authentication helpers
+    allow_any_instance_of(ApplicationController).to receive(:authenticate_user!).and_return(true)
+    allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(owner)
+  end
 
   describe "GET /index" do
     it "renders a successful response" do
-      Lobby.create! valid_attributes
+      Lobby.create!(valid_attributes.merge(owner: owner))
       get lobbies_url
       expect(response).to be_successful
     end
@@ -34,7 +33,7 @@ RSpec.describe "/lobbies", type: :request do
 
   describe "GET /show" do
     it "renders a successful response" do
-      lobby = Lobby.create! valid_attributes
+      lobby = Lobby.create!(valid_attributes.merge(owner: owner))
       get lobby_url(lobby)
       expect(response).to be_successful
     end
@@ -49,7 +48,7 @@ RSpec.describe "/lobbies", type: :request do
 
   describe "GET /edit" do
     it "renders a successful response" do
-      lobby = Lobby.create! valid_attributes
+      lobby = Lobby.create!(valid_attributes.merge(owner: owner))
       get edit_lobby_url(lobby)
       expect(response).to be_successful
     end
@@ -73,12 +72,12 @@ RSpec.describe "/lobbies", type: :request do
       it "does not create a new Lobby" do
         expect {
           post lobbies_url, params: { lobby: invalid_attributes }
-        }.to change(Lobby, :count).by(0)
+        }.not_to change(Lobby, :count)
       end
 
       it "renders a response with 422 status (i.e. to display the 'new' template)" do
         post lobbies_url, params: { lobby: invalid_attributes }
-        expect(response).to have_http_status(:unprocessable_content)
+        expect(response).to have_http_status(:unprocessable_entity)
       end
     end
   end
@@ -90,15 +89,15 @@ RSpec.describe "/lobbies", type: :request do
       }
 
       it "updates the requested lobby" do
-        lobby = Lobby.create! valid_attributes
-        patch lobby_url(lobby), params: { lobby: new_attributes }
+        lobby = Lobby.create!(valid_attributes.merge(owner: owner))
+        patch lobby_url(lobby), params: { lobby: { name: "Updated Name" } }
         lobby.reload
-        skip("Add assertions for updated state")
+        expect(lobby.name).to eq("Updated Name")
       end
 
       it "redirects to the lobby" do
-        lobby = Lobby.create! valid_attributes
-        patch lobby_url(lobby), params: { lobby: new_attributes }
+        lobby = Lobby.create!(valid_attributes.merge(owner: owner))
+        patch lobby_url(lobby), params: { lobby: { description: "Changed" } }
         lobby.reload
         expect(response).to redirect_to(lobby_url(lobby))
       end
@@ -106,23 +105,23 @@ RSpec.describe "/lobbies", type: :request do
 
     context "with invalid parameters" do
       it "renders a response with 422 status (i.e. to display the 'edit' template)" do
-        lobby = Lobby.create! valid_attributes
+        lobby = Lobby.create!(valid_attributes.merge(owner: owner))
         patch lobby_url(lobby), params: { lobby: invalid_attributes }
-        expect(response).to have_http_status(:unprocessable_content)
+        expect(response).to have_http_status(:unprocessable_entity)
       end
     end
   end
 
   describe "DELETE /destroy" do
     it "destroys the requested lobby" do
-      lobby = Lobby.create! valid_attributes
+      lobby = Lobby.create!(valid_attributes.merge(owner: owner))
       expect {
         delete lobby_url(lobby)
       }.to change(Lobby, :count).by(-1)
     end
 
     it "redirects to the lobbies list" do
-      lobby = Lobby.create! valid_attributes
+      lobby = Lobby.create!(valid_attributes.merge(owner: owner))
       delete lobby_url(lobby)
       expect(response).to redirect_to(lobbies_url)
     end

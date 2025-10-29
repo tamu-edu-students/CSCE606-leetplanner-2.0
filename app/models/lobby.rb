@@ -3,6 +3,7 @@ class Lobby < ApplicationRecord
 
   validates :lobby_code, presence: true, uniqueness: true
   validates :owner, presence: true
+  validates :name, presence: true
 
   has_many :lobby_members
   has_many :users, through: :lobby_members

@@ -10,7 +10,7 @@
       </ul>
     </div>
   <% end %>
-  <%= form.hidden_field:owner_id, value:current_user.id %>
+  <%= form.hidden_field :owner_id, value: current_user.id %>
   <div class="form-row">
     <div class="checkbox-inline">
       <label> Private Lobby <%= form.check_box :private %></label>  
@@ -25,11 +25,11 @@
   <div class="form-row">
     <div class="form-field">
       <%= form.label :description, style: "display: block" %>
-      <%= form.textarea :description %>
+  <%= form.text_area :description %>
     </div>
   </div>
 
   <div>
-    <%= form.submit submit_text || "Create Lobby", class: "btn btn-primary", style: "margin-right: 1rem" %>
+  <%= form.submit (lobby.persisted? ? "Update Lobby" : "Create Lobby"), class: "btn btn-primary", style: "margin-right: 1rem" %>
   </div>
 <% end %>

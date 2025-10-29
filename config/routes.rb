@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   # Authentication / Sessions
   # -------------------------------
   get "/login/google",          to: redirect("/auth/google_oauth2")
+  post "/login/dev_bypass",     to: "login#dev_bypass"  # Development login
   get "/auth/:provider/callback", to: "sessions#create"
   get "sessions/create", to: "sessions#create", as: "sessions_create"
   get "/auth/failure",          to: "sessions#failure", as: "sessions_failure"
@@ -52,6 +53,8 @@ Rails.application.routes.draw do
       collection do
         post :add_drawing
         post :clear
+        post :update_svg
+        patch :update_notes
       end
     end
   end
