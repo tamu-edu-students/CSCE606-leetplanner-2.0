@@ -67,7 +67,7 @@ class DashboardController < ApplicationController
           @event_ends_at = event.end.date_time.to_time.utc
         elsif event.end&.date
           # All-day event - use end of day
-          @event_ends_at = (Time.parse(event.end.date).utc - 1) # Inclusive for all-day events
+          @event_ends_at = (Time.zone.parse(event.end.date) - 1) # Inclusive for all-day events
         end
 
         # Calculate and format remaining time if event has an end time
@@ -86,7 +86,7 @@ class DashboardController < ApplicationController
         end
       elsif session[:timer_ends_at]
         # If no current calendar event, check for manual timer
-        @timer_ends_at = Time.parse(session[:timer_ends_at])
+        @timer_ends_at = Time.zone.parse(session[:timer_ends_at])
 
         if @timer_ends_at <= Time.now.utc
           # Timer has expired, clean up session
@@ -101,9 +101,12 @@ class DashboardController < ApplicationController
           @time_remaining_hms = format("%02d:%02d:%02d", hours, minutes, seconds)
         end
       end
+    rescue Google::Apis::ServerError, Google::Apis::ClientError, Google::Apis::AuthorizationError => e
+      flash.now[:error] = "Unable to sync with Google Calendar"
+      Rails.logger.error("Google Calendar sync failed: #{e.class} #{e.message}")
     rescue StandardError => e
-      # Log any errors with Google Calendar API but don't break the dashboard
-      Rails.logger.info("Google Calendar fetch failed in Dashboard#show: #{e.class} #{e.message}")
+      # Log any other errors but don't break the dashboard
+      Rails.logger.error("Dashboard#show error: #{e.class} #{e.message}")
     end
   end
 

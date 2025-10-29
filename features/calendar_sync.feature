@@ -1,18 +1,41 @@
-Feature: Session Controller Functionality
-  As a user
-  I want to test session management features
-  So that the application handles sessions correctly
+Feature: Calendar Synchronization
 
-  Scenario: Access debug session endpoint
-    When I visit the debug session page
-    Then I should see the session data
-    And the page status should be 200
+  Background:
+    Given I am a logged-in user and successfully authenticated with Google
 
-  Scenario: Handle OAuth failure
-    When I visit the OAuth failure page with message "Test failure"
-    Then I should be redirected to the root page
-    And I should see "Test failure"
+  Scenario: Successful calendar event creation
+    Given I am on the calendar page
+    When I create a new event with:
+      | summary     | Daily Standup       |
+      | start_date  | 2025-10-26         |
+      | start_time  | 10:00              |
+      | end_time    | 10:30              |
+      | all_day     | false              |
+    Then I should see "Event successfully created"
+    And the event "Daily Standup" should appear on the calendar
 
-  Scenario: Logout functionality
-    When I visit the logout page
-    Then I should be redirected to the root page
+  Scenario: Creating an all-day event
+    Given I am on the calendar page
+    When I create a new event with:
+      | summary     | Team Building Day   |
+      | start_date  | 2025-10-26         |
+      | all_day     | true               |
+    Then I should see "Event successfully created"
+    And the event "Team Building Day" should appear as an all-day event
+
+  Scenario: Handling invalid date input
+    Given I am on the calendar page
+    When I create a new event with:
+      | summary     | Invalid Meeting     |
+      | start_date  | invalid_date        |
+      | start_time  | 10:00              |
+    Then I should see "Invalid date format"
+
+  Scenario: Network error during event creation
+    Given I am on the calendar page
+    And the Google Calendar API is temporarily unavailable
+    When I create a new event with:
+      | summary     | Important Meeting   |
+      | start_date  | 2025-10-26         |
+      | start_time  | 14:00              |
+    Then I should see "Failed to create event"

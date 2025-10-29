@@ -157,6 +157,14 @@ RSpec.describe Api::CalendarController, type: :controller do
             expect(end_time - start_time).to eq(30.minutes)
           end
         end
+
+        it 'sets status to "completed" for events created in the past' do
+          travel_to(1.day.from_now) do
+            post :create, params: { event: { summary: 'Past Event', start_date: Date.current.yesterday.to_s, start_time: '10:00' } }
+
+            expect(LeetCodeSession).to have_received(:create!).with(hash_including(status: 'completed'))
+          end
+        end
       end
 
       context 'without event name' do
@@ -225,6 +233,17 @@ RSpec.describe Api::CalendarController, type: :controller do
           expect(response).to have_http_status(:ok)
           expect(JSON.parse(response.body)).to include('summary' => 'Test Event')
         end
+
+        it 'updates with a default end time if only start time is provided' do
+          # Add a summary to the params to pass the before_action
+          patch :update, params: { id: event_id, event: { summary: 'Event with no end time', start_time: '16:00' } }
+
+          expect(google_service).to have_received(:update_event) do |_, _, patch|
+            start_time = Time.zone.parse(patch.start.date_time)
+            end_time = Time.zone.parse(patch.end.date_time)
+            expect(end_time - start_time).to eq(30.minutes)
+          end
+        end
       end
 
       context 'without event name' do
@@ -268,6 +287,37 @@ RSpec.describe Api::CalendarController, type: :controller do
     end
 
     describe 'private methods' do
+      describe '#event_time' do
+        it 'returns nil for blank input' do
+          expect(controller.send(:event_time, nil, false)).to be_nil
+          expect(controller.send(:event_time, '', false)).to be_nil
+        end
+
+        it 'handles all-day flag' do
+          result = controller.send(:event_time, '2025-10-28', true)
+          expect(result.date).to eq('2025-10-28')
+          expect(result.date_time).to be_nil
+        end
+
+        it 'handles date-only string' do
+          result = controller.send(:event_time, '2025-10-28', false)
+          expect(result.date).to eq('2025-10-28')
+          expect(result.date_time).to be_nil
+        end
+
+        it 'handles datetime string' do
+          result = controller.send(:event_time, '2025-10-28T10:00:00', false)
+          expect(result.date_time).to include('2025-10-28T10:00:00')
+          expect(result.date).to be_nil
+        end
+
+        it 'returns a valid object with nil date/datetime for invalid input' do
+          result = controller.send(:event_time, 'invalid date', false)
+          expect(result.date).to be_nil
+          expect(result.date_time).to be_nil
+        end
+      end
+
       describe '#calendar_service_or_unauthorized' do
         it 'refreshes token when near expiry' do
           session[:google_token_expires_at] = (Time.current + 2.minutes).to_i
@@ -287,6 +337,22 @@ RSpec.describe Api::CalendarController, type: :controller do
       end
 
       describe '#serialize_event' do
+        it 'handles all-day events correctly' do
+          all_day_event = instance_double(Google::Apis::CalendarV3::Event,
+            id: '456',
+            summary: 'All Day',
+            start: double(date: '2025-10-28', date_time: nil),
+            end: double(date: '2025-10-29', date_time: nil),
+            location: nil,
+            description: nil
+          )
+          result = controller.send(:serialize_event, all_day_event)
+          expect(result).to include(
+            start: '2025-10-28',
+            end: '2025-10-29'
+          )
+        end
+
         it 'converts Google event to hash format' do
           result = controller.send(:serialize_event, mock_event)
           expect(result).to include(
