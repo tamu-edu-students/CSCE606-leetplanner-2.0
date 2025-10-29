@@ -21,7 +21,7 @@ class LoginController < ApplicationController
   # This method only works when ENABLE_DEV_LOGIN=true in environment
   def dev_bypass
     # Triple security check: environment, Rails env, and explicit flag
-    unless Rails.env.development? && ENV['ENABLE_DEV_LOGIN'] == 'true'
+    unless Rails.env.development? && ENV["ENABLE_DEV_LOGIN"] == "true"
       redirect_to(root_path, alert: "Development login not available") and return
     end
 

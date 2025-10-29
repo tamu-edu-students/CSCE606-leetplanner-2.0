@@ -11,11 +11,10 @@ class Whiteboard < ApplicationRecord
     return if svg_data.blank?
 
     doc = Nokogiri::XML(svg_data)
-    svg = doc.at('svg')
+    svg = doc.at("svg")
     fragment_doc = Nokogiri::XML(element_xml)
     new_node = fragment_doc.root
     svg.add_child(new_node)
     update(svg_data: doc.to_xml)
   end
 end
-

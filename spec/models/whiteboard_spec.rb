@@ -51,4 +51,3 @@ RSpec.describe Whiteboard, type: :model do
     end
   end
 end
-

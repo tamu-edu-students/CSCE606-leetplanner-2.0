@@ -18,7 +18,7 @@ RSpec.describe WhiteboardsController, type: :request do
     end
 
     it 'returns error when missing svg_data' do
-      post update_svg_lobby_whiteboards_path(lobby), params: { }, as: :json
+      post update_svg_lobby_whiteboards_path(lobby), params: {}, as: :json
       expect(response).to have_http_status(:bad_request)
     end
   end
