@@ -12,16 +12,3 @@ window.Stimulus = application  // Make Stimulus available globally for debugging
 
 // Export the application instance for use by other modules
 export { application }
-
-// Manual registration fallback (in case eagerLoadControllersFrom misses or dynamic import 404 occurs)
-import WhiteboardController from "./whiteboard_controller"
-try {
-	if (!application.controllers.find(c => c.identifier === 'whiteboard')) {
-		application.register('whiteboard', WhiteboardController)
-		console.log('[Stimulus] Whiteboard controller manually registered fallback')
-	} else {
-		console.log('[Stimulus] Whiteboard controller already registered via eager load')
-	}
-} catch (e) {
-	console.error('[Stimulus] Manual registration failed', e)
-}

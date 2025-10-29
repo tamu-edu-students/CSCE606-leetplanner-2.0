@@ -50,14 +50,13 @@
                                 <button id="text-tool" class="tool-btn">📝 Text</button>
                                 <button id="rect-tool" class="tool-btn">⬜ Rectangle</button>
                                 <button id="circle-tool" class="tool-btn">⭕ Circle</button>
-                                <button id="sticky-tool" class="tool-btn">📌 Sticky</button>
                                 <button id="clear-btn" class="tool-btn danger">🗑️ Clear</button>
                                 <input type="color" id="color-picker" value="#000000">
                                 <input type="range" id="brush-size" min="1" max="10" value="3">
                             </div>
                             
                             <!-- Canvas -->
-                            <canvas id="whiteboard-canvas" width="800" height="400" style="border: 1px solid #ccc; background: white; display: block; margin: 10px 0;"></canvas>
+                            <canvas id="whiteboard-canvas" width="800" height="400" style="border: 1px solid #ccc; background: white; display: block; margin: 10px 0; max-width: 100%; height: auto;"></canvas>
                         </div>
 
                         <script>
@@ -94,7 +93,6 @@
                             document.getElementById('text-tool').onclick = () => selectTool('text');
                             document.getElementById('rect-tool').onclick = () => selectTool('rect');
                             document.getElementById('circle-tool').onclick = () => selectTool('circle');
-                            document.getElementById('sticky-tool').onclick = () => selectTool('sticky');
                             document.getElementById('clear-btn').onclick = clearCanvas;
                             
                             document.getElementById('color-picker').onchange = (e) => currentColor = e.target.value;
@@ -143,16 +141,6 @@
                                     ctx.beginPath();
                                     ctx.arc(x, y, 30, 0, 2 * Math.PI);
                                     ctx.stroke();
-                                } else if (currentTool === 'sticky') {
-                                    const text = prompt('Sticky note text:') || 'Note';
-                                    ctx.fillStyle = '#fff59d';
-                                    ctx.fillRect(x, y, 120, 80);
-                                    ctx.strokeStyle = '#f57f17';
-                                    ctx.lineWidth = 2;
-                                    ctx.strokeRect(x, y, 120, 80);
-                                    ctx.fillStyle = '#333';
-                                    ctx.font = '14px Arial';
-                                    ctx.fillText(text, x + 5, y + 20);
                                 }
                             };
                             
@@ -180,167 +168,97 @@
                             
                             // Initialize
                             drawGrid();
+                            
+                            // Responsive canvas handling
+                            function resizeCanvas() {
+                                const container = canvas.parentElement;
+                                const containerWidth = container.clientWidth - 20; // Account for padding
+                                const maxWidth = 800;
+                                const aspectRatio = 400 / 800;
+                                
+                                if (containerWidth < maxWidth) {
+                                    canvas.style.width = containerWidth + 'px';
+                                    canvas.style.height = (containerWidth * aspectRatio) + 'px';
+                                } else {
+                                    canvas.style.width = maxWidth + 'px';
+                                    canvas.style.height = '400px';
+                                }
+                            }
+                            
+                            // Initial resize
+                            resizeCanvas();
+                            
+                            // Resize on window resize
+                            window.addEventListener('resize', resizeCanvas);
                         })();
                         </script>
 
                         <style>
+                        /* Override any conflicting whiteboard styles */
                         .whiteboard-container {
-                            background: #f9f9f9;
-                            padding: 10px;
-                            border-radius: 8px;
-                            margin: 10px 0;
+                            background: #f8f9fa !important;
+                            padding: 10px !important;
+                            border-radius: 6px !important;
+                            margin: 0 !important;
+                            height: calc(100% - 40px) !important;
+                            display: flex !important;
+                            flex-direction: column !important;
                         }
                         .whiteboard-toolbar {
-                            display: flex;
-                            gap: 10px;
-                            margin-bottom: 10px;
-                            align-items: center;
-                            flex-wrap: wrap;
+                            display: flex !important;
+                            gap: 8px !important;
+                            margin-bottom: 10px !important;
+                            padding: 8px !important;
+                            background: white !important;
+                            border-radius: 4px !important;
+                            border: 1px solid #ddd !important;
+                            flex-wrap: wrap !important;
+                            align-items: center !important;
                         }
                         .tool-btn {
-                            padding: 8px 12px;
-                            border: 1px solid #ccc;
-                            background: white;
-                            border-radius: 4px;
-                            cursor: pointer;
-                            font-size: 14px;
+                            padding: 6px 12px !important;
+                            border: 1px solid #ccc !important;
+                            background: white !important;
+                            border-radius: 3px !important;
+                            cursor: pointer !important;
+                            font-size: 12px !important;
+                            white-space: nowrap !important;
                         }
-                        .tool-btn:hover { background: #f0f0f0; }
-                        .tool-btn.active { background: #007bff; color: white; }
-                        .tool-btn.danger { background: #dc3545; color: white; }
-                        #color-picker { width: 40px; height: 35px; border: 1px solid #ccc; }
-                        #brush-size { width: 100px; }
+                        .tool-btn:hover { 
+                            background: #f0f0f0 !important; 
+                        }
+                        .tool-btn.active { 
+                            background: #007bff !important; 
+                            color: white !important; 
+                            border-color: #007bff !important;
+                        }
+                        .tool-btn.danger { 
+                            background: #dc3545 !important; 
+                            color: white !important; 
+                            border-color: #dc3545 !important;
+                        }
+                        #color-picker { 
+                            width: 30px !important; 
+                            height: 30px !important; 
+                            border: 1px solid #ccc !important; 
+                            border-radius: 3px !important;
+                            cursor: pointer !important;
+                        }
+                        #brush-size { 
+                            width: 80px !important;
+                        }
+                        #whiteboard-canvas {
+                            flex: 1 !important;
+                            background: white !important;
+                            border: 1px solid #ddd !important;
+                            border-radius: 4px !important;
+                            display: block !important;
+                            width: 100% !important;
+                            max-width: 100% !important;
+                        }
                         </style>
                     </div>
                         
-                        <!-- Legacy Stimulus Whiteboard Container (Hidden by default) -->
-                        </style>
-                    </div>
-
-                    <!-- Right Column: Participants -->                            <!-- Enhanced Controls (Hidden by default, shown when JS loads and user can draw) -->
-                            <div class="whiteboard-advanced-controls" data-whiteboard-target="advancedControls" style="display: none;">
-                                <div class="toolbar-enhanced">
-                                    <div class="tool-group">
-                                        <button class="tool-btn" data-tool="select" data-action="click->whiteboard#selectTool" title="Select (V)">
-                                            👆 Select
-                                        </button>
-                                        <button class="tool-btn" data-tool="pen" data-action="click->whiteboard#selectTool" title="Freehand (P)">
-                                            ✏️ Draw
-                                        </button>
-                                        <button class="tool-btn" data-tool="text" data-action="click->whiteboard#selectTool">
-                                            📝 Text
-                                        </button>
-                                        <button class="tool-btn" data-tool="rectangle" data-action="click->whiteboard#selectTool">
-                                            ⬜ Rectangle
-                                        </button>
-                                        <button class="tool-btn" data-tool="circle" data-action="click->whiteboard#selectTool">
-                                            ⭕ Circle
-                                        </button>
-                                        <button class="tool-btn" data-tool="sticky" data-action="click->whiteboard#selectTool" title="Sticky Note (N)">
-                                            📌 Sticky
-                                        </button>
-                                        <button class="tool-btn" data-action="click->whiteboard#undo" title="Undo (Ctrl+Z)">↶ Undo</button>
-                                        <button class="tool-btn" data-action="click->whiteboard#redo" title="Redo (Ctrl+Y)">↷ Redo</button>
-                                        <button class="tool-btn" data-tool="pan" data-action="click->whiteboard#selectTool" title="Pan (Space drag)">🖐️ Pan</button>
-                                        <button class="tool-btn" data-action="click->whiteboard#zoomIn" title="Zoom In (+)">➕</button>
-                                        <button class="tool-btn" data-action="click->whiteboard#zoomOut" title="Zoom Out (-)">➖</button>
-                                        <button class="tool-btn danger" data-action="click->whiteboard#clearCanvas">
-                                            🗑️ Clear
-                                        </button>
-                                        <label class="inline-label">Color: <input type="color" value="#000000" data-whiteboard-target="color" data-action="input->whiteboard#changeColor change->whiteboard#changeColor"></label>
-                                        <label class="inline-label">Brush Size: <input type="range" min="1" max="20" value="3" data-whiteboard-target="brushSize" data-action="input->whiteboard#changeBrushSize change->whiteboard#changeBrushSize"></label>
-                                        <span class="status" data-whiteboard-target="status"></span>
-                                    </div>
-                                    <div class="whiteboard-help">
-                                        <small>💡 Click anywhere to add shapes/text, or use draw tool to sketch freely</small>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Basic Controls (Always available, hidden when JS enhances) -->
-                            <% if current_user == lobby.owner || lobby.lobby_members.find_by(user: current_user)&.can_draw %>
-                                <div class="whiteboard-basic-controls" data-whiteboard-target="basicControls">
-                                    <details class="basic-controls-toggle">
-                                        <summary>📝 Add Content (Works without JavaScript)</summary>
-                                        <div class="basic-controls-content">
-                                            <!-- Custom Text Tool -->
-                                            <div class="tool-group">
-                                                <label class="tool-label">Add Custom Text:</label>
-                                                <div class="custom-text-form">
-                                                    <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "text-form" do |f| %>
-                                                        <%= f.hidden_field :tool, value: "text" %>
-                                                        <div class="form-row">
-                                                            <%= f.text_field :text, placeholder: "Enter your text...", class: "text-input", required: true %>
-                                                        </div>
-                                                        <div class="form-row coordinates">
-                                                            <%= f.number_field :x, placeholder: "X (0-800)", class: "coord-input", min: 0, max: 800, value: 400 %>
-                                                            <%= f.number_field :y, placeholder: "Y (0-300)", class: "coord-input", min: 0, max: 300, value: 150 %>
-                                                        </div>
-                                                        <div class="form-row">
-                                                            <%= f.color_field :color, value: "#000000", class: "color-input" %>
-                                                            <%= f.submit "Add Text", class: "tool-btn primary" %>
-                                                        </div>
-                                                    <% end %>
-                                                </div>
-                                            </div>
-                                            
-                                            <!-- Quick Shapes / Line -->
-                                            <div class="tool-group">
-                                                <label class="tool-label">Quick Shapes:</label>
-                                                <div class="tool-buttons">
-                                                    <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>
-                                                        <%= f.hidden_field :tool, value: "rectangle" %>
-                                                        <%= f.hidden_field :x, value: rand(50..400) %>
-                                                        <%= f.hidden_field :y, value: rand(40..180) %>
-                                                        <%= f.hidden_field :width, value: 80 %>
-                                                        <%= f.hidden_field :height, value: 50 %>
-                                                        <%= f.hidden_field :color, value: "#000000" %>
-                                                        <%= f.submit "⬜ Rectangle", class: "tool-btn primary" %>
-                                                    <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>
-                                                        <%= f.hidden_field :tool, value: "line" %>
-                                                        <%= f.hidden_field :x1, value: rand(0..300) %>
-                                                        <%= f.hidden_field :y1, value: rand(0..150) %>
-                                                        <%= f.hidden_field :x2, value: rand(300..800) %>
-                                                        <%= f.hidden_field :y2, value: rand(150..300) %>
-                                                        <%= f.hidden_field :color, value: "#000000" %>
-                                                        <%= f.hidden_field :width, value: 2 %>
-                                                        <%= f.submit "Line", class: "tool-btn primary" %>
-                                                    <% end %>
-                                                    <% end %>
-                                                    
-                                                    <%= form_with url: add_drawing_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>
-                                                        <%= f.hidden_field :tool, value: "circle" %>
-                                                        <%= f.hidden_field :x, value: rand(80..500) %>
-                                                        <%= f.hidden_field :y, value: rand(60..200) %>
-                                                        <%= f.hidden_field :radius, value: 35 %>
-                                                        <%= f.hidden_field :color, value: "#000000" %>
-                                                        <%= f.submit "⭕ Circle", class: "tool-btn primary" %>
-                                                    <% end %>
-                                                    
-                                                    <%= form_with url: clear_lobby_whiteboards_path(lobby), method: :post, local: true, class: "inline-form" do |f| %>
-                                                        <%= f.submit "🗑️ Clear", class: "tool-btn danger", 
-                                                            data: { confirm: "Clear the whiteboard?" } %>
-                                                    <% end %>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </details>
-                                </div>
-                            <% else %>
-                                <div class="whiteboard-readonly-notice">
-                                    <small>👀 You can view the whiteboard but don't have permission to edit it.</small>
-                                </div>
-                            <% end %>
-
-                            <!-- No JavaScript Fallback -->
-                            <noscript>
-                                <div class="no-js-notice">
-                                    <p><strong>JavaScript is disabled.</strong> You can still view and use the whiteboard with basic controls above.</p>
-                                </div>
-                            </noscript>
-                        </div>
-                    </div>
-
                     <!-- Right Column: Participants -->
                     <div class="lobby-section">
                         <h3 class="section-title">Participants (<%= lobby.lobby_members.length %>)</h3>
