@@ -1,5 +1,3 @@
-# --- GIVEN STEPS (Setup) ---
-
 Given('my Google Calendar has no ongoing events') do
   allow_any_instance_of(Google::Apis::CalendarV3::CalendarService).to receive(:list_events).and_return(
     instance_double(Google::Apis::CalendarV3::Events, items: [])
@@ -7,7 +5,6 @@ Given('my Google Calendar has no ongoing events') do
 end
 
 Given('I have no active manual timer') do
-  # A test-only route is the most reliable way to clear session state.
   visit '/test/clear_timer' if Rails.env.test?
 end
 
@@ -48,8 +45,6 @@ end
 Given('I have a manual timer that expired 5 minutes ago') do
   expired_time = (Time.current - 5.minutes).iso8601
   page.set_rack_session(timer_ends_at: expired_time, google_token: 'fake-token')
-
-  # ADD THIS LINE: This prevents the API call from failing.
   allow_any_instance_of(Google::Apis::CalendarV3::CalendarService).to receive(:list_events).and_return(
     instance_double(Google::Apis::CalendarV3::Events, items: [])
   )
@@ -61,21 +56,16 @@ Given('the Google Calendar API is unavailable') do
     .and_raise(Google::Apis::ServerError.new('Backend Error'))
 end
 
-# --- WHEN STEPS (Actions) ---
-
 When('I visit the dashboard page') do
   visit dashboard_path
 end
 
 When('I create a manual timer for {string} minutes') do |minutes|
-  # This uses the non-JS form for reliability in tests.
   within('noscript form') do
     fill_in 'minutes', with: minutes
     click_button 'Start'
   end
 end
-
-# --- THEN STEPS (Assertions) ---
 
 Then('I should see the timer display showing {string}') do |time|
   within('#timerDisplay') do

@@ -9,15 +9,10 @@ end
 
 Given('I send a JSON profile update request with:') do |table|
   @update_data = table.rows_hash
-  # Note: The UsersController#update action is for admin updates on other users.
-  # The #profile action handles the current user's update. Let's assume the test
-  # intends to hit the standard user update endpoint.
   page.driver.submit :patch,
                     user_path(@current_user),
                     { user: @update_data, format: :json }
 end
-
-# --- WHEN STEPS ---
 
 When('I click on the profile tab') do
   within('.sidebar-nav') do
@@ -41,7 +36,6 @@ When('the server processes the request') do
   # This step is intentionally blank for feature file readability
 end
 
-# --- THEN STEPS ---
 
 Then('I should be on the user profile page') do
   expect(page).to have_current_path(path_for('profile'))
@@ -88,15 +82,12 @@ Then('I should see the profile form') do
   begin
     expect(page).to have_selector('form')
   rescue RSpec::Expectations::ExpectationNotMetError => e
-    # Dump the current page HTML to tmp for debugging
     fname = "tmp/profile_form_missing_#{Time.now.to_i}.html"
     File.write(fname, page.html)
     puts "Wrote debugging page HTML to: #{fname}"
     raise e
   end
 
-  # Accept a few common label capitalization/spacing variants using case-insensitive regex
-  # Helper to detect a field by label text (case-insensitive) or by common id
   def field_detected?(label_text, possible_ids = [])
     return true if page.has_field?(label_text)
     # try common id patterns
@@ -130,10 +121,8 @@ Then('I should see the profile form') do
 end
 
 Then('I should see my current {string}') do |field|
-  # field is the attribute name like first_name, last_name, leetcode_username
   @current_user.reload
   value = @current_user.public_send(field)
-  # The form field should contain the current value. Try common ids/labels.
   id_map = {
     'first_name' => 'user_first_name',
     'last_name' => 'user_last_name',
@@ -143,12 +132,10 @@ Then('I should see my current {string}') do |field|
   expected_id = id_map[field.to_s]
   expected_value = value.nil? ? '' : value.to_s
   if expected_id && page.has_field?(expected_id, with: expected_value)
-    # Some drivers may return nil for empty inputs; normalize before asserting
     actual = find_field(expected_id).value
     actual = '' if actual.nil?
     expect(actual.to_s).to eq(expected_value.to_s)
   else
-    # fallback: try to find label case-insensitively and check the associated input's value
     target_label = field.to_s.gsub('_', ' ')
     label = all('label').find { |l| l.text =~ /\A\s*#{Regexp.escape(target_label)}\s*\z/i }
     if label && label[:for]
@@ -162,7 +149,6 @@ Then('I should see my current {string}') do |field|
 end
 
 Then('the {string} field should contain {string}') do |field, value|
-  # Reuse the robust logic from the "should still contain" step
   id_map = {
     'First name' => 'user_first_name',
     'Last name' => 'user_last_name',
@@ -188,7 +174,7 @@ Then('the {string} field should contain {string}') do |field, value|
 end
 
 When('I visit the user profile API endpoint') do
-  # Use the API endpoint that returns current_user profile (request JSON explicitly)
+  # Use the API endpoint that returns current_user profile
   visit '/api/current_user.json'
 end
 
@@ -217,7 +203,6 @@ end
 
 Then('the JSON response should contain an error message {string}') do |msg|
   json = JSON.parse(page.body) rescue {}
-  # Some controllers return slightly different error messages (e.g. "Authentication required")
   combined = json.values.join(' ')
   expect(combined).to match(/#{Regexp.escape(msg)}/).or match(/Authentication required/i)
 end

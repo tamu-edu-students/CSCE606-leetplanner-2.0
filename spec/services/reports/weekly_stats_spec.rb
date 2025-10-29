@@ -1,7 +1,6 @@
 require "rails_helper"
 
 RSpec.describe Reports::WeeklyStats do
-  # Use let! for user to ensure it's created before tests
   let!(:user) { User.create!(netid: "test_user", email: "test@example.com", first_name: "Test", last_name: "User", active: true) }
   let(:week_start) { Time.zone.parse("2025-10-26 00:00:00") } # A Sunday
   let(:service) { described_class.new(user, week_start: week_start) }

@@ -1,17 +1,14 @@
 When('I click the {string} button') do |link_or_button_text|
-  # Prefer conventional clicks which work for both rack-test and JS drivers.
-  # If a click is intercepted (overlay, sticky header), try scrolling and retrying.
   begin
     if page.has_button?(link_or_button_text)
       click_button(link_or_button_text)
     elsif page.has_link?(link_or_button_text)
       click_link(link_or_button_text)
     else
-      # last resort: find and click the element
       find(:link_or_button, link_or_button_text).click
     end
   rescue Selenium::WebDriver::Error::ElementClickInterceptedError, Selenium::WebDriver::Error::ElementNotInteractableError => e
-    # Try to scroll the element into view and click via JS as a fallback (works for Selenium)
+    # Try to scroll the element into view and click via JS
     el = begin
       if page.has_button?(link_or_button_text)
         find_button(link_or_button_text)
@@ -30,7 +27,6 @@ When('I click the {string} button') do |link_or_button_text|
       sleep 0.05
       el.click
     rescue Selenium::WebDriver::Error::ElementClickInterceptedError, Selenium::WebDriver::Error::ElementNotInteractableError
-      # Final fallback: click via JS
       execute_script("arguments[0].click();", el)
     end
   end

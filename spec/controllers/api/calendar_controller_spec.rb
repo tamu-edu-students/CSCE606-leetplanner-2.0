@@ -159,8 +159,7 @@ RSpec.describe Api::CalendarController, type: :controller do
         end
 
         it 'sets status to "completed" for events created in the past' do
-          travel_to(1.day.from_now) do # Simulate current time being in the future
-            # This event is now in the past relative to the traveled time
+          travel_to(1.day.from_now) do
             post :create, params: { event: { summary: 'Past Event', start_date: Date.current.yesterday.to_s, start_time: '10:00' } }
 
             expect(LeetCodeSession).to have_received(:create!).with(hash_including(status: 'completed'))

@@ -10,8 +10,6 @@ def create_solved_problem(date, title, difficulty)
   )
 end
 
-# --- Step Definitions for Streak Scenarios ---
-
 Given('I solved a problem on Monday of this week') do
   # Travel to a Wednesday to ensure Monday/Tuesday are in the past
   travel_to Time.zone.now.beginning_of_week(:sunday).advance(days: 3) do
@@ -31,15 +29,13 @@ Given('I solved a problem on Wednesday of this week') do
 end
 
 When('I visit the statistics page') do
-  visit statistics_path # Assumes a route helper named statistics_path
+  visit statistics_path
 end
 
 Then('I should see a "Current Week Streak" of {string}') do |streak_text|
   expect(page).to have_content("Current Streak")
   expect(page).to have_content(streak_text)
 end
-
-# --- Step Definitions for Highlight Scenarios ---
 
 Given(/I solved (?:a|an) "([^"]*)" problem titled "([^"]*)" this week/) do |difficulty, title|
   date = Time.zone.now.beginning_of_week(:sunday).advance(days: 1)

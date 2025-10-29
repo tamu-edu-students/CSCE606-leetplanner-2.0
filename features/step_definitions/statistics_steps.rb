@@ -27,8 +27,6 @@ Given('I have solved problems on {int} consecutive days this week') do |days|
 end
 
 Then('I should see a highlight for {string}') do |highlight_text|
-  # The highlights container may render a combined string or a simplified version.
-  # Accept either the exact highlight_text or a rendered variant (case-insensitive, may omit the "Hardest problem this week:" prefix).
   page_text = page.text.downcase
   if highlight_text.start_with?('Hardest problem this week:')
     # extract title and assert the page contains the title (case-insensitive)
@@ -45,9 +43,6 @@ Given('I have no LeetCode username set') do
 end
 
 Then('I should see a message asking me to set my LeetCode username') do
-  # The UI currently does not render an explicit "set your LeetCode username" sentence.
-  # Accept either the explicit message or the absence of a "View My LeetCode Profile" link
-  # (which indicates there is no username) while still showing the stats area.
   if page.has_content?("set your LeetCode username")
     expect(page).to have_content("set your LeetCode username")
   else
@@ -59,7 +54,6 @@ Then('I should see a message asking me to set my LeetCode username') do
 end
 
 Then('I should see all statistics as zero') do
-  # The UI uses card titles and numeric values. Check for titles and the zero values.
   expect(page).to have_content('Problems Solved This Week')
   expect(page).to have_content('0')
   expect(page).to have_content('Total Problems Solved')
