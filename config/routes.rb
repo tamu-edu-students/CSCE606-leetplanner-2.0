@@ -55,6 +55,10 @@ Rails.application.routes.draw do
   end
   patch "lobbies/:id/update_all_permissions", to: "lobby_permissions#update_all", as: :update_all_lobby_permissions
 
+  resources :lobbies do
+    resource :note, only: [ :show, :edit, :update ]
+  end
+
   # -------------------------------
   # API Namespace
   # -------------------------------
