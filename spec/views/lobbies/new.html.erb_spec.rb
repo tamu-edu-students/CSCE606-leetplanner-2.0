@@ -3,7 +3,9 @@ require 'rails_helper'
 RSpec.describe "lobbies/new", type: :view do
   before(:each) do
     assign(:lobby, Lobby.new(description: "MyText"))
-    allow(view).to receive(:current_user).and_return(create(:user))
+    def view.current_user
+      @owner ||= FactoryBot.create(:user)
+    end
   end
 
   it "renders new lobby form" do

@@ -6,6 +6,9 @@ RSpec.describe "lobbies/edit", type: :view do
 
   before(:each) do
     assign(:lobby, lobby)
+    def view.current_user
+      @owner ||= FactoryBot.create(:user)
+    end
   end
 
   it "renders the edit lobby form" do

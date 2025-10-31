@@ -38,25 +38,47 @@
                                                 </div>
                     </div>
 
-                    <!-- Center Column: Shared Whiteboard -->
+                    <!-- Center Column: Whiteboard -->
                     <div class="lobby-section whiteboard-section">
-                        <h3 class="section-title">Shared Whiteboard</h3>
-                        
-                        <!-- Simple Whiteboard -->
+                        <h3 class="section-title">Whiteboard</h3>                        <!-- Simple Whiteboard -->
                         <div class="whiteboard-container">
+                            <noscript>
+                                <div class="js-required-notice">
+                                    <h4>⚠️ JavaScript Required</h4>
+                                    <p>The interactive whiteboard requires JavaScript to function properly.</p>
+                                    <p>Please enable JavaScript in your browser settings to use this feature.</p>
+                                    <p><strong>Alternative:</strong> You can use the notes section on the left for text-based information.</p>
+                                </div>
+                                <style>
+                                .js-required-notice {
+                                    background: #fff3cd;
+                                    border: 1px solid #ffeaa7;
+                                    border-radius: 6px;
+                                    padding: 15px;
+                                    margin-bottom: 15px;
+                                    color: #856404;
+                                }
+                                .js-required-notice h4 {
+                                    margin-top: 0;
+                                    color: #856404;
+                                }
+                                </style>
+                            </noscript>
+                            
                             <!-- Toolbar -->
                             <div class="whiteboard-toolbar">
-                                <button id="pen-tool" class="tool-btn active">✏️ Draw</button>
-                                <button id="text-tool" class="tool-btn">📝 Text</button>
-                                <button id="rect-tool" class="tool-btn">⬜ Rectangle</button>
-                                <button id="circle-tool" class="tool-btn">⭕ Circle</button>
+                                <button id="pencil-tool" class="tool-btn active">✏️ Pencil</button>
+                                <button id="eraser-tool" class="tool-btn">🧽 Eraser</button>
                                 <button id="clear-btn" class="tool-btn danger">🗑️ Clear</button>
+                                <label for="color-picker">Color:</label>
                                 <input type="color" id="color-picker" value="#000000">
-                                <input type="range" id="brush-size" min="1" max="10" value="3">
+                                <label for="brush-size">Size:</label>
+                                <input type="range" id="brush-size" min="1" max="20" value="3">
+                                <span id="size-display">3</span>
                             </div>
                             
                             <!-- Canvas -->
-                            <canvas id="whiteboard-canvas" width="800" height="400" style="border: 1px solid #ccc; background: white; display: block; margin: 10px 0; max-width: 100%; height: auto;"></canvas>
+                            <canvas id="whiteboard-canvas" width="1000" height="500"></canvas>
                         </div>
 
                         <script>
@@ -64,197 +86,423 @@
                             const canvas = document.getElementById('whiteboard-canvas');
                             const ctx = canvas.getContext('2d');
                             const canDraw = <%= current_user == lobby.owner || lobby.lobby_members.find_by(user: current_user)&.can_draw || false %>;
+                            const lobbyId = <%= lobby.id %>;
                             
-                            let currentTool = 'pen';
+                            let currentTool = 'pencil';
                             let isDrawing = false;
                             let currentColor = '#000000';
                             let currentSize = 3;
+                            let lastX = 0;
+                            let lastY = 0;
+                            let paths = []; // Store all drawing paths
+                            let isReceivingUpdate = false; // Prevent feedback loops
                             
-                            // Add grid
-                            function drawGrid() {
-                                ctx.strokeStyle = '#f0f0f0';
-                                ctx.lineWidth = 1;
-                                for (let x = 0; x <= 800; x += 20) {
-                                    ctx.beginPath();
-                                    ctx.moveTo(x, 0);
-                                    ctx.lineTo(x, 400);
-                                    ctx.stroke();
-                                }
-                                for (let y = 0; y <= 400; y += 20) {
-                                    ctx.beginPath();
-                                    ctx.moveTo(0, y);
-                                    ctx.lineTo(800, y);
-                                    ctx.stroke();
-                                }
+                            // Get correct mouse position accounting for canvas scaling
+                            function getMousePos(e) {
+                                const rect = canvas.getBoundingClientRect();
+                                const scaleX = canvas.width / rect.width;
+                                const scaleY = canvas.height / rect.height;
+                                
+                                return {
+                                    x: (e.clientX - rect.left) * scaleX,
+                                    y: (e.clientY - rect.top) * scaleY
+                                };
                             }
                             
                             // Tool selection
-                            document.getElementById('pen-tool').onclick = () => selectTool('pen');
-                            document.getElementById('text-tool').onclick = () => selectTool('text');
-                            document.getElementById('rect-tool').onclick = () => selectTool('rect');
-                            document.getElementById('circle-tool').onclick = () => selectTool('circle');
+                            document.getElementById('pencil-tool').onclick = () => selectTool('pencil');
+                            document.getElementById('eraser-tool').onclick = () => selectTool('eraser');
                             document.getElementById('clear-btn').onclick = clearCanvas;
                             
-                            document.getElementById('color-picker').onchange = (e) => currentColor = e.target.value;
-                            document.getElementById('brush-size').oninput = (e) => currentSize = e.target.value;
+                            document.getElementById('color-picker').onchange = (e) => {
+                                currentColor = e.target.value;
+                                if (currentTool === 'eraser') selectTool('pencil');
+                            };
+                            
+                            document.getElementById('brush-size').oninput = (e) => {
+                                currentSize = parseInt(e.target.value);
+                                document.getElementById('size-display').textContent = currentSize;
+                            };
                             
                             function selectTool(tool) {
                                 currentTool = tool;
                                 document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
                                 document.getElementById(tool + '-tool').classList.add('active');
+                                
+                                // Update cursor
+                                canvas.style.cursor = canDraw ? 'crosshair' : 'not-allowed';
                             }
                             
                             function clearCanvas() {
-                                if (confirm('Clear whiteboard?')) {
-                                    ctx.clearRect(0, 0, 800, 400);
-                                    drawGrid();
+                                if (confirm('Clear whiteboard? This will clear it for everyone in the lobby.')) {
+                                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                    paths = [];
+                                    
+                                    saveToServer();
                                 }
                             }
                             
-                            // Drawing
-                            let drawing = false;
-                            let currentPath = [];
-                            
-                            canvas.onmousedown = (e) => {
+                            // Drawing functions
+                            function startDrawing(e) {
                                 if (!canDraw) return;
-                                const rect = canvas.getBoundingClientRect();
-                                const x = e.clientX - rect.left;
-                                const y = e.clientY - rect.top;
                                 
-                                if (currentTool === 'pen') {
-                                    drawing = true;
-                                    currentPath = [{x, y}];
-                                } else if (currentTool === 'text') {
-                                    const text = prompt('Enter text:');
-                                    if (text) {
-                                        ctx.fillStyle = currentColor;
-                                        ctx.font = (currentSize * 4) + 'px Arial';
-                                        ctx.fillText(text, x, y);
-                                    }
-                                } else if (currentTool === 'rect') {
-                                    ctx.strokeStyle = currentColor;
-                                    ctx.lineWidth = 2;
-                                    ctx.strokeRect(x, y, 100, 60);
-                                } else if (currentTool === 'circle') {
-                                    ctx.strokeStyle = currentColor;
-                                    ctx.lineWidth = 2;
-                                    ctx.beginPath();
-                                    ctx.arc(x, y, 30, 0, 2 * Math.PI);
-                                    ctx.stroke();
-                                }
-                            };
-                            
-                            canvas.onmousemove = (e) => {
-                                if (!drawing || currentTool !== 'pen') return;
-                                const rect = canvas.getBoundingClientRect();
-                                const x = e.clientX - rect.left;
-                                const y = e.clientY - rect.top;
-                                currentPath.push({x, y});
+                                isDrawing = true;
+                                const pos = getMousePos(e);
+                                lastX = pos.x;
+                                lastY = pos.y;
                                 
-                                // Draw current stroke
-                                ctx.strokeStyle = currentColor;
-                                ctx.lineWidth = currentSize;
+                                // Start new path
+                                const newPath = {
+                                    tool: currentTool,
+                                    color: currentTool === 'pencil' ? currentColor : 'erase',
+                                    size: currentSize,
+                                    points: [{ x: lastX, y: lastY }]
+                                };
+                                paths.push(newPath);
+                                
+                                // Set up drawing style
                                 ctx.lineCap = 'round';
-                                ctx.beginPath();
-                                ctx.moveTo(currentPath[currentPath.length-2].x, currentPath[currentPath.length-2].y);
-                                ctx.lineTo(x, y);
-                                ctx.stroke();
-                            };
-                            
-                            canvas.onmouseup = () => {
-                                drawing = false;
-                                currentPath = [];
-                            };
-                            
-                            // Initialize
-                            drawGrid();
-                            
-                            // Responsive canvas handling
-                            function resizeCanvas() {
-                                const container = canvas.parentElement;
-                                const containerWidth = container.clientWidth - 20; // Account for padding
-                                const maxWidth = 800;
-                                const aspectRatio = 400 / 800;
+                                ctx.lineJoin = 'round';
+                                ctx.lineWidth = currentSize;
                                 
-                                if (containerWidth < maxWidth) {
-                                    canvas.style.width = containerWidth + 'px';
-                                    canvas.style.height = (containerWidth * aspectRatio) + 'px';
-                                } else {
-                                    canvas.style.width = maxWidth + 'px';
-                                    canvas.style.height = '400px';
+                                if (currentTool === 'pencil') {
+                                    ctx.strokeStyle = currentColor;
+                                    ctx.globalCompositeOperation = 'source-over';
+                                } else if (currentTool === 'eraser') {
+                                    ctx.globalCompositeOperation = 'destination-out';
+                                }
+                                
+                                // Start the path
+                                ctx.beginPath();
+                                ctx.moveTo(lastX, lastY);
+                            }
+                            
+                            function draw(e) {
+                                if (!isDrawing || !canDraw) return;
+                                
+                                const pos = getMousePos(e);
+                                
+                                // Add point to current path
+                                const currentPath = paths[paths.length - 1];
+                                currentPath.points.push({ x: pos.x, y: pos.y });
+                                
+                                ctx.lineTo(pos.x, pos.y);
+                                ctx.stroke();
+                                
+                                lastX = pos.x;
+                                lastY = pos.y;
+                            }
+                            
+                            function stopDrawing() {
+                                if (!isDrawing) return;
+                                isDrawing = false;
+                                ctx.beginPath();
+                                
+                                // Save to server
+                                if (canDraw) {
+                                    saveToServer();
                                 }
                             }
                             
-                            // Initial resize
-                            resizeCanvas();
+                            // Draw a single path
+                            function drawPath(pathData) {
+                                if (!pathData.points || pathData.points.length < 2) return;
+                                
+                                ctx.lineCap = 'round';
+                                ctx.lineJoin = 'round';
+                                ctx.lineWidth = pathData.size;
+                                
+                                if (pathData.tool === 'pencil') {
+                                    ctx.strokeStyle = pathData.color;
+                                    ctx.globalCompositeOperation = 'source-over';
+                                } else if (pathData.tool === 'eraser') {
+                                    ctx.globalCompositeOperation = 'destination-out';
+                                }
+                                
+                                ctx.beginPath();
+                                ctx.moveTo(pathData.points[0].x, pathData.points[0].y);
+                                
+                                for (let i = 1; i < pathData.points.length; i++) {
+                                    ctx.lineTo(pathData.points[i].x, pathData.points[i].y);
+                                }
+                                ctx.stroke();
+                            }
                             
-                            // Resize on window resize
-                            window.addEventListener('resize', resizeCanvas);
+                            // Save canvas to server as SVG
+                            function saveToServer() {
+                                const svgData = canvasToSVG();
+                                
+                                fetch(`/lobbies/${lobbyId}/whiteboards/update_svg`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+                                    },
+                                    body: JSON.stringify({ svg_data: svgData })
+                                }).catch(error => {
+                                    console.error('Error saving whiteboard:', error);
+                                });
+                            }
+                            
+            // Convert canvas paths to SVG
+            function canvasToSVG() {
+                let svgContent = `<svg width="1000" height="500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 500">`;                                paths.forEach(path => {
+                                    if (path.points && path.points.length > 1) {
+                                        let pathString = `M ${path.points[0].x} ${path.points[0].y}`;
+                                        for (let i = 1; i < path.points.length; i++) {
+                                            pathString += ` L ${path.points[i].x} ${path.points[i].y}`;
+                                        }
+                                        
+                                        if (path.tool === 'pencil') {
+                                            svgContent += `<path d="${pathString}" stroke="${path.color}" stroke-width="${path.size}" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+                                        }
+                                        // Note: SVG doesn't have erasers, so we skip erase paths in SVG output
+                                    }
+                                });
+                                
+                                svgContent += '</svg>';
+                                return svgContent;
+                            }
+                            
+                            // Load SVG data from server
+                            function loadSVGData(svgData) {
+                                console.log('loadSVGData called with:', svgData);
+                                // Clear canvas and paths
+                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                paths = [];
+                                
+                                if (!svgData) {
+                                    console.log('No SVG data provided');
+                                    return;
+                                }
+                                
+                                // Parse SVG and redraw paths
+                                const parser = new DOMParser();
+                                const svgDoc = parser.parseFromString(svgData, 'image/svg+xml');
+                                const pathElements = svgDoc.querySelectorAll('path');
+                                console.log('Found', pathElements.length, 'path elements');
+                                
+                                pathElements.forEach(pathEl => {
+                                    const d = pathEl.getAttribute('d');
+                                    const stroke = pathEl.getAttribute('stroke') || '#000000';
+                                    const strokeWidth = parseInt(pathEl.getAttribute('stroke-width')) || 3;
+                                    console.log('Processing path:', d);
+                                    
+                                    if (d) {
+                                        const points = parseSVGPath(d);
+                                        const pathData = {
+                                            tool: 'pencil',
+                                            color: stroke,
+                                            size: strokeWidth,
+                                            points: points
+                                        };
+                                        paths.push(pathData);
+                                        drawPath(pathData);
+                                    }
+                                });
+                                console.log('Loaded', paths.length, 'paths');
+                            }
+                            
+                            // Parse SVG path data to points
+                            function parseSVGPath(d) {
+                                const points = [];
+                                const commands = d.split(/(?=[ML])/);
+                                
+                                commands.forEach(cmd => {
+                                    if (cmd.startsWith('M') || cmd.startsWith('L')) {
+                                        const coords = cmd.substring(1).trim().split(' ');
+                                        if (coords.length >= 2) {
+                                            points.push({
+                                                x: parseFloat(coords[0]),
+                                                y: parseFloat(coords[1])
+                                            });
+                                        }
+                                    }
+                                });
+                                
+                                return points;
+                            }
+                            
+                            // Load existing whiteboard data
+                            function loadExistingData() {
+                                console.log('Loading existing whiteboard data for lobby:', lobbyId);
+                                fetch(`/lobbies/${lobbyId}/whiteboards.json`)
+                                    .then(response => {
+                                        console.log('Response status:', response.status);
+                                        return response.json();
+                                    })
+                                    .then(data => {
+                                        console.log('Received data:', data);
+                                        if (data.svg_data) {
+                                            console.log('SVG data found, length:', data.svg_data.length);
+                                            loadSVGData(data.svg_data);
+                                        } else {
+                                            console.log('No SVG data in response');
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Error loading whiteboard data:', error);
+                                    });
+                            }
+                            
+                            // Mouse events
+                            canvas.addEventListener('mousedown', startDrawing);
+                            canvas.addEventListener('mousemove', draw);
+                            canvas.addEventListener('mouseup', stopDrawing);
+                            canvas.addEventListener('mouseout', stopDrawing);
+                            
+                            // Touch events for mobile support
+                            canvas.addEventListener('touchstart', (e) => {
+                                e.preventDefault();
+                                const touch = e.touches[0];
+                                const mouseEvent = new MouseEvent('mousedown', {
+                                    clientX: touch.clientX,
+                                    clientY: touch.clientY
+                                });
+                                canvas.dispatchEvent(mouseEvent);
+                            });
+                            
+                            canvas.addEventListener('touchmove', (e) => {
+                                e.preventDefault();
+                                const touch = e.touches[0];
+                                const mouseEvent = new MouseEvent('mousemove', {
+                                    clientX: touch.clientX,
+                                    clientY: touch.clientY
+                                });
+                                canvas.dispatchEvent(mouseEvent);
+                            });
+                            
+                            canvas.addEventListener('touchend', (e) => {
+                                e.preventDefault();
+                                const mouseEvent = new MouseEvent('mouseup', {});
+                                canvas.dispatchEvent(mouseEvent);
+                            });
+                            
+                            // Initialize canvas size and styling
+                            function initCanvas() {
+                                // Set canvas background
+                                ctx.fillStyle = 'white';
+                                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                                
+                                // Set initial cursor
+                                canvas.style.cursor = canDraw ? 'crosshair' : 'not-allowed';
+                                
+                                // Make canvas responsive
+                const container = canvas.parentElement;
+                const containerWidth = container.clientWidth - 20;
+                if (containerWidth < 1000) {
+                    canvas.style.width = containerWidth + 'px';
+                    canvas.style.height = (containerWidth * 0.5) + 'px';
+                } else {
+                    canvas.style.width = '1000px';
+                    canvas.style.height = '500px';
+                }
+                            }
+                            
+                            // Permission check display
+                            if (!canDraw) {
+                                const toolbar = document.querySelector('.whiteboard-toolbar');
+                                const message = document.createElement('div');
+                                message.style.cssText = 'color: #666; font-style: italic; margin-left: 10px;';
+                                message.textContent = 'You do not have permission to draw on this whiteboard.';
+                                toolbar.appendChild(message);
+                            }
+                            
+                            // Initialize everything
+                            initCanvas();
+                            
+                            // Load existing data
+                            setTimeout(() => {
+                                loadExistingData();
+                            }, 500);
+                            
+                            // Handle window resize
+                            window.addEventListener('resize', initCanvas);
                         })();
                         </script>
 
                         <style>
-                        /* Override any conflicting whiteboard styles */
                         .whiteboard-container {
-                            background: #f8f9fa !important;
-                            padding: 10px !important;
-                            border-radius: 6px !important;
-                            margin: 0 !important;
-                            height: calc(100% - 40px) !important;
-                            display: flex !important;
-                            flex-direction: column !important;
+                            background: #f8f9fa;
+                            padding: 15px;
+                            border-radius: 8px;
+                            margin: 0;
                         }
+                        
                         .whiteboard-toolbar {
-                            display: flex !important;
-                            gap: 8px !important;
-                            margin-bottom: 10px !important;
-                            padding: 8px !important;
-                            background: white !important;
-                            border-radius: 4px !important;
-                            border: 1px solid #ddd !important;
-                            flex-wrap: wrap !important;
-                            align-items: center !important;
+                            display: flex;
+                            gap: 10px;
+                            margin-bottom: 15px;
+                            padding: 12px;
+                            background: white;
+                            border-radius: 6px;
+                            border: 1px solid #ddd;
+                            flex-wrap: wrap;
+                            align-items: center;
                         }
+                        
                         .tool-btn {
-                            padding: 6px 12px !important;
-                            border: 1px solid #ccc !important;
-                            background: white !important;
-                            border-radius: 3px !important;
-                            cursor: pointer !important;
-                            font-size: 12px !important;
-                            white-space: nowrap !important;
+                            padding: 8px 16px;
+                            border: 1px solid #ccc;
+                            background: white;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            font-size: 14px;
+                            transition: all 0.2s ease;
                         }
-                        .tool-btn:hover { 
-                            background: #f0f0f0 !important; 
+                        
+                        .tool-btn:hover {
+                            background: #f0f0f0;
+                            border-color: #999;
                         }
-                        .tool-btn.active { 
-                            background: #007bff !important; 
-                            color: white !important; 
-                            border-color: #007bff !important;
+                        
+                        .tool-btn.active {
+                            background: var(--tamu-red, #500000);
+                            color: white;
+                            border-color: var(--tamu-red, #500000);
                         }
-                        .tool-btn.danger { 
-                            background: #dc3545 !important; 
-                            color: white !important; 
-                            border-color: #dc3545 !important;
+                        
+                        .tool-btn.danger {
+                            background: #dc3545;
+                            color: white;
+                            border-color: #dc3545;
                         }
-                        #color-picker { 
-                            width: 30px !important; 
-                            height: 30px !important; 
-                            border: 1px solid #ccc !important; 
-                            border-radius: 3px !important;
-                            cursor: pointer !important;
+                        
+                        .tool-btn.danger:hover {
+                            background: #c82333;
+                            border-color: #bd2130;
                         }
-                        #brush-size { 
-                            width: 80px !important;
+                        
+                        #color-picker {
+                            width: 40px;
+                            height: 32px;
+                            border: 1px solid #ccc;
+                            border-radius: 4px;
+                            cursor: pointer;
                         }
+                        
+                        #brush-size {
+                            width: 100px;
+                        }
+                        
+                        #size-display {
+                            min-width: 20px;
+                            font-weight: bold;
+                            color: var(--tamu-red, #500000);
+                        }
+                        
+                        .whiteboard-toolbar label {
+                            font-size: 14px;
+                            font-weight: 500;
+                            color: #333;
+                        }
+                        
                         #whiteboard-canvas {
-                            flex: 1 !important;
-                            background: white !important;
-                            border: 1px solid #ddd !important;
-                            border-radius: 4px !important;
-                            display: block !important;
-                            width: 100% !important;
-                            max-width: 100% !important;
+                            background: white;
+                            border: 2px solid #ddd;
+                            border-radius: 6px;
+                            display: block;
+                            max-width: 100%;
                         }
                         </style>
                     </div>
@@ -278,15 +526,6 @@
                                     <% end %>
                                 </ul>
                             <% end %>
-                        </div>
-
-                        <!-- Voice Chat Section -->
-                        <div class="voice-chat-section">
-                            <h4 class="section-title">Voice Chat</h4>
-                            <div class="voice-controls">
-                                <button class="voice-btn" id="mute-btn">🎤 Mute</button>
-                                <button class="voice-btn" id="leave-btn">📞 Leave</button>
-                            </div>
                         </div>
 
                         <!-- Lobby Analytics -->
@@ -328,8 +567,8 @@
                             <thead>
                                 <tr>
                                 <th>Participant</th>
-                                <th>Can Draw</th>
-                                <th>Can Edit Notes</th>
+                                <th>Can Draw on Whiteboard</th>
+                                <th>Can Edit Shared Notes</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -340,13 +579,11 @@
                                     <%= member_form.object.user.full_name %>
                                     <%= member_form.hidden_field :id %>
                                     </td>
-                                    <td>
-                                    <%= member_form.label :can_draw, "Can Draw", class: "visually-hidden" %>
-                                    <%= member_form.check_box :can_draw %>
+                                    <td class="checkbox-cell">
+                                    <%= member_form.check_box :can_draw, class: "permission-checkbox" %>
                                     </td>
-                                    <td>
-                                    <%= member_form.label :can_edit_notes, "Can Edit Notes", class: "visually-hidden" %>
-                                    <%= member_form.check_box :can_edit_notes %>
+                                    <td class="checkbox-cell">
+                                    <%= member_form.check_box :can_edit_notes, class: "permission-checkbox" %>
                                     </td>
                                 </tr>
                                 <% end %>
@@ -356,6 +593,36 @@
                                 <%= form.submit "Update All Permissions", class: "btn btn-primary" %>
                             </div>
                         <% end %>
+                        
+                        <style>
+                        .permissions-table .checkbox-cell {
+                            text-align: center;
+                            padding: 1rem;
+                        }
+                        
+                        .permission-checkbox {
+                            width: 20px !important;
+                            height: 20px !important;
+                            cursor: pointer;
+                            transform: scale(1.2);
+                        }
+                        
+                        .permissions-table th {
+                            background-color: #f8f9fa;
+                            font-weight: 600;
+                            padding: 12px;
+                            border-bottom: 2px solid #dee2e6;
+                        }
+                        
+                        .permissions-table td {
+                            padding: 12px;
+                            border-bottom: 1px solid #dee2e6;
+                        }
+                        
+                        .permissions-table tr:hover {
+                            background-color: #f8f9fa;
+                        }
+                        </style>
                     <% end %>
 
                     <div class="lobby-actions">

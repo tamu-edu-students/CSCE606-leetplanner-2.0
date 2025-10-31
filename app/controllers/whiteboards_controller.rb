@@ -2,6 +2,20 @@ class WhiteboardsController < ApplicationController
   before_action :set_lobby
   before_action :set_whiteboard
 
+  # GET /lobbies/:lobby_id/whiteboards (collection route)
+  def index
+    respond_to do |format|
+      format.json { render json: { svg_data: @whiteboard.svg_data, notes: @whiteboard.notes } }
+    end
+  end
+
+  # Get whiteboard data as JSON
+  def show
+    respond_to do |format|
+      format.json { render json: { svg_data: @whiteboard.svg_data, notes: @whiteboard.notes } }
+    end
+  end
+
   # Basic (non-JS) tools adding shapes/text
   def add_drawing
     svg_data = @whiteboard.svg_data || create_default_svg

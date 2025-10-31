@@ -55,6 +55,7 @@ Rails.application.routes.draw do
         post :clear
         post :update_svg
         patch :update_notes
+        get :show
       end
     end
   end

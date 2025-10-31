@@ -18,3 +18,7 @@ end
 Then('I should see a success message') do
   expect(page).to have_css('.flash-success, .notice', text: /Added rectangle/i)
 end
+
+Then('I should see {string} on the lobby page') do |text|
+  expect(page).to have_content(text)
+end
