@@ -2,7 +2,7 @@ Given('a lobby exists that I own with members') do
   @user ||= User.first || create(:user, first_name: "Owner", last_name: "User")
   @member1 = create(:user, first_name: "John", last_name: "Doe")
   @member2 = create(:user, first_name: "Jane", last_name: "Smith")
-  
+
   @lobby = create(:lobby, owner: @user, name: "Test Lobby")
   @lobby_member1 = create(:lobby_member, lobby: @lobby, user: @member1, can_draw: true, can_edit_notes: true)
   @lobby_member2 = create(:lobby_member, lobby: @lobby, user: @member2, can_draw: false, can_edit_notes: false)
@@ -137,7 +137,7 @@ end
 
 Given('I am a member without drawing permissions') do
   visit logout_path if page.has_link?('Logout') # Ensure clean login state
-  
+
   # Login as member2 who has no permissions
   visit login_path
   fill_in 'email', with: @member2.email
@@ -161,7 +161,7 @@ end
 
 Given('I am a member with drawing permissions') do
   visit logout_path if page.has_link?('Logout')
-  
+
   # Login as member1 who has permissions
   visit login_path
   fill_in 'email', with: @member1.email
@@ -210,14 +210,14 @@ Then('the drawing should appear on the canvas') do
     const ctx = canvas.getContext('2d');
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const data = imageData.data;
-    
+
     // Check if any pixel is not transparent (has been drawn on)
     for (let i = 3; i < data.length; i += 4) {
       if (data[i] !== 0) return true;
     }
     return false;
   JS
-  
+
   expect(canvas_has_content).to be true
 end
 
@@ -269,14 +269,14 @@ Then('the whiteboard should be empty') do
     const ctx = canvas.getContext('2d');
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const data = imageData.data;
-    
+
     // Check if all pixels are transparent (canvas is empty)
     for (let i = 3; i < data.length; i += 4) {
       if (data[i] !== 0) return false;
     }
     return true;
   JS
-  
+
   expect(canvas_is_empty).to be true
 end
 
@@ -294,7 +294,7 @@ Then('I should see the existing whiteboard content') do
   # Check that loadExistingData function exists and SVG data is loaded
   load_function_exists = page.evaluate_script('typeof loadExistingData === "function"')
   expect(load_function_exists).to be true
-  
+
   # Check that the lobby has SVG data
   expect(@lobby.whiteboard.svg_data).to include('circle')
 end

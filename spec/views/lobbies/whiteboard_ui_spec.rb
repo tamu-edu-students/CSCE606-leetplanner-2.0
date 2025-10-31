@@ -25,7 +25,7 @@ RSpec.describe "lobbies/show", type: :view do
     it "uses CSS Grid with correct column proportions" do
       # The layout should have the new smaller proportions
       expect(rendered).to have_css('.lobby-layout')
-      
+
       # Check that all three sections are present
       lobby_sections = Nokogiri::HTML(rendered).css('.lobby-section')
       expect(lobby_sections.length).to eq(3)

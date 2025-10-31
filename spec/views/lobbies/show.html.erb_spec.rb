@@ -54,7 +54,7 @@ RSpec.describe "lobbies/show", type: :view do
     it "includes the whiteboard toolbar with all drawing tools" do
       expect(rendered).to have_css('.whiteboard-toolbar')
       expect(rendered).to have_css('#pencil-tool')
-      expect(rendered).to have_css('#eraser-tool') 
+      expect(rendered).to have_css('#eraser-tool')
       expect(rendered).to have_css('#clear-btn')
       expect(rendered).to have_css('#color-picker')
       expect(rendered).to have_css('#brush-size')
@@ -130,7 +130,7 @@ RSpec.describe "lobbies/show", type: :view do
     it "includes mobile touch event handling" do
       render
       expect(rendered).to include('touchstart')
-      expect(rendered).to include('touchmove') 
+      expect(rendered).to include('touchmove')
       expect(rendered).to include('touchend')
     end
   end

@@ -13,7 +13,7 @@ RSpec.describe "whiteboard CSS styling", type: :request do
     it "includes optimized grid layout CSS classes" do
       get lobby_path(lobby)
       expect(response).to have_http_status(:success)
-      
+
       # Check for the presence of key CSS classes that should be in the response
       expect(response.body).to include('lobby-layout')
       expect(response.body).to include('lobby-section')
@@ -24,7 +24,7 @@ RSpec.describe "whiteboard CSS styling", type: :request do
     it "includes enhanced canvas dimensions" do
       get lobby_path(lobby)
       expect(response).to have_http_status(:success)
-      
+
       # Check for the new larger canvas dimensions
       expect(response.body).to include('width="1000"')
       expect(response.body).to include('height="500"')
@@ -33,7 +33,7 @@ RSpec.describe "whiteboard CSS styling", type: :request do
     it "includes updated SVG dimensions in JavaScript" do
       get lobby_path(lobby)
       expect(response).to have_http_status(:success)
-      
+
       # Check for the updated SVG dimensions
       expect(response.body).to include('width="1000" height="500"')
       expect(response.body).to include('viewBox="0 0 1000 500"')
@@ -42,7 +42,7 @@ RSpec.describe "whiteboard CSS styling", type: :request do
     it "includes responsive canvas sizing logic" do
       get lobby_path(lobby)
       expect(response).to have_http_status(:success)
-      
+
       # Check for the updated responsive logic
       expect(response.body).to include('containerWidth < 1000')
       expect(response.body).to include("canvas.style.width = '1000px'")
@@ -52,7 +52,7 @@ RSpec.describe "whiteboard CSS styling", type: :request do
     it "includes all necessary whiteboard toolbar elements" do
       get lobby_path(lobby)
       expect(response).to have_http_status(:success)
-      
+
       # Check for toolbar elements
       expect(response.body).to include('id="pencil-tool"')
       expect(response.body).to include('id="eraser-tool"')
@@ -64,7 +64,7 @@ RSpec.describe "whiteboard CSS styling", type: :request do
     it "includes whiteboard functionality JavaScript functions" do
       get lobby_path(lobby)
       expect(response).to have_http_status(:success)
-      
+
       # Check for key JavaScript functions
       expect(response.body).to include('function getMousePos')
       expect(response.body).to include('function canvasToSVG')
