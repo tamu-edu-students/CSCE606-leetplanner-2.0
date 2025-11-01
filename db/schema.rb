@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_28_195837) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_29_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -76,16 +76,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_28_195837) do
     t.index ["user_id"], name: "index_lobby_members_on_user_id"
   end
 
-  create_table "notes", force: :cascade do |t|
-    t.text "content"
-    t.bigint "lobby_id", null: false
-    t.bigint "user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["lobby_id"], name: "index_notes_on_lobby_id", unique: true
-    t.index ["user_id"], name: "index_notes_on_user_id"
-  end
-
   create_table "users", force: :cascade do |t|
     t.string "netid"
     t.string "email"
@@ -109,12 +99,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_28_195837) do
     t.index ["netid"], name: "index_users_on_netid", unique: true
   end
 
+  create_table "whiteboards", force: :cascade do |t|
+    t.bigint "lobby_id", null: false
+    t.string "name"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "svg_data"
+    t.text "notes"
+    t.index ["lobby_id"], name: "index_whiteboards_on_lobby_id"
+  end
+
   add_foreign_key "leet_code_session_problems", "leet_code_problems"
   add_foreign_key "leet_code_session_problems", "leet_code_sessions"
   add_foreign_key "leet_code_sessions", "users"
   add_foreign_key "lobbies", "users", column: "owner_id"
   add_foreign_key "lobby_members", "lobbies"
   add_foreign_key "lobby_members", "users"
-  add_foreign_key "notes", "lobbies"
-  add_foreign_key "notes", "users"
+  add_foreign_key "whiteboards", "lobbies"
 end

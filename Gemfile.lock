@@ -660,6 +660,7 @@ DEPENDENCIES
   kamal
   kaminari
   launchy
+  nokogiri
   omniauth
   omniauth-google-oauth2
   omniauth-rails_csrf_protection
