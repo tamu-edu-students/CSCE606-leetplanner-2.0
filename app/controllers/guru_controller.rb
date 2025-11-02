@@ -59,7 +59,7 @@ class GuruController < ApplicationController
 
   def add_message_to_session(message, sender)
     return if message.blank? # Don't add empty messages
-    
+
     session[:guru_chat_messages] ||= []
     session[:guru_chat_messages] << {
       text: message.strip,
