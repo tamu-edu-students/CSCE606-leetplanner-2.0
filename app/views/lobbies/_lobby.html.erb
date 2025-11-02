@@ -23,7 +23,6 @@
                             <% editable_notes = (current_user == lobby.owner) || lobby.lobby_members.find_by(user: current_user)&.can_edit_notes %>
                             
                             <% if editable_notes %>
-                                <%# This form should point to your NotesController update/create action %>
                                 <%= form_with model: note, url: lobby_note_path(lobby), method: (note.persisted? ? :patch : :post), local: true do |f| %>
                                     <%= f.text_area :content, rows: 10, placeholder: "Take shared notes here...", class: "shared-notes" %>
                                     <div class="form-row">
