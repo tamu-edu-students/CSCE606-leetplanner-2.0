@@ -33,6 +33,13 @@ Rails.application.routes.draw do
   resources :users, only: [ :show, :update ]
 
   # -------------------------------
+  # Guru Chat Interface
+  # -------------------------------
+  get "/guru",                  to: "guru#index", as: :guru
+  post "/guru/message",         to: "guru#create_message", as: :guru_message
+  delete "/guru/clear",         to: "guru#clear_chat", as: :clear_guru_chat
+
+  # -------------------------------
   # LeetCode Features
   # -------------------------------
   get "/leetcode",              to: "leet_code_problems#index"
