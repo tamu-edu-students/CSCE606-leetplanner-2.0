@@ -74,7 +74,7 @@ Rails.application.routes.draw do
   patch "lobbies/:id/update_all_permissions", to: "lobby_permissions#update_all", as: :update_all_lobby_permissions
 
   resources :lobbies do
-    resource :note, only: [ :show, :edit, :update ]
+    resource :note, only: [:show, :create, :update, :edit]
   end
 
   # -------------------------------
