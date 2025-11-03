@@ -46,7 +46,9 @@ group :development, :test do
   gem "webmock", "~> 3.25"
   gem "vcr", "~> 6.3"
   gem "rack_session_access"
+  gem "rack-cors"
   gem "faker"
+  gem 'activerecord-session_store'
 end
 
 # Gems used only for development
