@@ -20,9 +20,7 @@ jobs:
           bundler-cache: true
 
       - name: Scan for common Rails security vulnerabilities using static analysis
-        run: |
-          echo "skip_checks:\n  - SSLVerify" > config/brakeman.yml
-          bin/brakeman --no-pager -c config/brakeman.yml
+        run: bin/brakeman --no-pager -x SSLVerify
 
   scan_js:
     runs-on: ubuntu-latest
