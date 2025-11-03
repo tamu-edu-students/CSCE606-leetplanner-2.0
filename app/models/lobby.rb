@@ -7,6 +7,7 @@ class Lobby < ApplicationRecord
 
   has_many :lobby_members
   has_many :users, through: :lobby_members
+  has_many :messages, dependent: :destroy
   has_one :whiteboard, dependent: :destroy
 
   accepts_nested_attributes_for :lobby_members

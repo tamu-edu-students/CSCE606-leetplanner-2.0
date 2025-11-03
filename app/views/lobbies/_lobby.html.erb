@@ -528,6 +528,35 @@
                             <% end %>
                         </div>
 
+                        <!-- Lobby Chat -->
+                        <div style="display: flex; flex-direction: column; height: 400px; border: 1px solid #ccc; padding: 10px;">
+                        <div id="messages" style="flex: 1 1 auto; overflow-y: auto; margin-bottom: 10px;">
+                          <%= turbo_frame_tag "messages" do %>
+                            <% grouped_messages = lobby.messages.includes(:user).order(created_at: :asc).group_by { |msg| msg.created_at.to_date } %>
+                            <% grouped_messages.each do |date, messages| %>
+                              <div class="message-date-separator" style="text-align: center; margin: 5px 0;">
+                                <span style="background: white; padding: 0 0; font-weight: bold; color: #555;"> <%= date.strftime("%d %b %Y") %> </span>
+                                <hr style="border-color: #ddd;" />
+                              </div>
+                              <% messages.each do |message| %>
+                                <div class="message" id="message_<%= message.id %>" style="margin-bottom: 8px;">
+                                  <small class="timestamp" style="color: #999; margin-left: 0;"><%= message.created_at.strftime("%H:%M")%> | </small>
+                                  <strong><%= message.user.first_name %>:</strong>
+                                  <span><%= message.body%></span>
+                                </div>
+                              <% end %>
+                            <% end %>
+                          <% end %>
+                        </div>
+
+                        <%= form_with model: [lobby, Message.new], data: { turbo_frame: "messages" }, html: { style: "display: flex; gap: 10px;" } do |form| %>
+                          <%= form.text_area :body, placeholder: "Type your message...", style: "flex: 1 1 auto; resize: none; height: 40px; padding: 8px;" %>
+                          <%= form.submit "Send", style: "flex: 0 0 auto; padding: 8px 16px; background-color: #007bff; border: none; color: white; cursor: pointer; border-radius: 4px;" %>
+                        <% end %>
+                      </div>
+
+                      <%= turbo_stream_from lobby %>
+
                         <!-- Lobby Analytics -->
                         <div class="lobby-analytics">
                             <h4 class="section-title">Lobby Analytics</h4>

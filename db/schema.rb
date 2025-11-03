@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_29_120000) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_02_055701) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -76,6 +76,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_29_120000) do
     t.index ["user_id"], name: "index_lobby_members_on_user_id"
   end
 
+  create_table "messages", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "lobby_id", null: false
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["lobby_id"], name: "index_messages_on_lobby_id"
+    t.index ["user_id"], name: "index_messages_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "netid"
     t.string "email"
@@ -116,5 +126,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_29_120000) do
   add_foreign_key "lobbies", "users", column: "owner_id"
   add_foreign_key "lobby_members", "lobbies"
   add_foreign_key "lobby_members", "users"
+  add_foreign_key "messages", "lobbies"
+  add_foreign_key "messages", "users"
   add_foreign_key "whiteboards", "lobbies"
 end

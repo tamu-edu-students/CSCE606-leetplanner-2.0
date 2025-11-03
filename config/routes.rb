@@ -68,6 +68,7 @@ Rails.application.routes.draw do
 
   resources :lobbies do
     resource :note, only: [ :show, :edit, :update ]
+    resources :messages, only: [ :index, :create ]
   end
 
   # -------------------------------
