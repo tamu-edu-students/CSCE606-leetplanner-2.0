@@ -53,7 +53,7 @@
 -   **Purpose:** To demonstrate the work completed during Sprint 1 and reflect on the team's process to identify areas for improvement.
 
 **Sprint Review (Demo & Discussion):**
-
+(This meeting was held in the presence of Professor Ritchie on 10/29).
 -   **Completed Work:** The team successfully demonstrated the core features from the "Collaborative Lobbies" epic.
     -   **Lobby Creation & Management:** Users can create public/private lobbies, invite others, and manage participant permissions.
     -   **Real-Time Whiteboard:** A shared whiteboard was demoed, allowing participants to draw, erase, and clear the board with low latency.
