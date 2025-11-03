@@ -1,0 +1,130 @@
+### **Sprint 1 (Oct 16 -- Oct 26): Core Lobby & Collaboration Features**
+
+**Goal:** Establish the foundation for the collaborative lobbies, implementing lobby creation, participation, and the core real-time whiteboard and notes features.
+
+#### **Sprint 1 Planning**
+
+-   **Date:** October 15-16, 2025
+
+-   **Purpose:** To define the scope for the "Collaborative Lobbies" epic, establish the sprint timeline, and allocate the initial user stories for development.
+
+**Discussion & Outcomes:**
+
+-   **Project Vision:** The team's primary goal is to implement lobbies with a common whiteboard, shareable notes, and voice chat. A stretch goal of a shared code editor was also discussed.
+
+-   **Backlog & Tooling:**
+    -   @Mohammed Sharique created the GitHub project and added team members.
+    -   The team agreed to add Rubocop and Simplecov workflows to the repository.
+    -   The 20 user stories for the epic were reviewed and divided into 6 main categories.
+
+-   **Sprint 1 Timeline:** Sprint 1 will run from **October 16th to October 26th**.
+
+-   **Sprint 1 User Stories Selected (Stories 1-15):**
+    -   @Mohammed Sharique: Lobby Creation & Management (Stories 1-4).
+    -   @Shreya Sahni: Lobby Participation & Permissions (Stories 5-8).
+    -   @Venkata Sai Nithin: Whiteboard Collaboration (Stories 9-12).
+    -   @Shivam Mishra: Shared Notes (Stories 13-15).
+    -   *(Stories 16-20 for Voice Chat and Analytics were moved to Sprint 2).*
+
+#### **Daily Standups (Summary)**
+
+-   **Dates:** October 21, 23, & 28, 2025
+
+-   **Purpose:** To onboard the team, configure development environments, and track progress on Sprint 1 development and test coverage.
+
+**Key Updates & Blockers:**
+
+-   **Oct 21:**
+    -   **Onboarding:** The team focused on environment setup. @Shreya Sahni confirmed GCP credentials would be shared via email for local `.env` files.
+    -   **Workflow:** A `development` branch was introduced for merging changes before `main`. The team also established commit message guidelines (use imperative case, include issue numbers).
+    -   **Progress:** Team members were setting up local environments and beginning work on increasing test coverage.
+
+-   **Oct 23:**
+    -   **Planning:** All team members planned to work on increasing the project's test coverage by the weekend and then start on their assigned development features.
+
+-   **Oct 28:**
+    -   **Progress:** Sprint 1 features were nearing completion. @Shivam Mishra had completed testing. @Shreya Sahni had completed development for her 4 issues and was finalizing test cases. @Mohammed Sharique had closed his issues and was also finishing test cases. @Venkata Sai Nithin had completed his test cases and implemented basic whiteboard functionality (adding shapes).
+    -   **Workflow:** The team discussed a new deployment plan to use a new Heroku instance.
+
+#### **Sprint 1 Review & Retrospective**
+
+-   **Date:** October 29, 2025
+
+-   **Purpose:** To demonstrate the work completed during Sprint 1 and reflect on the team's process to identify areas for improvement.
+
+**Sprint Review (Demo & Discussion):**
+
+-   **Completed Work:** The team successfully demonstrated the core features from the "Collaborative Lobbies" epic.
+    -   **Lobby Creation & Management:** Users can create public/private lobbies, invite others, and manage participant permissions.
+    -   **Real-Time Whiteboard:** A shared whiteboard was demoed, allowing participants to draw, erase, and clear the board with low latency.
+    -   **Synchronized Shared Notes:** A real-time, auto-saving notes editor was presented.
+
+-   **Backlog Spillover (Unfinished Work):**
+    -   **Bug:** A bug was found in the "Manage Lobby Permissions" feature.
+    -   **Tech Debt:** The story for "Increasing Test Coverage" (especially for Cucumber) was not fully completed and will be moved to the next sprint.
+    -   **New Story:** Based on the demo, a new item was created to "Improve Whiteboard Functionality".
+
+**Sprint Retrospective (Process Improvement):**
+
+-   **What could be improved?**
+    -   Team communication needs to be more frequent to provide visibility on progress and blockers outside of formal meetings.
+
+-   **Action Item:** Team members will give more frequent, informal updates on shared tasks.
+
+* * * * *
+
+### **Sprint 2 (Oct 29 -- Nov 4): Analytics, AI Chat, & Final Polish**
+
+**Goal:** To address Sprint 1 spillover (bug fixes, test coverage), implement advanced features (Analytics, AI Chatbot), and complete all documentation for the final project submission.
+
+#### **Sprint 2 Planning**
+
+-   **Date:** October 29, 2025
+
+-   **Purpose:** To plan Sprint 2 based on the Sprint 1 review and assign new user stories.
+
+**Discussion & Outcomes:**
+
+-   **Sprint 2 Timeline:** Sprint 2 will run from **October 29th to November 4th**, which is the final submission deadline.
+-   **Sprint 2 User Stories Selected:**
+    -   *(Spillover)*: Fix "Manage Lobby Permissions" bug.
+    -   *(Spillover)*: Increase Cucumber test coverage.
+    -   *(New Feature - Story 20)*: @Mohammed Sharique took the "Lobby Analytics" story, planning to create a chart.
+    -   *(New Feature - AI)*: @Shivam Mishra and @Venkata Sai Nithin took on the new "AI Chatbot" integration feature.
+    -   *(Deployment & Docs)*: @Shreya Sahni will handle final deployment and documentation.
+
+#### **Daily Standups (Summary)**
+
+-   **Dates:** October 30 & November 2, 2025
+
+-   **Purpose:** To track final tasks, prepare for deployment, and coordinate documentation for the project deadline.
+
+**Key Updates & Blockers:**
+
+-   **Oct 30:**
+    -   **Progress:** @Shreya Sahni was working on the permissions bug fix. @Mohammed Sharique was finalizing test coverage and starting the lobby chart. @Venkata Sai Nithin was finalizing the whiteboard and starting the AI chatbot.
+    -   **Deployment:** @Shreya Sahni proposed setting up the Heroku deployment for the `development` branch.
+    -   **Deadline:** The team confirmed the final deadlines: code and scrum artifacts due **Tuesday (11/4)**, presentation on **Wednesday (11/5)**.
+
+-   **Nov 2:**
+    -   **Progress:** @Shreya Sahni was finishing Sprint 2 tickets and compiling scrum artifacts. @Shivam Mishra had completed all Sprint 1 work and was starting the AI chatbot issue. @Mohammed Sharique was implementing the lobby chart using JavaScript. @Venkata Sai Nithin had updated the whiteboard post-review and was building the AI chat UI.
+    -   **Test Coverage:** Test coverage had improved to **89% (RSpec)** and **88% (Cucumber)**.
+    -   **Documentation:** The team discussed the need to create technical documentation (User Guide, ADRs, Database/System Diagrams). @Shivam Mishra suggested adding story points to issues.
+    -   **Deployment:** @Shreya Sahni will deploy the Sprint 1 code on Heroku.
+
+#### **Project Retrospective (Summary)**
+
+-   **Date:** November 4, 2025 (Inferred)
+
+-   **Purpose:** To reflect on the entire project, celebrate successes, and note key lessons learned.
+
+**Discussion & Key Takeaways:**
+
+-   **What went well?**
+    -   The team successfully implemented a complex set of features, including real-time collaboration (whiteboard, notes) and new JS-based analytics.
+    -   **Massive Test Coverage Improvement:** The team successfully addressed the technical debt from Sprint 1, bringing Cucumber coverage up from 43% to 90%.
+    -   The team adapted to new requirements (AI chatbot) and was well-prepared for final documentation and presentation.
+
+-   **What could be improved?**
+    -   **Task Definition:** The team noted that issue descriptions should be expanded and story points should be added earlier in the process to improve planning.
+    -   **Documentation:** Documentation (ADRs, diagrams) was left until the final days, adding pressure. This should be an ongoing task in future projects.
