@@ -48,7 +48,7 @@ group :development, :test do
   gem "rack_session_access"
   gem "rack-cors"
   gem "faker"
-  gem 'activerecord-session_store'
+  gem "activerecord-session_store"
 end
 
 # Gems used only for development

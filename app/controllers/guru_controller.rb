@@ -81,12 +81,12 @@ class GuruController < ApplicationController
 
   def generate_response(message)
     if API_KEY.blank?
-      return [false, "Error: The server is missing its API key."]
+      return [ false, "Error: The server is missing its API key." ]
     end
 
     payload = {
-      contents: [{ parts: [{ text: message }] }],
-      systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] }
+      contents: [ { parts: [ { text: message } ] } ],
+      systemInstruction: { parts: [ { text: SYSTEM_PROMPT } ] }
     }.to_json
 
     begin
@@ -94,19 +94,19 @@ class GuruController < ApplicationController
 
       if response.is_a?(Net::HTTPSuccess)
         result = JSON.parse(response.body) rescue nil
-        ai_response = result&.dig('candidates', 0, 'content', 'parts', 0, 'text')
+        ai_response = result&.dig("candidates", 0, "content", "parts", 0, "text")
 
         if ai_response.present?
-          return [true, ai_response]
+          [ true, ai_response ]
         else
-          return [false, "Sorry — I couldn't parse a valid reply from the AI."]
+          [ false, "Sorry — I couldn't parse a valid reply from the AI." ]
         end
       else
-        return [false, "Sorry, I ran into an API error (#{response&.code})."]
+        [ false, "Sorry, I ran into an API error (#{response&.code})." ]
       end
     rescue => e
       Rails.logger.error "Guru: Server Error in generate_response: #{e.class} #{e.message}"
-      return [false, "Sorry — an internal server error occurred while contacting the AI."]
+      [ false, "Sorry — an internal server error occurred while contacting the AI." ]
     end
   end
 
@@ -116,24 +116,24 @@ class GuruController < ApplicationController
 
     begin
       http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = (uri.scheme == 'https')
+      http.use_ssl = (uri.scheme == "https")
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       http.open_timeout = 5
       http.read_timeout = 15
 
       request = Net::HTTP::Post.new(uri.request_uri)
-      request['Content-Type'] = 'application/json'
+      request["Content-Type"] = "application/json"
       request.body = payload
 
       response = http.request(request)
 
       case response.code
-      when '200'
-        return response
-      when '429', '500', '503', '504'
+      when "200"
+        response
+      when "429", "500", "503", "504"
         raise RetryableApiError, "API returned retryable code: #{response.code}"
       else
-        return response
+        response
       end
     rescue Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNRESET, RetryableApiError => e
       if retries < max_retries
@@ -142,9 +142,9 @@ class GuruController < ApplicationController
         delay *= 2
         retry
       else
-        fake = Net::HTTPInternalServerError.new('1.1', '500', 'Internal Server Error')
+        fake = Net::HTTPInternalServerError.new("1.1", "500", "Internal Server Error")
         def fake.body; "Request failed after retries"; end
-        return fake
+        fake
       end
     rescue => e
       Rails.logger.error "Guru: Unexpected error in fetch_with_backoff: #{e.class} #{e.message}"
