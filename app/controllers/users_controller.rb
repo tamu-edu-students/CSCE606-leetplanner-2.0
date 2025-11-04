@@ -59,9 +59,6 @@ class UsersController < ApplicationController
     # Only allow a list of trusted parameters through.
     # Define which user attributes can be mass-assigned for security
     def user_params
-      params.require(:user).permit(
-        :netid, :email, :first_name, :last_name, :role, :last_login_at,
-        :leetcode_username, :personal_email
-      )
+      params.require(:user).permit(:netid, :email, :first_name, :last_name, :role)
     end
 end
