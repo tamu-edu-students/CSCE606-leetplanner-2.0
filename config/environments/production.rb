@@ -17,6 +17,7 @@ Rails.application.configure do
 
   # Cache assets for far-future expiry since they are all digest stamped.
   config.public_file_server.headers = { "cache-control" => "public, max-age=#{1.year.to_i}" }
+  config.public_file_server.enabled = true
 
   # Store uploaded files on the local file system (Heroku FS is ephemeral; for persistence use cloud storage).
   config.active_storage.service = :local
