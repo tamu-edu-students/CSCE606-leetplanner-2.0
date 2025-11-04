@@ -1,6 +1,6 @@
 class AddSessionsTable < ActiveRecord::Migration[8.0]
   def change
-    create_table :sessions, unless_exists: true do |t|
+    create_table :sessions, if_not_exists: true do |t|
       t.string :session_id, null: false
       t.text :data
       t.timestamps
