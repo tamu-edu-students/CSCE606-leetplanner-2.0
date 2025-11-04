@@ -53,12 +53,15 @@ class UsersController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     # Find and set the user instance for actions that operate on a specific user
     def set_user
-      @user = User.find(params.expect(:id))
+      @user = User.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     # Define which user attributes can be mass-assigned for security
     def user_params
-      params.expect(user: [ :netid, :email, :first_name, :last_name, :role, :last_login_at, :leetcode_username, :personal_email ])
+      params.require(:user).permit(
+        :netid, :email, :first_name, :last_name, :role, :last_login_at, 
+        :leetcode_username, :personal_email
+      )
     end
 end

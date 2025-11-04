@@ -34,8 +34,8 @@ class LobbiesController < ApplicationController
         format.html { redirect_to @lobby, notice: "Lobby was successfully created." }
         format.json { render :show, status: :created, location: @lobby }
       else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @lobby.errors, status: :unprocessable_entity }
+        format.html { render :new, status: :unprocessable_content }
+        format.json { render json: @lobby.errors, status: :unprocessable_content }
       end
     end
   end
@@ -47,8 +47,8 @@ class LobbiesController < ApplicationController
         format.html { redirect_to @lobby, notice: "Lobby was successfully updated.", status: :see_other }
         format.json { render :show, status: :ok, location: @lobby }
       else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @lobby.errors, status: :unprocessable_entity }
+        format.html { render :edit, status: :unprocessable_content }
+        format.json { render json: @lobby.errors, status: :unprocessable_content }
       end
     end
   end
@@ -67,7 +67,7 @@ class LobbiesController < ApplicationController
       end
     else
       respond_to do |format|
-        format.html { redirect_to lobbies_path, alert: "You are not authorized to destroy this lobby.", status: :forbidden }
+        format.html { redirect_to lobbies_path, alert: "You are not authorized to destroy this lobby." }
         format.json { render json: { error: "Unauthorized" }, status: :forbidden }
       end
     end
