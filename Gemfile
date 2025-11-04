@@ -38,6 +38,7 @@ gem "kamal", require: false
 gem "thruster", require: false
 
 gem "rack-cors"
+gem "activerecord-session_store"
 
 # Gems used only for development and testing
 group :development, :test do
@@ -50,7 +51,6 @@ group :development, :test do
   gem "rack_session_access"
   gem "rack-cors"
   gem "faker"
-  gem "activerecord-session_store"
 end
 
 # Gems used only for development
