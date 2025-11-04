@@ -51,6 +51,7 @@ RSpec.describe SessionsController, type: :controller do
       end
 
       it 'updates existing user without changing netid' do
+        initial_count = User.count
         existing_user = create(:user, email: 'user@tamu.edu', netid: 'original_netid')
 
         post :create
@@ -58,7 +59,7 @@ RSpec.describe SessionsController, type: :controller do
         existing_user.reload
         expect(existing_user.netid).to eq('original_netid')
         expect(existing_user.first_name).to eq('John')
-        expect(User.count).to eq(1)
+        expect(User.count).to eq(initial_count + 1)
       end
 
       it 'preserves refresh token when not provided in new auth' do

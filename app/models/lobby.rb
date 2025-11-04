@@ -8,6 +8,7 @@ class Lobby < ApplicationRecord
   has_many :lobby_members
   has_many :users, through: :lobby_members
   has_one :whiteboard, dependent: :destroy
+  # has_one :note, dependent: :destroy  # Temporarily commented out for testing
 
   accepts_nested_attributes_for :lobby_members
   before_validation :generate_lobby_code, on: :create
