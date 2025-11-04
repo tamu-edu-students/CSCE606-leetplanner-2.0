@@ -8,3 +8,5 @@ import "@hotwired/turbo-rails"
 
 // Import Stimulus controllers for interactive functionality
 import "controllers"
+import "whiteboard"
+import "./channels"

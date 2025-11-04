@@ -74,7 +74,8 @@ Rails.application.routes.draw do
   patch "lobbies/:id/update_all_permissions", to: "lobby_permissions#update_all", as: :update_all_lobby_permissions
 
   resources :lobbies do
-    resource :note, only: [ :show, :edit, :update ]
+    resource :note, only: [ :show, :create, :update, :edit ]
+    resources :messages, only: [ :index, :create ]
   end
 
   # -------------------------------
@@ -88,6 +89,10 @@ Rails.application.routes.draw do
     post   "calendar_events",     to: "calendar#create"
     patch  "calendar_events/:id", to: "calendar#update",   as: "calendar_event"
     delete "calendar_events/:id", to: "calendar#destroy"
+
+    post "guru/message", to: "guru#create_message", as: :guru_message
+    get "guru", to: "guru#index", as: :guru
+    delete "guru/clear", to: "guru#clear_chat", as: :clear_guru_chat
   end
 
   # -------------------------------
