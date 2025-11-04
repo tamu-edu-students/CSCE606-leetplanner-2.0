@@ -58,6 +58,7 @@ group :development do
   gem "foreman"
   gem "brakeman", require: false
   gem "rubocop-rails-omakase", require: false
+  gem "rails-erd"
 end
 
 # Gems used only for testing
