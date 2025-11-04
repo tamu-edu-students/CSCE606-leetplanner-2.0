@@ -33,6 +33,13 @@ Rails.application.routes.draw do
   resources :users, only: [ :show, :update ]
 
   # -------------------------------
+  # Guru Chat Interface
+  # -------------------------------
+  get "/guru",                  to: "guru#index", as: :guru
+  post "/guru/message",         to: "guru#create_message", as: :guru_message
+  delete "/guru/clear",         to: "guru#clear_chat", as: :clear_guru_chat
+
+  # -------------------------------
   # LeetCode Features
   # -------------------------------
   get "/leetcode",              to: "leet_code_problems#index"
@@ -67,7 +74,7 @@ Rails.application.routes.draw do
   patch "lobbies/:id/update_all_permissions", to: "lobby_permissions#update_all", as: :update_all_lobby_permissions
 
   resources :lobbies do
-    resource :note, only: [ :show, :edit, :update ]
+    resource :note, only: [ :show, :create, :update, :edit ]
     resources :messages, only: [ :index, :create ]
   end
 

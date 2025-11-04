@@ -1,0 +1,17 @@
+/* Guru Page Styles (moved into pages partial) */
+
+.guru-background > .page { background: transparent; }
+
+.chat-container { max-width: 800px; margin: 0 auto; }
+
+#guruPage { display: flex; flex-direction: column; gap: 2rem; }
+#guruPage .page-header { margin-bottom: 0; }
+
+/* Ensure maroon button shows */
+#guruPage input.btn.btn-primary { background-color: var(--tamu-red) !important; color: #fff !important; }
+
+
+@media (max-width: 768px) {
+  .chat-container { margin: 0; }
+  .message-content { max-width: 90%; }
+}

@@ -86,6 +86,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_02_055701) do
     t.index ["user_id"], name: "index_messages_on_user_id"
   end
 
+  create_table "notes", force: :cascade do |t|
+    t.text "content", default: ""
+    t.bigint "lobby_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["lobby_id"], name: "index_notes_on_lobby_id", unique: true
+    t.index ["user_id"], name: "index_notes_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "netid"
     t.string "email"
@@ -128,5 +138,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_02_055701) do
   add_foreign_key "lobby_members", "users"
   add_foreign_key "messages", "lobbies"
   add_foreign_key "messages", "users"
+  add_foreign_key "notes", "lobbies"
+  add_foreign_key "notes", "users"
   add_foreign_key "whiteboards", "lobbies"
 end

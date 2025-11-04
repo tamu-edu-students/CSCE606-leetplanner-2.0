@@ -51,6 +51,13 @@
             </span>
             Lobbies
         <% end %>
+
+        <%= link_to guru_path, class: "nav-item #{'active' if current_page?(guru_path)}" do %>
+            <span class="nav-icon">
+                🧙‍♂️
+            </span>
+            Guru
+        <% end %>
     </div>
 
     <div class="user-info">

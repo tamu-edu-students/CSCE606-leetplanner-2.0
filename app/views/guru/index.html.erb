@@ -1,0 +1,64 @@
+<div class="app-container">
+  <%= render 'shared/navbar' %>
+
+  <main class="main-content guru-background">
+    <div id="guruPage" class="page">
+      <div class="page-header">
+        <h1 class="page-title">🧙‍♂️ Guru - Your AI Assistant</h1>
+        <p class="page-subtitle">Ask me anything about coding, algorithms, or general questions!</p>
+      </div>
+
+      <div class="content-area">
+        <div class="chat-container">
+          <div class="chat-header" style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin: 0; color: #333;">Chat History</h2>
+            <%= button_to "Clear Chat", clear_guru_chat_path, 
+                method: :delete, 
+                class: "btn btn-secondary",
+                style: "padding: 0.5rem 1rem; font-size: 0.875rem;",
+                confirm: "Are you sure you want to clear the chat history?" %>
+          </div>
+
+          <div class="chat-messages" style="background: #f8f9fa; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; min-height: 200px; max-height: 400px; overflow-y: auto;">
+            <% if @chat_messages.any? %>
+              <% @chat_messages.each do |message| %>
+                <% next if message[:text].blank? %> <!-- Skip empty messages -->
+                <div class="message" style="margin-bottom: 1rem; <%= 'text-align: right;' if message[:sender] == 'user' %>">
+                  <div class="message-header" style="font-size: 0.875rem; color: #666; margin-bottom: 0.25rem;">
+                    <strong><%= message[:sender] == 'user' ? '👤 You' : '🧙‍♂️ Guru' %></strong>
+                    <span style="margin-left: 0.5rem;"><%= message[:timestamp] %></span>
+                  </div>
+                  <div class="message-content" style="background: <%= message[:sender] == 'user' ? '#007bff' : '#ffffff' %>; color: <%= message[:sender] == 'user' ? 'white' : '#333' %>; padding: 0.75rem 1rem; border-radius: 8px; display: inline-block; max-width: 80%; border: <%= message[:sender] == 'user' ? 'none' : '1px solid #e5e7eb' %>;">
+                    <%= simple_format(message[:text]) %>
+                  </div>
+                </div>
+              <% end %>
+            <% else %>
+              <p style="color: #666; text-align: center; margin: 1rem 0;">No messages yet. Start a conversation with Guru!</p>
+            <% end %>
+          </div>
+
+          <div class="chat-input-section">
+            <div class="focus-time-container">
+              <p class="focus-time-label">Ask Guru a Question</p>
+              <div class="focus-time-controls">
+                <%= form_with url: guru_message_path, method: :post, local: true do |form| %>
+                  <div style="margin-bottom: 1rem;">
+                    <%= form.text_area :message, 
+                        placeholder: "Type your message here...", 
+                        rows: 3,
+                        class: "focus-time-input",
+                        style: "resize: vertical; min-height: 80px;",
+                        required: true,
+                        autofocus: true %>
+                  </div>
+                  <%= form.submit "Send Message", class: "btn btn-primary" %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
