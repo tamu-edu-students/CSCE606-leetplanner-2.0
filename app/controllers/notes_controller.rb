@@ -10,8 +10,19 @@ class NotesController < ApplicationController
     @note = @lobby.note || @lobby.build_note(user: current_user)
   end
 
+  def create
+    @note = @lobby.build_note(note_params.merge(user: current_user))
+
+    if @note.save
+      redirect_to @lobby, notice: "Note created successfully"
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
   def update
-    @note = @lobby.note || @lobby.build_note(user: current_user)
+    @note = @lobby.note
+
     if @note.update(note_params)
       redirect_to @lobby, notice: "Note updated successfully"
     else

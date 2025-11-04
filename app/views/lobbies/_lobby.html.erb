@@ -13,103 +13,8 @@
             </div>
 
             <div class="content-area">
-                <div class="lobby-layout">
-                    <div class="lobby-section">
-                        <h3 class="section-title">Shared Notes</h3>
-                         <div class="notes-area">
-                            <% note = lobby.note || lobby.build_note %>
-        
-                            <%# Check permissions for editing notes %>
-                            <% editable_notes = (current_user == lobby.owner) || lobby.lobby_members.find_by(user: current_user)&.can_edit_notes %>
-                            
-                            <% if editable_notes %>
-                                <%= form_with model: note, url: lobby_note_path(lobby), method: (note.persisted? ? :patch : :post), local: true do |f| %>
-                                    <%= f.text_area :content, rows: 10, placeholder: "Take shared notes here...", class: "shared-notes" %>
-                                    <div class="form-row">
-                                        <%= f.submit "Save Notes", class: "btn btn-primary" %>
-                                    </div>
-                                <% end %>
-                            <% else %>
-                                <%# Read-only view of the notes %>
-                                <textarea rows="10" readonly placeholder="No notes yet"><%= note.content %></textarea>
-                                <small>You don't have permission to edit notes.</small>
-                            <% end %>
-                        </div>
-                    </div>
-
-                    <div class="lobby-section whiteboard-section">
-                        <h3 class="section-title">Whiteboard</h3>
-                        <div class="whiteboard-container">
- 
-                            <noscript>
-                                <div class="js-required-notice">
-                                    <h4>JavaScript Required</h4>
-                                   <p>The interactive whiteboard requires JavaScript to function properly.</p>
-                                    <p>Please enable JavaScript in your browser settings to use this feature.</p>
-                                    <p><strong>Alternative:</strong> You can use the notes section on the left for text-based information.</p>
-                                </div>
-                            </noscript>
-                            
-                           <div class="whiteboard-toolbar">
-                                <button id="pencil-tool" class="tool-btn active">✏️ Pencil</button>
-                                 <button id="eraser-tool" class="tool-btn">🧽 Eraser</button>
-                                <button id="clear-btn" class="tool-btn danger">🗑️ Clear</button>
-                                <label for="color-picker">Color:</label>
-                                 <input type="color" id="color-picker" value="#000000">
-                                <label for="brush-size">Size:</label>
-                                <input type="range" id="brush-size" min="1" max="20" value="3">
-                               <span id="size-display">3</span>
-                            </div>
-                            
-                            <canvas id="whiteboard-canvas"
-                                    width="1000"
-                                    height="500"
-                                    data-lobby-id="<%= lobby.id %>"
-                                    data-can-draw="<%= current_user == lobby.owner || lobby.lobby_members.find_by(user: current_user)&.can_draw || false %>">
-                            </canvas>
-                        </div>
-                        
-                        </div>
-                        
-                    <div class="lobby-section">
-                        <h3 class="section-title">Participants (<%= lobby.lobby_members.length %>)</h3>
-                        <div class="participants-list">
-                            <% if lobby.lobby_members.any? %>
-                                <ul class="lobby-members">
-                                    <% lobby.lobby_members.each do |member| %>
-                                        <li class="participant-item">
-                                            <div class="participant-avatar">
-                                               <%= member.user.first_name.first.upcase %>
-                                            </div>
-                                         <span class="participant-name"><%= member.user.full_name %></span>
-                                            <div class="participant-status">
-                                             <span class="status-dot online" title="Online"></span>
-                                            </div>
-                                       </li>
-                                    <% end %>
-                                </ul>
-                         <% end %>
-                        </div>
-
-                        <div class="lobby-analytics">
-                           <h4 class="section-title">Lobby Analytics</h4>
-                            <div class="analytics-item">
-                                <span>Session Duration:</span>
-                                 <span class="analytics-value">1h 30m</span>
-                            </div>
-                            <div class="analytics-item">
-                                <span>Active Users:</span>
-                                <span class="analytics-value"><%= lobby.lobby_members.length %>/5</span>
-                            </div>
-                            <div class="analytics-item">
-                                 <span>Problems Solved:</span>
-                                <span class="analytics-value">0</span>
-                            </div>
-                         </div>
-                    </div>
-                </div>
-
                 <div class="lobby-details">
+                  <div>
                    <h3 class="section-title">Description</h3>
                     <div class="lobby-description"><%= lobby.description %></div>
                     
@@ -169,7 +74,124 @@
                         
                         <%= link_to "Back to Lobbies", lobbies_path, class: "btn btn-secondary" %>
                     </div>
-         
+                  </div> 
+                      <div class="lobby-chat">
+                      <noscript>
+                          <div class="js-required-notice">
+                              <h4>JavaScript Required</h4>
+                              <p>The lobby chat requires JavaScript to function properly.</p>
+                              <p>Please enable JavaScript in your browser settings to use this feature.</p>
+                          </div>
+                      </noscript>
+                      <div id="messages" class="lobby-messages">
+                        <%= turbo_frame_tag "messages" do %>
+                          <% grouped_messages = lobby.messages.includes(:user).order(created_at: :asc).group_by { |msg| msg.created_at.to_date } %>
+                          <% grouped_messages.each do |date, messages| %>
+                            <div class="message-date-separator">
+                              <span style="background: white; padding: 0 0; font-weight: bold; color: #555;"> <%= date.strftime("%d %b %Y") %> </span>
+                              <hr style="border-color: #ddd;" />
+                            </div>
+                            <% messages.each do |message| %>
+                              <div class="message" id="message_<%= message.id %>" style="margin-bottom: 8px;">
+                                <small class="timestamp" style="color: #999; margin-left: 0;"><%= message.created_at.strftime("%H:%M")%> | </small>
+                                <strong><%= message.user.first_name %>:</strong>
+                                <span><%= message.body%></span>
+                              </div>
+                            <% end %>
+                          <% end %>
+                        <% end %>
+                      </div>
+
+                      <%= form_with model: [lobby, Message.new], data: { turbo_frame: "messages" }, html: { style: "display: flex; gap: 10px;" } do |form| %>
+                        <%= form.text_area :body, placeholder: "Type your message...", class: "lobby-chat-input" %>
+                        <%= form.submit "Send", class: "lobby-chat-button" %>
+                      <% end %>
+                    </div>
+
+                    <%= turbo_stream_from lobby %>
+               </div>
+                <div class="lobby-layout">
+                    <div class="lobby-section">
+                        <h3 class="section-title">Shared Notes</h3>
+                         <div class="notes-area">
+                            <% note = lobby.note || lobby.build_note %>
+        
+                            <%# Check permissions for editing notes %>
+                            <% editable_notes = (current_user == lobby.owner) || lobby.lobby_members.find_by(user: current_user)&.can_edit_notes %>
+                            
+                            <% if editable_notes %>
+                                <%= form_with model: note, url: lobby_note_path(lobby), method: (note.persisted? ? :patch : :post), local: true do |f| %>
+                                    <%= f.text_area :content, rows: 10, placeholder: "Take shared notes here...", class: "shared-notes" %>
+                                    <div class="form-row">
+                                        <%= f.submit "Save Notes", class: "btn btn-primary" %>
+                                    </div>
+                                <% end %>
+                            <% else %>
+                                <%# Read-only view of the notes %>
+                                <textarea rows="10" readonly placeholder="No notes yet"><%= note.content %></textarea>
+                                <small>You don't have permission to edit notes.</small>
+                            <% end %>
+                        </div>
+                    </div>
+
+                    <div class="lobby-section whiteboard-section">
+                        <h3 class="section-title">Whiteboard</h3>
+                        <div class="whiteboard-container">
+ 
+                            <noscript>
+                                <div class="js-required-notice">
+                                    <h4>JavaScript Required</h4>
+                                   <p>The interactive whiteboard requires JavaScript to function properly.</p>
+                                    <p>Please enable JavaScript in your browser settings to use this feature.</p>
+                                    <p><strong>Alternative:</strong> You can use the notes section on the left for text-based information.</p>
+                                </div>
+                            </noscript>
+                            
+                           <div class="whiteboard-toolbar">
+                                <button id="pencil-tool" class="tool-btn active">✏️ Pencil</button>
+                                 <button id="eraser-tool" class="tool-btn">🧽 Eraser</button>
+                                <button id="clear-btn" class="tool-btn danger">🗑️ Clear</button>
+                                <label for="color-picker">Color:</label>
+                                 <input type="color" id="color-picker" value="#000000">
+                                <label for="brush-size">Size:</label>
+                                <input type="range" id="brush-size" min="1" max="20" value="3">
+                               <span id="size-display">3</span>
+                            </div>
+                            
+                            <canvas id="whiteboard-canvas"
+                                    width="1000"
+                                    height="500"
+                                    data-lobby-id="<%= lobby.id %>"
+                                    data-can-draw="<%= current_user == lobby.owner || lobby.lobby_members.find_by(user: current_user)&.can_draw || false %>">
+                            </canvas>
+                        </div>
+                        
+                        </div>
+                        
+                    <div class="lobby-section">
+                      <div>
+                            <h3 class="section-title">Participants (<%= lobby.lobby_members.length %>)</h3>
+                            <div class="participants-list">
+                                <% if lobby.lobby_members.any? %>
+                                    <ul class="lobby-members">
+                                        <% lobby.lobby_members.each do |member| %>
+                                            <li class="participant-item">
+                                                <div class="participant-avatar">
+                                                  <%= member.user.first_name.first.upcase %>
+                                                </div>
+                                            <span class="participant-name"><%= member.user.full_name %></span>
+                                                <div class="participant-status">
+                                                <span class="status-dot online" title="Online"></span>
+                                                </div>
+                                          </li>
+                                        <% end %>
+                                    </ul>
+                            <% end %>
+                            </div>
+                      </div>
+
+
+                    </div>
                </div>
             </div>
         </div>
