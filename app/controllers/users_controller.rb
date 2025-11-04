@@ -86,7 +86,7 @@ class UsersController < ApplicationController
     # incoming params for non-admins and then use a static permit list. This
     # makes the intent explicit to both humans and automated tools.
     def user_params
-      if params[:user].is_a?(ActionController::Parameters) && current_user&.role != 'admin'
+      if params[:user].is_a?(ActionController::Parameters) && current_user&.role != "admin"
         # mutate params to ensure non-admin requests cannot set :role
         params[:user] = params[:user].except(:role)
       end
