@@ -13,7 +13,7 @@
       <img src="./assets/0.13.2/loading.gif" alt="loading"/>
     </div>
     <div id="wrapper" class="hide">
-      <div class="timestamp">Generated <abbr class="timeago" title="2025-11-04T13:01:57-06:00">2025-11-04T13:01:57-06:00</abbr></div>
+      <div class="timestamp">Generated <abbr class="timeago" title="2025-11-04T13:09:31-06:00">2025-11-04T13:09:31-06:00</abbr></div>
       <ul class="group_tabs"></ul>
 
       <div id="content">
@@ -22,7 +22,7 @@
     <span class="group_name">All Files</span>
     (<span class="covered_percent">
       <span class="red">
-  53.21%
+  53.24%
 </span>
 
      </span>
@@ -42,11 +42,11 @@
   </div>
 
   <div class="t-line-summary">
-    <b>1201</b> relevant lines,
-    <span class="green"><b>639</b> lines covered</span> and
+    <b>1202</b> relevant lines,
+    <span class="green"><b>640</b> lines covered</span> and
     <span class="red"><b>562</b> lines missed. </span>
     (<span class="red">
-  53.21%
+  53.24%
 </span>
 )
   </div>
@@ -303,11 +303,11 @@
           <tr class="t-file">
             <td class="strong t-file__name"><a href="#0d1f5731343910a312182a840ba94a4e1069f82a" class="src_link" title="app/controllers/users_controller.rb">app/controllers/users_controller.rb</a></td>
             <td class="green strong cell--number t-file__coverage">100.00 %</td>
-            <td class="cell--number">64</td>
-            <td class="cell--number">24</td>
-            <td class="cell--number">24</td>
+            <td class="cell--number">69</td>
+            <td class="cell--number">25</td>
+            <td class="cell--number">25</td>
             <td class="cell--number">0</td>
-            <td class="cell--number">3.83</td>
+            <td class="cell--number">3.92</td>
             
           </tr>
         
@@ -653,7 +653,7 @@
     <span class="group_name">Controllers</span>
     (<span class="covered_percent">
       <span class="red">
-  44.26%
+  44.32%
 </span>
 
      </span>
@@ -673,11 +673,11 @@
   </div>
 
   <div class="t-line-summary">
-    <b>888</b> relevant lines,
-    <span class="green"><b>393</b> lines covered</span> and
+    <b>889</b> relevant lines,
+    <span class="green"><b>394</b> lines covered</span> and
     <span class="red"><b>495</b> lines missed. </span>
     (<span class="red">
-  44.26%
+  44.32%
 </span>
 )
   </div>
@@ -901,11 +901,11 @@
           <tr class="t-file">
             <td class="strong t-file__name"><a href="#0d1f5731343910a312182a840ba94a4e1069f82a" class="src_link" title="app/controllers/users_controller.rb">app/controllers/users_controller.rb</a></td>
             <td class="green strong cell--number t-file__coverage">100.00 %</td>
-            <td class="cell--number">64</td>
-            <td class="cell--number">24</td>
-            <td class="cell--number">24</td>
+            <td class="cell--number">69</td>
+            <td class="cell--number">25</td>
+            <td class="cell--number">25</td>
             <td class="cell--number">0</td>
-            <td class="cell--number">3.83</td>
+            <td class="cell--number">3.92</td>
             
           </tr>
         
@@ -19287,8 +19287,8 @@
     
 
     <div class="t-line-summary">
-      <b>24</b> relevant lines.
-      <span class="green"><b>24</b> lines covered</span> and
+      <b>25</b> relevant lines.
+      <span class="green"><b>25</b> lines covered</span> and
       <span class="red"><b>0</b> lines missed.</span>
     </div>
 
@@ -19963,12 +19963,64 @@
 
             
 
-            <code class="ruby">      params.require(:user).permit(:netid, :email, :first_name, :last_name, :role)</code>
+            <code class="ruby">      if params[:user]</code>
           </li>
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="63">
+          <li class="covered" data-hits="6" data-linenumber="63">
+            
+              <span class="hits">6</span>
+            
+
+            
+
+            <code class="ruby">        params.require(:user).permit(:netid, :email, :first_name, :last_name, :role)</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="64">
+            
+
+            
+
+            <code class="ruby">      else</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="65">
+            
+
+            
+
+            <code class="ruby">        # fallback for non-nested params</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="66">
+            
+
+            
+
+            <code class="ruby">        params.permit(:netid, :email, :first_name, :last_name, :role)</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="67">
+            
+
+            
+
+            <code class="ruby">      end</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="68">
             
 
             
@@ -19978,7 +20030,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="64">
+          <li class="never" data-hits="" data-linenumber="69">
             
 
             

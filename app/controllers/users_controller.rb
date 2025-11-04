@@ -59,6 +59,11 @@ class UsersController < ApplicationController
     # Only allow a list of trusted parameters through.
     # Define which user attributes can be mass-assigned for security
     def user_params
-      params.require(:user).permit(:netid, :email, :first_name, :last_name, :role)
+      if params[:user]
+        params.require(:user).permit(:netid, :email, :first_name, :last_name, :role)
+      else
+        # fallback for non-nested params
+        params.permit(:netid, :email, :first_name, :last_name, :role)
+      end
     end
 end
