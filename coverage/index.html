@@ -13,7 +13,7 @@
       <img src="./assets/0.13.2/loading.gif" alt="loading"/>
     </div>
     <div id="wrapper" class="hide">
-      <div class="timestamp">Generated <abbr class="timeago" title="2025-11-04T13:09:31-06:00">2025-11-04T13:09:31-06:00</abbr></div>
+      <div class="timestamp">Generated <abbr class="timeago" title="2025-11-04T13:35:51-06:00">2025-11-04T13:35:51-06:00</abbr></div>
       <ul class="group_tabs"></ul>
 
       <div id="content">
@@ -22,14 +22,14 @@
     <span class="group_name">All Files</span>
     (<span class="covered_percent">
       <span class="red">
-  53.24%
+  53.59%
 </span>
 
      </span>
      covered at
      <span class="covered_strength">
        <span class="green">
-         5.72
+         5.67
        </span>
     </span> hits/line
     )
@@ -42,11 +42,11 @@
   </div>
 
   <div class="t-line-summary">
-    <b>1202</b> relevant lines,
-    <span class="green"><b>640</b> lines covered</span> and
+    <b>1211</b> relevant lines,
+    <span class="green"><b>649</b> lines covered</span> and
     <span class="red"><b>562</b> lines missed. </span>
     (<span class="red">
-  53.24%
+  53.59%
 </span>
 )
   </div>
@@ -131,7 +131,7 @@
             <td class="cell--number">17</td>
             <td class="cell--number">17</td>
             <td class="cell--number">0</td>
-            <td class="cell--number">72.53</td>
+            <td class="cell--number">72.76</td>
             
           </tr>
         
@@ -303,11 +303,11 @@
           <tr class="t-file">
             <td class="strong t-file__name"><a href="#0d1f5731343910a312182a840ba94a4e1069f82a" class="src_link" title="app/controllers/users_controller.rb">app/controllers/users_controller.rb</a></td>
             <td class="green strong cell--number t-file__coverage">100.00 %</td>
-            <td class="cell--number">69</td>
-            <td class="cell--number">25</td>
-            <td class="cell--number">25</td>
+            <td class="cell--number">92</td>
+            <td class="cell--number">34</td>
+            <td class="cell--number">34</td>
             <td class="cell--number">0</td>
-            <td class="cell--number">3.92</td>
+            <td class="cell--number">2.56</td>
             
           </tr>
         
@@ -653,14 +653,14 @@
     <span class="group_name">Controllers</span>
     (<span class="covered_percent">
       <span class="red">
-  44.32%
+  44.88%
 </span>
 
      </span>
      covered at
      <span class="covered_strength">
        <span class="green">
-         6.11
+         6.04
        </span>
     </span> hits/line
     )
@@ -673,11 +673,11 @@
   </div>
 
   <div class="t-line-summary">
-    <b>889</b> relevant lines,
-    <span class="green"><b>394</b> lines covered</span> and
+    <b>898</b> relevant lines,
+    <span class="green"><b>403</b> lines covered</span> and
     <span class="red"><b>495</b> lines missed. </span>
     (<span class="red">
-  44.32%
+  44.88%
 </span>
 )
   </div>
@@ -729,7 +729,7 @@
             <td class="cell--number">17</td>
             <td class="cell--number">17</td>
             <td class="cell--number">0</td>
-            <td class="cell--number">72.53</td>
+            <td class="cell--number">72.76</td>
             
           </tr>
         
@@ -901,11 +901,11 @@
           <tr class="t-file">
             <td class="strong t-file__name"><a href="#0d1f5731343910a312182a840ba94a4e1069f82a" class="src_link" title="app/controllers/users_controller.rb">app/controllers/users_controller.rb</a></td>
             <td class="green strong cell--number t-file__coverage">100.00 %</td>
-            <td class="cell--number">69</td>
-            <td class="cell--number">25</td>
-            <td class="cell--number">25</td>
+            <td class="cell--number">92</td>
+            <td class="cell--number">34</td>
+            <td class="cell--number">34</td>
             <td class="cell--number">0</td>
-            <td class="cell--number">3.92</td>
+            <td class="cell--number">2.56</td>
             
           </tr>
         
@@ -6714,9 +6714,9 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="897" data-linenumber="33">
+          <li class="covered" data-hits="901" data-linenumber="33">
             
-              <span class="hits">897</span>
+              <span class="hits">901</span>
             
 
             
@@ -19287,8 +19287,8 @@
     
 
     <div class="t-line-summary">
-      <b>25</b> relevant lines.
-      <span class="green"><b>25</b> lines covered</span> and
+      <b>34</b> relevant lines.
+      <span class="green"><b>34</b> lines covered</span> and
       <span class="red"><b>0</b> lines missed.</span>
     </div>
 
@@ -19359,7 +19359,7 @@
 
             
 
-            <code class="ruby"></code>
+            <code class="ruby">  </code>
           </li>
         </div>
       
@@ -19369,7 +19369,7 @@
 
             
 
-            <code class="ruby">  # Set up user instance for actions that need a specific user</code>
+            <code class="ruby">  # Ensure only admins can access admin-level actions</code>
           </li>
         </div>
       
@@ -19381,7 +19381,7 @@
 
             
 
-            <code class="ruby">  before_action :set_user, only: %i[ show update ]</code>
+            <code class="ruby">  before_action :require_admin!, only: %i[ update ]</code>
           </li>
         </div>
       
@@ -19401,44 +19401,26 @@
 
             
 
-            <code class="ruby">  # GET /users/1 or /users/1.json</code>
+            <code class="ruby">  # Set up user instance for actions that need a specific user</code>
           </li>
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="11">
+          <li class="covered" data-hits="1" data-linenumber="11">
+            
+              <span class="hits">1</span>
             
 
             
 
-            <code class="ruby">  # Display details of a specific user</code>
+            <code class="ruby">  before_action :set_user, only: %i[ show update ]</code>
           </li>
         </div>
       
         <div>
-          <li class="covered" data-hits="2" data-linenumber="12">
+          <li class="covered" data-hits="1" data-linenumber="12">
             
-              <span class="hits">2</span>
-            
-
-            
-
-            <code class="ruby">  def show</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="13">
-            
-
-            
-
-            <code class="ruby">  end</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="14">
+              <span class="hits">1</span>
             
 
             
@@ -19448,12 +19430,34 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="15">
+          <li class="never" data-hits="" data-linenumber="13">
             
 
             
 
-            <code class="ruby">  # GET /profile</code>
+            <code class="ruby">  # GET /users/1 or /users/1.json</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="14">
+            
+
+            
+
+            <code class="ruby">  # Display details of a specific user</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="1" data-linenumber="15">
+            
+              <span class="hits">1</span>
+            
+
+            
+
+            <code class="ruby">  def show</code>
           </li>
         </div>
       
@@ -19463,7 +19467,7 @@
 
             
 
-            <code class="ruby">  # Handle user profile viewing and updating</code>
+            <code class="ruby">  end</code>
           </li>
         </div>
       
@@ -19473,31 +19477,31 @@
 
             
 
-            <code class="ruby">  # Supports both GET (view) and PATCH (update) requests</code>
+            <code class="ruby"></code>
           </li>
         </div>
       
         <div>
-          <li class="covered" data-hits="2" data-linenumber="18">
+          <li class="covered" data-hits="1" data-linenumber="18">
             
-              <span class="hits">2</span>
-            
-
+              <span class="hits">1</span>
             
 
-            <code class="ruby">  def profile</code>
+            
+
+            <code class="ruby">  # GET /profile</code>
           </li>
         </div>
       
         <div>
-          <li class="covered" data-hits="14" data-linenumber="19">
+          <li class="covered" data-hits="11" data-linenumber="19">
             
-              <span class="hits">14</span>
-            
-
+              <span class="hits">11</span>
             
 
-            <code class="ruby">    if request.patch?</code>
+            
+
+            <code class="ruby">  # Handle user profile viewing and updating</code>
           </li>
         </div>
       
@@ -19507,31 +19511,31 @@
 
             
 
-            <code class="ruby">      # Handle profile update request</code>
+            <code class="ruby">  # Supports both GET (view) and PATCH (update) requests</code>
           </li>
         </div>
       
         <div>
-          <li class="covered" data-hits="5" data-linenumber="21">
+          <li class="covered" data-hits="4" data-linenumber="21">
             
-              <span class="hits">5</span>
-            
-
+              <span class="hits">4</span>
             
 
-            <code class="ruby">      if current_user.update(user_params)</code>
+            
+
+            <code class="ruby">  def profile</code>
           </li>
         </div>
       
         <div>
-          <li class="covered" data-hits="2" data-linenumber="22">
+          <li class="covered" data-hits="4" data-linenumber="22">
             
-              <span class="hits">2</span>
-            
-
+              <span class="hits">4</span>
             
 
-            <code class="ruby">        redirect_to profile_path, notice: &quot;Profile updated successfully&quot;</code>
+            
+
+            <code class="ruby">    if request.patch?</code>
           </li>
         </div>
       
@@ -19541,7 +19545,7 @@
 
             
 
-            <code class="ruby">      else</code>
+            <code class="ruby">      # Handle profile update request</code>
           </li>
         </div>
       
@@ -19551,17 +19555,19 @@
 
             
 
-            <code class="ruby">        # Re-render profile form with validation errors</code>
+            <code class="ruby">      # Use the NEW, safe params method for the profile</code>
           </li>
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="25">
+          <li class="covered" data-hits="2" data-linenumber="25">
+            
+              <span class="hits">2</span>
             
 
             
 
-            <code class="ruby">        # Surface the first validation error in flash for feature tests that look for it</code>
+            <code class="ruby">      if current_user.update(profile_params)</code>
           </li>
         </div>
       
@@ -19573,7 +19579,7 @@
 
             
 
-            <code class="ruby">        error_message = current_user.errors.full_messages.join(&quot;, &quot;)</code>
+            <code class="ruby">        redirect_to profile_path, notice: &quot;Profile updated successfully&quot;</code>
           </li>
         </div>
       
@@ -19583,31 +19589,31 @@
 
             
 
-            <code class="ruby">        # reload the user from DB to show persisted values in the form (tests expect old values)</code>
+            <code class="ruby">      else</code>
           </li>
         </div>
       
         <div>
-          <li class="covered" data-hits="3" data-linenumber="28">
+          <li class="covered" data-hits="2" data-linenumber="28">
             
-              <span class="hits">3</span>
-            
-
+              <span class="hits">2</span>
             
 
-            <code class="ruby">        current_user.reload</code>
+            
+
+            <code class="ruby">        # Re-render profile form with validation errors</code>
           </li>
         </div>
       
         <div>
-          <li class="covered" data-hits="3" data-linenumber="29">
+          <li class="covered" data-hits="2" data-linenumber="29">
             
-              <span class="hits">3</span>
-            
-
+              <span class="hits">2</span>
             
 
-            <code class="ruby">        flash.now[:alert] = error_message</code>
+            
+
+            <code class="ruby">        # Surface the first validation error in flash for feature tests that look for it</code>
           </li>
         </div>
       
@@ -19619,7 +19625,7 @@
 
             
 
-            <code class="ruby">        render :profile, status: :unprocessable_entity</code>
+            <code class="ruby">        error_message = current_user.errors.full_messages.join(&quot;, &quot;)</code>
           </li>
         </div>
       
@@ -19629,37 +19635,43 @@
 
             
 
-            <code class="ruby">      end</code>
+            <code class="ruby">        # reload the user from DB to show persisted values in the form (tests expect old values)</code>
           </li>
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="32">
+          <li class="covered" data-hits="1" data-linenumber="32">
+            
+              <span class="hits">1</span>
             
 
             
 
-            <code class="ruby">    end</code>
+            <code class="ruby">        current_user.reload</code>
           </li>
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="33">
+          <li class="covered" data-hits="1" data-linenumber="33">
+            
+              <span class="hits">1</span>
             
 
             
 
-            <code class="ruby">    # For GET requests, just render the profile view</code>
+            <code class="ruby">        flash.now[:alert] = error_message</code>
           </li>
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="34">
+          <li class="covered" data-hits="1" data-linenumber="34">
+            
+              <span class="hits">1</span>
             
 
             
 
-            <code class="ruby">  end</code>
+            <code class="ruby">        render :profile, status: :unprocessable_entity</code>
           </li>
         </div>
       
@@ -19669,7 +19681,7 @@
 
             
 
-            <code class="ruby"></code>
+            <code class="ruby">      end</code>
           </li>
         </div>
       
@@ -19679,7 +19691,7 @@
 
             
 
-            <code class="ruby">  # PATCH/PUT /users/1 or /users/1.json</code>
+            <code class="ruby">    end</code>
           </li>
         </div>
       
@@ -19689,12 +19701,58 @@
 
             
 
-            <code class="ruby">  # Update an existing user with provided parameters</code>
+            <code class="ruby">    # For GET requests, just render the profile view</code>
           </li>
         </div>
       
         <div>
-          <li class="covered" data-hits="2" data-linenumber="38">
+          <li class="covered" data-hits="1" data-linenumber="38">
+            
+              <span class="hits">1</span>
+            
+
+            
+
+            <code class="ruby">  end</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="1" data-linenumber="39">
+            
+              <span class="hits">1</span>
+            
+
+            
+
+            <code class="ruby"></code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="1" data-linenumber="40">
+            
+              <span class="hits">1</span>
+            
+
+            
+
+            <code class="ruby">  # PATCH/PUT /users/1 or /users/1.json</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="41">
+            
+
+            
+
+            <code class="ruby">  # Update an existing user with provided parameters (Admin Only)</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="2" data-linenumber="42">
             
               <span class="hits">2</span>
             
@@ -19706,9 +19764,9 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="5" data-linenumber="39">
+          <li class="covered" data-hits="6" data-linenumber="43">
             
-              <span class="hits">5</span>
+              <span class="hits">6</span>
             
 
             
@@ -19718,58 +19776,12 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="5" data-linenumber="40">
-            
-              <span class="hits">5</span>
-            
-
-            
-
-            <code class="ruby">      if @user.update(user_params)</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="41">
-            
-
-            
-
-            <code class="ruby">        # Success: redirect to user page with success message</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="covered" data-hits="4" data-linenumber="42">
-            
-              <span class="hits">4</span>
-            
-
-            
-
-            <code class="ruby">        format.html { redirect_to @user, notice: &quot;User was successfully updated.&quot;, status: :see_other }</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="covered" data-hits="5" data-linenumber="43">
-            
-              <span class="hits">5</span>
-            
-
-            
-
-            <code class="ruby">        format.json { render :show, status: :ok, location: @user }</code>
-          </li>
-        </div>
-      
-        <div>
           <li class="never" data-hits="" data-linenumber="44">
             
 
             
 
-            <code class="ruby">      else</code>
+            <code class="ruby">      # This action now safely uses the admin-level &#39;user_params&#39;</code>
           </li>
         </div>
       
@@ -19779,14 +19791,80 @@
 
             
 
+            <code class="ruby">      # because it&#39;s protected by the `require_admin!` before_action.</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="4" data-linenumber="46">
+            
+              <span class="hits">4</span>
+            
+
+            
+
+            <code class="ruby">      if @user.update(user_params)</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="47">
+            
+
+            
+
+            <code class="ruby">        # Success: redirect to user page with success message</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="3" data-linenumber="48">
+            
+              <span class="hits">3</span>
+            
+
+            
+
+            <code class="ruby">        format.html { redirect_to @user, notice: &quot;User was successfully updated.&quot;, status: :see_other }</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="3" data-linenumber="49">
+            
+              <span class="hits">3</span>
+            
+
+            
+
+            <code class="ruby">        format.json { render :show, status: :ok, location: @user }</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="50">
+            
+
+            
+
+            <code class="ruby">      else</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="51">
+            
+
+            
+
             <code class="ruby">        # Failure: re-render edit form with validation errors</code>
           </li>
         </div>
       
         <div>
-          <li class="covered" data-hits="3" data-linenumber="46">
+          <li class="covered" data-hits="4" data-linenumber="52">
             
-              <span class="hits">3</span>
+              <span class="hits">4</span>
             
 
             
@@ -19796,7 +19874,7 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="3" data-linenumber="47">
+          <li class="covered" data-hits="3" data-linenumber="53">
             
               <span class="hits">3</span>
             
@@ -19808,7 +19886,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="48">
+          <li class="never" data-hits="" data-linenumber="54">
             
 
             
@@ -19818,7 +19896,9 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="49">
+          <li class="covered" data-hits="1" data-linenumber="55">
+            
+              <span class="hits">1</span>
             
 
             
@@ -19828,7 +19908,9 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="50">
+          <li class="covered" data-hits="1" data-linenumber="56">
+            
+              <span class="hits">1</span>
             
 
             
@@ -19838,7 +19920,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="51">
+          <li class="never" data-hits="" data-linenumber="57">
             
 
             
@@ -19848,9 +19930,9 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="2" data-linenumber="52">
+          <li class="covered" data-hits="1" data-linenumber="58">
             
-              <span class="hits">2</span>
+              <span class="hits">1</span>
             
 
             
@@ -19860,7 +19942,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="53">
+          <li class="never" data-hits="" data-linenumber="59">
             
 
             
@@ -19870,76 +19952,12 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="54">
-            
-
-            
-
-            <code class="ruby">    # Find and set the user instance for actions that operate on a specific user</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="covered" data-hits="2" data-linenumber="55">
-            
-              <span class="hits">2</span>
-            
-
-            
-
-            <code class="ruby">    def set_user</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="covered" data-hits="6" data-linenumber="56">
-            
-              <span class="hits">6</span>
-            
-
-            
-
-            <code class="ruby">      @user = User.find(params[:id])</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="57">
-            
-
-            
-
-            <code class="ruby">    end</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="58">
-            
-
-            
-
-            <code class="ruby"></code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="59">
-            
-
-            
-
-            <code class="ruby">    # Only allow a list of trusted parameters through.</code>
-          </li>
-        </div>
-      
-        <div>
           <li class="never" data-hits="" data-linenumber="60">
             
 
             
 
-            <code class="ruby">    # Define which user attributes can be mass-assigned for security</code>
+            <code class="ruby">    # Find and set the user instance for actions that operate on a specific user</code>
           </li>
         </div>
       
@@ -19951,76 +19969,24 @@
 
             
 
-            <code class="ruby">    def user_params</code>
+            <code class="ruby">    def set_user</code>
           </li>
         </div>
       
         <div>
-          <li class="covered" data-hits="10" data-linenumber="62">
+          <li class="covered" data-hits="9" data-linenumber="62">
             
-              <span class="hits">10</span>
-            
-
+              <span class="hits">9</span>
             
 
-            <code class="ruby">      if params[:user]</code>
+            
+
+            <code class="ruby">      @user = User.find(params[:id])</code>
           </li>
         </div>
       
         <div>
-          <li class="covered" data-hits="6" data-linenumber="63">
-            
-              <span class="hits">6</span>
-            
-
-            
-
-            <code class="ruby">        params.require(:user).permit(:netid, :email, :first_name, :last_name, :role)</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="64">
-            
-
-            
-
-            <code class="ruby">      else</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="65">
-            
-
-            
-
-            <code class="ruby">        # fallback for non-nested params</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="66">
-            
-
-            
-
-            <code class="ruby">        params.permit(:netid, :email, :first_name, :last_name, :role)</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="67">
-            
-
-            
-
-            <code class="ruby">      end</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="68">
+          <li class="never" data-hits="" data-linenumber="63">
             
 
             
@@ -20030,7 +19996,289 @@
         </div>
       
         <div>
+          <li class="never" data-hits="" data-linenumber="64">
+            
+
+            
+
+            <code class="ruby"></code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="65">
+            
+
+            
+
+            <code class="ruby">    # Authorization check to ensure user is an admin</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="1" data-linenumber="66">
+            
+              <span class="hits">1</span>
+            
+
+            
+
+            <code class="ruby">    def require_admin!</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="67">
+            
+
+            
+
+            <code class="ruby">      # This assumes your User model has a `role` attribute (e.g., &#39;admin&#39;, &#39;student&#39;)</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="68">
+            
+
+            
+
+            <code class="ruby">      unless current_user.role == &#39;admin&#39;</code>
+          </li>
+        </div>
+      
+        <div>
           <li class="never" data-hits="" data-linenumber="69">
+            
+
+            
+
+            <code class="ruby">        redirect_to root_path, alert: &quot;You are not authorized to perform this action.&quot;</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="70">
+            
+
+            
+
+            <code class="ruby">      end</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="71">
+            
+
+            
+
+            <code class="ruby">    end</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="72">
+            
+
+            
+
+            <code class="ruby"></code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="73">
+            
+
+            
+
+            <code class="ruby">    # Safe params for a user editing their OWN profile</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="74">
+            
+
+            
+
+            <code class="ruby">    def profile_params</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="75">
+            
+
+            
+
+            <code class="ruby">      # This list only includes things a user can safely change about themselves.</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="76">
+            
+
+            
+
+            <code class="ruby">      # It specifically EXCLUDES :role.</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="77">
+            
+
+            
+
+            <code class="ruby">      # Add/remove other fields like :leetcode_username as needed.</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="78">
+            
+
+            
+
+            <code class="ruby">      params.require(:user).permit(</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="79">
+            
+
+            
+
+            <code class="ruby">        :netid, :email, :first_name, :last_name, </code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="80">
+            
+
+            
+
+            <code class="ruby">        :leetcode_username, :personal_email</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="81">
+            
+
+            
+
+            <code class="ruby">      )</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="82">
+            
+
+            
+
+            <code class="ruby">    end</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="83">
+            
+
+            
+
+            <code class="ruby"></code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="84">
+            
+
+            
+
+            <code class="ruby">    # Admin-level params for updating ANY user</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="85">
+            
+
+            
+
+            <code class="ruby">    # This method is now ONLY for admins, protected by `require_admin!`</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="86">
+            
+
+            
+
+            <code class="ruby">    def user_params</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="87">
+            
+
+            
+
+            <code class="ruby">      params.require(:user).permit(</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="88">
+            
+
+            
+
+            <code class="ruby">        :netid, :email, :first_name, :last_name, </code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="89">
+            
+
+            
+
+            <code class="ruby">        :role, :leetcode_username, :personal_email</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="90">
+            
+
+            
+
+            <code class="ruby">      )</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="91">
+            
+
+            
+
+            <code class="ruby">    end</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="92">
             
 
             

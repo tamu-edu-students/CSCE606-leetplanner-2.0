@@ -59,6 +59,10 @@ RSpec.describe UsersController, type: :controller do
     end
 
     describe "PATCH #update" do
+      before do
+        # Make the current user an admin so they can access the admin-only update action
+        user.update(role: 'admin')
+      end
       context "with valid parameters" do
         it "updates the user and redirects (HTML)" do
           patch :update, params: { id: user.id, user: valid_attributes }
