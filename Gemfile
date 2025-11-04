@@ -49,7 +49,6 @@ group :development, :test do
   gem "webmock", "~> 3.25"
   gem "vcr", "~> 6.3"
   gem "rack_session_access"
-  gem "rack-cors"
   gem "faker"
 end
 
