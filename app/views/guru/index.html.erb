@@ -28,7 +28,7 @@
                     <strong><%= message[:sender] == 'user' ? '👤 You' : '🧙‍♂️ Guru' %></strong>
                     <span style="margin-left: 0.5rem;"><%= message[:timestamp] %></span>
                   </div>
-                  <div class="message-content" style="background: <%= message[:sender] == 'user' ? '#007bff' : '#ffffff' %>; color: <%= message[:sender] == 'user' ? 'white' : '#333' %>; padding: 0.75rem 1rem; border-radius: 8px; display: inline-block; max-width: 80%; border: <%= message[:sender] == 'user' ? 'none' : '1px solid #e5e7eb' %>;">
+                  <div class="message-content" style="background: <%= message[:sender] == 'user' ? '#4c0000' : '#ffffff' %>; color: <%= message[:sender] == 'user' ? 'white' : '#333' %>; padding: 0.75rem 1rem; border-radius: 8px; display: inline-block; max-width: 80%; border: <%= message[:sender] == 'user' ? 'none' : '1px solid #e5e7eb' %>;">
                     <%= simple_format(message[:text]) %>
                   </div>
                 </div>
