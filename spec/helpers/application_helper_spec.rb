@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe ApplicationHelper, type: :helper do
   describe "#format_event_time" do
-
     context "when the time value is blank" do
       it "returns an empty string if the value is nil" do
         expect(helper.format_event_time(nil)).to eq("")

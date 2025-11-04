@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe MessagesController, type: :controller do
-
   # --- Setup ---
   # Create a valid User (owner)
   let!(:owner) { User.create!(
@@ -10,13 +9,13 @@ RSpec.describe MessagesController, type: :controller do
     first_name: "Lobby",
     last_name: "Owner"
   ) }
-  
+
   # Create a valid Lobby
   let!(:lobby) { Lobby.create!(
     name: "Test Lobby",
     owner: owner
   ) }
-  
+
   # Create a valid User (the message sender)
   let!(:user) { User.create!(
     netid: "sender123",
@@ -26,9 +25,8 @@ RSpec.describe MessagesController, type: :controller do
   ) }
 
   # --- Tests ---
-  
+
   describe "POST #create" do
-    
     # Define valid and invalid params
     let(:valid_params) { { lobby_id: lobby.id, message: { body: "This is a test message" } } }
     let(:invalid_params) { { lobby_id: lobby.id, message: { body: "" } } } # Assumes model validates body
@@ -80,7 +78,7 @@ RSpec.describe MessagesController, type: :controller do
       context "with invalid parameters" do
         # This context assumes your app/models/message.rb
         # has: validates :body, presence: true
-        
+
         context "as HTML" do
           it "does not create a new Message" do
             expect {

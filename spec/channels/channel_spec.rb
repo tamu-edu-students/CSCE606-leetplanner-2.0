@@ -5,7 +5,7 @@ RSpec.describe ApplicationCable::Connection, type: :channel do
   it "successfully connects" do
     # Simulates a client connecting to the /cable endpoint
     connect "/cable"
-    
+
     # Verifies that an instance of your connection class was created
     expect(connection).to be_a(ApplicationCable::Connection)
   end

@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe TestHelpersController, type: :controller do
-  
   before do
     routes.draw do
       # Define the controller's actions
@@ -21,7 +20,7 @@ RSpec.describe TestHelpersController, type: :controller do
     it "clears the session and returns :ok" do
       session[:user_id] = 123 # Set a dummy session
       get :clear_session
-      
+
       expect(session[:user_id]).to be_nil
       expect(response).to have_http_status(:ok)
     end
@@ -31,7 +30,7 @@ RSpec.describe TestHelpersController, type: :controller do
     it "clears the session, sets a flash, and redirects to root" do
       session[:user_id] = 123
       get :clear_session_with_alert
-      
+
       expect(session[:user_id]).to be_nil
       expect(flash[:alert]).to eq("Your session expired. Please log in again.")
       expect(response).to redirect_to(root_path)
@@ -42,7 +41,7 @@ RSpec.describe TestHelpersController, type: :controller do
     it "clears the timer from the session and returns :ok" do
       session[:timer_ends_at] = Time.now.iso8601
       get :clear_timer
-      
+
       expect(session[:timer_ends_at]).to be_nil
       expect(response).to have_http_status(:ok)
     end
@@ -55,7 +54,7 @@ RSpec.describe TestHelpersController, type: :controller do
     it "sets the timer in the session for positive minutes and redirects" do
       freeze_time do # Freeze time
         get :set_timer, params: { minutes: 15 }
-        
+
         expected_time = (Time.now.utc + 15.minutes).iso8601
         expect(session[:timer_ends_at]).to eq(expected_time)
         expect(response).to redirect_to(dashboard_path)
@@ -65,7 +64,7 @@ RSpec.describe TestHelpersController, type: :controller do
     it "deletes the timer for zero minutes and redirects" do
       session[:timer_ends_at] = Time.now.iso8601
       get :set_timer, params: { minutes: 0 }
-      
+
       expect(session[:timer_ends_at]).to be_nil
       expect(response).to redirect_to(dashboard_path)
     end
@@ -96,7 +95,7 @@ RSpec.describe TestHelpersController, type: :controller do
         expect(session[:user_email]).to eq(existing_user.email)
         expect(session[:user_first_name]).to eq(existing_user.first_name)
         expect(response).to redirect_to(dashboard_path)
-        
+
         # Check that last_login_at was updated
         expect(existing_user.reload.last_login_at).to be_present
       end

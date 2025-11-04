@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe LobbyChannel, type: :channel do
-
   let!(:owner) { User.create!(
     netid: "testuser123",
     email: "test@example.com",
@@ -27,7 +26,7 @@ RSpec.describe LobbyChannel, type: :channel do
 
       # Test that the subscription was successful
       expect(subscription).to be_confirmed
-      
+
       expect(subscription).to have_stream_for(lobby)
     end
   end

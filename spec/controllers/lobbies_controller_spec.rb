@@ -1,14 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe LobbiesController, type: :controller do
-
   let!(:user) { User.create!(
     netid: "specuser",
     email: "specuser@example.com",
     first_name: "Spec",
     last_name: "User"
   ) }
-  
+
   let!(:other_user) { User.create!(
     netid: "otheruser",
     email: "other@example.com",
@@ -17,23 +16,23 @@ RSpec.describe LobbiesController, type: :controller do
   ) }
 
   # Create a set of lobbies to test the 'index' action's logic
-  let!(:joined_lobby) { 
-    Lobby.create!(name: "Joined Private", owner: other_user, private: true) 
+  let!(:joined_lobby) {
+    Lobby.create!(name: "Joined Private", owner: other_user, private: true)
   }
-  let!(:public_unjoined_lobby) { 
-    Lobby.create!(name: "Public", owner: other_user, private: false) 
+  let!(:public_unjoined_lobby) {
+    Lobby.create!(name: "Public", owner: other_user, private: false)
   }
-  let!(:private_unjoined_lobby) { 
-    Lobby.create!(name: "Other Private", owner: other_user, private: true) 
+  let!(:private_unjoined_lobby) {
+    Lobby.create!(name: "Other Private", owner: other_user, private: true)
   }
   # Make 'user' a member of the 'joined_lobby'
-  let!(:membership) { 
-    LobbyMember.create!(lobby: joined_lobby, user: user) 
+  let!(:membership) {
+    LobbyMember.create!(lobby: joined_lobby, user: user)
   }
 
   # A lobby that 'user' owns, for testing edit/update/destroy
-  let!(:owned_lobby) { 
-    Lobby.create!(name: "Owned Lobby", owner: user) 
+  let!(:owned_lobby) {
+    Lobby.create!(name: "Owned Lobby", owner: user)
   }
 
   # Valid/invalid attributes for create/update tests
@@ -43,7 +42,7 @@ RSpec.describe LobbiesController, type: :controller do
   let(:invalid_attributes) {
     { name: "" } # Fails validation
   }
-  
+
   describe "GET #index" do
     before do
       session[:user_id] = user.id # "Log in" the user
@@ -68,7 +67,7 @@ RSpec.describe LobbiesController, type: :controller do
 
   describe "GET #new" do
     before { session[:user_id] = user.id }
-    
+
     it "assigns a new lobby to @lobby" do
       get :new
       expect(assigns(:lobby)).to be_a_new(Lobby)

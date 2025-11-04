@@ -60,7 +60,7 @@ class UsersController < ApplicationController
     # Define which user attributes can be mass-assigned for security
     def user_params
       params.require(:user).permit(
-        :netid, :email, :first_name, :last_name, :role, :last_login_at, 
+        :netid, :email, :first_name, :last_name, :role, :last_login_at,
         :leetcode_username, :personal_email
       )
     end
