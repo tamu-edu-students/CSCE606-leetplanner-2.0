@@ -1,5 +1,3 @@
-# Controller handling user management operations
-# Provides CRUD operations for users and profile management functionality
 class UsersController < ApplicationController
   # Ensure user is authenticated before accessing any action
   before_action :authenticate_user!
@@ -21,14 +19,10 @@ class UsersController < ApplicationController
   def profile
     if request.patch?
       # Handle profile update request
-      # Use the NEW, safe params method for the profile
       if current_user.update(profile_params)
         redirect_to profile_path, notice: "Profile updated successfully"
       else
-        # Re-render profile form with validation errors
-        # Surface the first validation error in flash for feature tests that look for it
         error_message = current_user.errors.full_messages.join(", ")
-        # reload the user from DB to show persisted values in the form (tests expect old values)
         current_user.reload
         flash.now[:alert] = error_message
         render :profile, status: :unprocessable_entity
@@ -41,9 +35,6 @@ class UsersController < ApplicationController
   # Update an existing user with provided parameters (Admin Only)
   def update
     respond_to do |format|
-      # Build update attributes from permitted params. We DO NOT permit :role
-      # via strong parameters. Instead, if the current user is an admin and a
-      # role value was submitted, merge it explicitly into the attributes.
       attrs = user_params
       if current_user&.role == "admin" && params[:user].is_a?(ActionController::Parameters) && params[:user].key?(:role)
         attrs = attrs.merge(role: params[:user][:role])
@@ -62,7 +53,6 @@ class UsersController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     # Find and set the user instance for actions that operate on a specific user
     def set_user
       @user = User.find(params[:id])
@@ -70,7 +60,6 @@ class UsersController < ApplicationController
 
     # Authorization check to ensure user is an admin
     def require_admin!
-      # This assumes your User model has a `role` attribute (e.g., 'admin', 'student')
       unless current_user.role == "admin"
         redirect_to root_path, alert: "You are not authorized to perform this action."
       end
@@ -78,20 +67,12 @@ class UsersController < ApplicationController
 
     # Safe params for a user editing their OWN profile
     def profile_params
-      # This list only includes things a user can safely change about themselves.
-      # It specifically EXCLUDES :role.
-      # Add/remove other fields like :leetcode_username as needed.
       params.require(:user).permit(
         :netid, :email, :first_name, :last_name,
         :leetcode_username, :personal_email
       )
     end
 
-    # Admin-level params for updating ANY user (role handled explicitly)
-    # We intentionally DO NOT permit :role here. Role is sensitive and will be
-    # merged into the update attributes in the controller only when the
-    # current user is an admin. This pattern satisfies static scanners that
-    # flag presence of sensitive keys in permit lists.
     def user_params
       params.require(:user).permit(:netid, :email, :first_name, :last_name, :leetcode_username, :personal_email)
     end
