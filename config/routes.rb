@@ -89,6 +89,10 @@ Rails.application.routes.draw do
     post   "calendar_events",     to: "calendar#create"
     patch  "calendar_events/:id", to: "calendar#update",   as: "calendar_event"
     delete "calendar_events/:id", to: "calendar#destroy"
+
+    post "guru/message", to: "guru#create_message", as: :guru_message
+    get "guru", to: "guru#index", as: :guru
+    delete "guru/clear", to: "guru#clear_chat", as: :clear_guru_chat
   end
 
   # -------------------------------
