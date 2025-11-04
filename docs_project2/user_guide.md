@@ -33,6 +33,8 @@ Shared Notes (Left Column): A real-time text editor. All participants can see th
 
 Whiteboard (Center Column): An interactive canvas for visual problem-solving. A toolbar allows you to draw with a pencil, erase, clear the board, and change colors and brush size. Drawing is only enabled for users with the "Can Draw on Whiteboard" permission.
 
+Text Chat (Right Column): A real-time chat feed for the lobby. Type your message in the text box at the bottom of the column and press "Send". Your message will instantly appear for all other participants.
+
 Text Chat (Right Column):
 
 3. Managing Your Lobby (For Owners)
@@ -73,6 +75,25 @@ The Lobby page includes a shared whiteboard designed to work with and without Ja
 	- Notes section remains editable if you have the proper permission (Owner or Can Edit Notes).
 
 #### Text Chat
+
+The Text Chat is located in the right-most column of the lobby and provides a way for participants to communicate in real-time without voice.
+
+* **Sending Messages: At the bottom of the chat column, type your message into the text area and click "Send".
+* Viewing Messages: Your message will instantly appear in the chat history for everyone in the lobby. Messages are broadcast in real-time using Turbo Streams.
+* Message Format: Each message in the chat feed displays the sender's first name, a timestamp, and the content of their message.
+
+### Guru (AI Assistant)
+
+Guru is your personal AI assistant, powered by Google's Gemini API. You can ask it anything from general knowledge questions to complex algorithm explanations or code debugging. Guru is designed to be a "sarcastic but helpful" coding expert.
+
+How to Use Guru
+1.  Navigate to the "Guru" page from the main sidebar.
+2.  The chat history will load. If it's your first time, Guru will greet you.
+3.  Type your question into the large text area at the bottom of the page.
+4.  Click the "Send Message" button. The page will reload with your question and Guru's response added to the chat history.
+
+Chat History
+Your conversation with Guru is saved in your browser session, so you can continue it later. To start a fresh conversation, click the "Clear Chat" button at the top of the chat history.
 
 ### Logout
 

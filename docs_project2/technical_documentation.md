@@ -49,7 +49,7 @@ This project uses Google OAuth for authentication, which requires API keys.
 
 3.  Go to the Google Cloud Console to create OAuth 2.0 credentials.
 
-4.  Fill in the GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in your .env file.
+4.  Fill in the GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET and GEMINI_API_KEY in your .env file.
 
 .env
 
@@ -58,6 +58,7 @@ GOOGLE_CLIENT_SECRET="your_google_client_secret_here"\
 GOOGLE_OAUTH_URI=[https://oauth2.googleapis.com/token\
 ](https://oauth2.googleapis.com/token)ALLOWED_EMAIL_DOMAINS=[tamu.edu\
 ](http://tamu.edu)PORT=3000
+GEMINI_API_KEY="your_google_gemini_api_key_here"
 
 #### 4\. Create, Migrate, and Seed the Database
 
@@ -69,7 +70,7 @@ Bash
 
 -   (Only for testing/demo purpose) Update the name in seeds1.db with your own name if you wish to view some sample lobbies.
 
--   bin/rails db:seed
+-   (Only for testing/demo purpose, do NOT run in Production) bin/rails db:seed
 
 -   bin/rails leet_code:seed
 
@@ -133,7 +134,7 @@ These are high-level instructions for deploying to Heroku:
 
 2.  Provision a Heroku Postgres database.
 
-3.  Set the GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET environment variables in the Heroku app settings.
+3.  Set the GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET and GEMINI_API_KEY environment variables in the Heroku app settings.
 
 4.  Push your code to Heroku: git push heroku main.
 
