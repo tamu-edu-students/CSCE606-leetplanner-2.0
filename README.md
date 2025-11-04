@@ -72,6 +72,7 @@ The user stories for this epic were grouped into the following features:
 * **Text Chat**
 * **AI Chatbot Integration**
 
+Note: Full list of User Stories can be found in `docs_project2/user_stories.md`
 * * * * *
 
 Repository Structure
@@ -114,6 +115,7 @@ Documentation
 *	[User Guide](docs_project2/user_guide.md) -- how to use the collaborative lobbies
 *	[Architecture Decision Records](docs_project2/architecture_records.md)
 *   [Architecture Diagram](docs_project2/architecture_records.md)
+*   [User Stories](docs_project2/user_stories.md)
 *   [Database Diagram](docs_project2/erd.pdf)
 *   [Presentation]()
 
