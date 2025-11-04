@@ -6,7 +6,11 @@ class AddSessionsTable < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :sessions, :session_id, unique: true
-    add_index :sessions, :updated_at
+    unless index_exists?(:sessions, :session_id, unique: true)
+      add_index :sessions, :session_id, unique: true
+    end
+    unless index_exists?(:sessions, :updated_at)
+      add_index :sessions, :updated_at
+    end
   end
 end
