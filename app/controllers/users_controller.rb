@@ -45,7 +45,7 @@ class UsersController < ApplicationController
       # via strong parameters. Instead, if the current user is an admin and a
       # role value was submitted, merge it explicitly into the attributes.
       attrs = user_params
-      if current_user&.role == 'admin' && params[:user].is_a?(ActionController::Parameters) && params[:user].key?(:role)
+      if current_user&.role == "admin" && params[:user].is_a?(ActionController::Parameters) && params[:user].key?(:role)
         attrs = attrs.merge(role: params[:user][:role])
       end
 
