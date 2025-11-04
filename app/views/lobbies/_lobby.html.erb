@@ -103,7 +103,7 @@
                       </div>
 
                       <%= form_with model: [lobby, Message.new], data: { turbo_frame: "messages" }, html: { style: "display: flex; gap: 10px;" } do |form| %>
-                        <%= form.text_area :body, placeholder: "Type your message...", style: "" %>
+                        <%= form.text_area :body, placeholder: "Type your message...", class: "lobby-chat-input" %>
                         <%= form.submit "Send", class: "lobby-chat-button" %>
                       <% end %>
                     </div>
