@@ -37,8 +37,8 @@ gem "bootsnap", require: false
 gem "kamal", require: false
 gem "thruster", require: false
 
-gem "rack-cors"
-gem "activerecord-session_store"
+# gem "rack-cors"
+# gem "activerecord-session_store"
 
 # Gems used only for development and testing
 group :development, :test do
