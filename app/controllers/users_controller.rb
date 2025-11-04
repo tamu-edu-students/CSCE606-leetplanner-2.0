@@ -82,11 +82,14 @@ class UsersController < ApplicationController
     end
 
     # Admin-level params for updating ANY user
-    # This method is now ONLY for admins, protected by `require_admin!`
+    # Only permit :role when the current user is an admin to avoid mass-assignment
+    # of sensitive attributes by regular users. This is defensive: the action is
+    # already protected by `require_admin!`, but making the permit conditional
+    # prevents static analysis false-positives and is safer if the before_action
+    # is ever changed.
     def user_params
-      params.require(:user).permit(
-        :netid, :email, :first_name, :last_name,
-        :role, :leetcode_username, :personal_email
-      )
+      permitted = [ :netid, :email, :first_name, :last_name, :leetcode_username, :personal_email ]
+      permitted << :role if current_user&.role == "admin"
+      params.require(:user).permit(*permitted)
     end
 end

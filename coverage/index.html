@@ -13,7 +13,7 @@
       <img src="./assets/0.13.2/loading.gif" alt="loading"/>
     </div>
     <div id="wrapper" class="hide">
-      <div class="timestamp">Generated <abbr class="timeago" title="2025-11-04T13:35:51-06:00">2025-11-04T13:35:51-06:00</abbr></div>
+      <div class="timestamp">Generated <abbr class="timeago" title="2025-11-04T13:44:37-06:00">2025-11-04T13:44:37-06:00</abbr></div>
       <ul class="group_tabs"></ul>
 
       <div id="content">
@@ -29,7 +29,7 @@
      covered at
      <span class="covered_strength">
        <span class="green">
-         5.67
+         5.68
        </span>
     </span> hits/line
     )
@@ -131,7 +131,7 @@
             <td class="cell--number">17</td>
             <td class="cell--number">17</td>
             <td class="cell--number">0</td>
-            <td class="cell--number">72.76</td>
+            <td class="cell--number">73.00</td>
             
           </tr>
         
@@ -303,7 +303,7 @@
           <tr class="t-file">
             <td class="strong t-file__name"><a href="#0d1f5731343910a312182a840ba94a4e1069f82a" class="src_link" title="app/controllers/users_controller.rb">app/controllers/users_controller.rb</a></td>
             <td class="green strong cell--number t-file__coverage">100.00 %</td>
-            <td class="cell--number">92</td>
+            <td class="cell--number">95</td>
             <td class="cell--number">34</td>
             <td class="cell--number">34</td>
             <td class="cell--number">0</td>
@@ -660,7 +660,7 @@
      covered at
      <span class="covered_strength">
        <span class="green">
-         6.04
+         6.05
        </span>
     </span> hits/line
     )
@@ -729,7 +729,7 @@
             <td class="cell--number">17</td>
             <td class="cell--number">17</td>
             <td class="cell--number">0</td>
-            <td class="cell--number">72.76</td>
+            <td class="cell--number">73.00</td>
             
           </tr>
         
@@ -901,7 +901,7 @@
           <tr class="t-file">
             <td class="strong t-file__name"><a href="#0d1f5731343910a312182a840ba94a4e1069f82a" class="src_link" title="app/controllers/users_controller.rb">app/controllers/users_controller.rb</a></td>
             <td class="green strong cell--number t-file__coverage">100.00 %</td>
-            <td class="cell--number">92</td>
+            <td class="cell--number">95</td>
             <td class="cell--number">34</td>
             <td class="cell--number">34</td>
             <td class="cell--number">0</td>
@@ -6714,9 +6714,9 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="901" data-linenumber="33">
+          <li class="covered" data-hits="905" data-linenumber="33">
             
-              <span class="hits">901</span>
+              <span class="hits">905</span>
             
 
             
@@ -19359,7 +19359,7 @@
 
             
 
-            <code class="ruby">  </code>
+            <code class="ruby"></code>
           </li>
         </div>
       
@@ -20043,7 +20043,7 @@
 
             
 
-            <code class="ruby">      unless current_user.role == &#39;admin&#39;</code>
+            <code class="ruby">      unless current_user.role == &quot;admin&quot;</code>
           </li>
         </div>
       
@@ -20153,7 +20153,7 @@
 
             
 
-            <code class="ruby">        :netid, :email, :first_name, :last_name, </code>
+            <code class="ruby">        :netid, :email, :first_name, :last_name,</code>
           </li>
         </div>
       
@@ -20213,7 +20213,7 @@
 
             
 
-            <code class="ruby">    # This method is now ONLY for admins, protected by `require_admin!`</code>
+            <code class="ruby">    # Only permit :role when the current user is an admin to avoid mass-assignment</code>
           </li>
         </div>
       
@@ -20223,7 +20223,7 @@
 
             
 
-            <code class="ruby">    def user_params</code>
+            <code class="ruby">    # of sensitive attributes by regular users. This is defensive: the action is</code>
           </li>
         </div>
       
@@ -20233,7 +20233,7 @@
 
             
 
-            <code class="ruby">      params.require(:user).permit(</code>
+            <code class="ruby">    # already protected by `require_admin!`, but making the permit conditional</code>
           </li>
         </div>
       
@@ -20243,7 +20243,7 @@
 
             
 
-            <code class="ruby">        :netid, :email, :first_name, :last_name, </code>
+            <code class="ruby">    # prevents static analysis false-positives and is safer if the before_action</code>
           </li>
         </div>
       
@@ -20253,7 +20253,7 @@
 
             
 
-            <code class="ruby">        :role, :leetcode_username, :personal_email</code>
+            <code class="ruby">    # is ever changed.</code>
           </li>
         </div>
       
@@ -20263,7 +20263,7 @@
 
             
 
-            <code class="ruby">      )</code>
+            <code class="ruby">    def user_params</code>
           </li>
         </div>
       
@@ -20273,12 +20273,42 @@
 
             
 
-            <code class="ruby">    end</code>
+            <code class="ruby">      permitted = [ :netid, :email, :first_name, :last_name, :leetcode_username, :personal_email ]</code>
           </li>
         </div>
       
         <div>
           <li class="never" data-hits="" data-linenumber="92">
+            
+
+            
+
+            <code class="ruby">      permitted &lt;&lt; :role if current_user&amp;.role == &quot;admin&quot;</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="93">
+            
+
+            
+
+            <code class="ruby">      params.require(:user).permit(*permitted)</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="94">
+            
+
+            
+
+            <code class="ruby">    end</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="95">
             
 
             
