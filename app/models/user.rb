@@ -21,6 +21,7 @@ class User < ApplicationRecord
   has_many :hosted_lobbies, class_name: "Lobby", foreign_key: "owner_id"
   has_many :lobby_members, dependent: :destroy
   has_many :lobbies, through: :lobby_members
+  has_many :messages, dependent: :destroy
 
   # Scopes for common queries
   scope :active, -> { where(active: true) }      # Find only active users
