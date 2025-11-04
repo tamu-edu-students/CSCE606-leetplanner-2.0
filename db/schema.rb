@@ -24,7 +24,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_02_055701) do
     t.datetime "updated_at", null: false
     t.text "title_slug"
     t.text "description"
-    t.index ["leetcode_id"], name: "index_leet_code_problems_on_leetcode_id", unique: true
+    t.index [ "leetcode_id" ], name: "index_leet_code_problems_on_leetcode_id", unique: true
   end
 
   create_table "leet_code_session_problems", force: :cascade do |t|
@@ -34,8 +34,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_02_055701) do
     t.datetime "solved_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["leet_code_problem_id"], name: "index_leet_code_session_problems_on_leet_code_problem_id"
-    t.index ["leet_code_session_id"], name: "index_leet_code_session_problems_on_leet_code_session_id"
+    t.index [ "leet_code_problem_id" ], name: "index_leet_code_session_problems_on_leet_code_problem_id"
+    t.index [ "leet_code_session_id" ], name: "index_leet_code_session_problems_on_leet_code_session_id"
   end
 
   create_table "leet_code_sessions", force: :cascade do |t|
@@ -48,7 +48,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_02_055701) do
     t.string "google_event_id"
     t.text "description"
     t.string "title"
-    t.index ["user_id"], name: "index_leet_code_sessions_on_user_id"
+    t.index [ "user_id" ], name: "index_leet_code_sessions_on_user_id"
   end
 
   create_table "lobbies", force: :cascade do |t|
@@ -59,9 +59,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_02_055701) do
     t.datetime "updated_at", null: false
     t.string "name"
     t.boolean "private", default: false
-    t.index ["lobby_code"], name: "index_lobbies_on_lobby_code", unique: true
-    t.index ["owner_id"], name: "index_lobbies_on_owner_id"
-    t.index ["private"], name: "index_lobbies_on_private"
+    t.index [ "lobby_code" ], name: "index_lobbies_on_lobby_code", unique: true
+    t.index [ "owner_id" ], name: "index_lobbies_on_owner_id"
+    t.index [ "private" ], name: "index_lobbies_on_private"
   end
 
   create_table "lobby_members", force: :cascade do |t|
@@ -72,8 +72,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_02_055701) do
     t.boolean "can_draw", default: false
     t.boolean "can_edit_notes", default: false
     t.boolean "can_speak", default: false
-    t.index ["lobby_id"], name: "index_lobby_members_on_lobby_id"
-    t.index ["user_id"], name: "index_lobby_members_on_user_id"
+    t.index [ "lobby_id" ], name: "index_lobby_members_on_lobby_id"
+    t.index [ "user_id" ], name: "index_lobby_members_on_user_id"
   end
 
   create_table "messages", force: :cascade do |t|
@@ -82,8 +82,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_02_055701) do
     t.text "body"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["lobby_id"], name: "index_messages_on_lobby_id"
-    t.index ["user_id"], name: "index_messages_on_user_id"
+    t.index [ "lobby_id" ], name: "index_messages_on_lobby_id"
+    t.index [ "user_id" ], name: "index_messages_on_user_id"
   end
 
   create_table "notes", force: :cascade do |t|
@@ -92,8 +92,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_02_055701) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["lobby_id"], name: "index_notes_on_lobby_id", unique: true
-    t.index ["user_id"], name: "index_notes_on_user_id"
+    t.index [ "lobby_id" ], name: "index_notes_on_lobby_id", unique: true
+    t.index [ "user_id" ], name: "index_notes_on_user_id"
+  end
+
+  create_table "sessions", force: :cascade do |t|
+    t.string "session_id", null: false
+    t.text "data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index [ "session_id" ], name: "index_sessions_on_session_id", unique: true
+    t.index [ "updated_at" ], name: "index_sessions_on_updated_at"
   end
 
   create_table "users", force: :cascade do |t|
@@ -114,9 +123,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_02_055701) do
     t.string "google_refresh_token"
     t.datetime "google_token_expires_at"
     t.string "personal_email"
-    t.index ["active"], name: "index_users_on_active"
-    t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["netid"], name: "index_users_on_netid", unique: true
+    t.index [ "active" ], name: "index_users_on_active"
+    t.index [ "email" ], name: "index_users_on_email", unique: true
+    t.index [ "netid" ], name: "index_users_on_netid", unique: true
   end
 
   create_table "whiteboards", force: :cascade do |t|
@@ -127,7 +136,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_02_055701) do
     t.datetime "updated_at", null: false
     t.text "svg_data"
     t.text "notes"
-    t.index ["lobby_id"], name: "index_whiteboards_on_lobby_id"
+    t.index [ "lobby_id" ], name: "index_whiteboards_on_lobby_id"
   end
 
   add_foreign_key "leet_code_session_problems", "leet_code_problems"

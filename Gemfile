@@ -37,6 +37,9 @@ gem "bootsnap", require: false
 gem "kamal", require: false
 gem "thruster", require: false
 
+gem "rack-cors"
+gem "activerecord-session_store"
+
 # Gems used only for development and testing
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
@@ -46,9 +49,7 @@ group :development, :test do
   gem "webmock", "~> 3.25"
   gem "vcr", "~> 6.3"
   gem "rack_session_access"
-  gem "rack-cors"
   gem "faker"
-  gem "activerecord-session_store"
 end
 
 # Gems used only for development
