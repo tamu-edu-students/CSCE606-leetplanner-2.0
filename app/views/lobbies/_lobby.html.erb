@@ -13,6 +13,68 @@
             </div>
 
             <div class="content-area">
+                <div class="lobby-details">
+                   <h3 class="section-title">Description</h3>
+                    <div class="lobby-description"><%= lobby.description %></div>
+                    
+                    <% if current_user == lobby.owner %>
+                        <div class="lobby-code-display">
+                             <strong>Lobby Code:</strong> <span><%= lobby.lobby_code %></span>
+                        </div>
+                    <% end %>
+
+                    <% if current_user == lobby.owner && lobby.lobby_members.length > 1 %>
+                        <hr>
+                        <h3 class="page-title">Manage Permissions</h3>
+
+                        <%= form_with(model: lobby, url: update_all_lobby_permissions_path(lobby), method: :patch) do |form| %>
+                            <table class="permissions-table">
+                            <thead>
+                                <tr>
+                                 <th>Participant</th>
+                                <th>Can Draw on Whiteboard</th>
+                                <th>Can Edit Shared Notes</th>
+                                 </tr>
+                            </thead>
+                            <tbody>
+                            <%= form.fields_for :lobby_members do |member_form| %>
+                                <% next if member_form.object.user == lobby.owner %>
+                                <tr>
+                                   <td>
+                                    <%= member_form.object.user.full_name %>
+                                    <%= member_form.hidden_field :id %>
+                                     </td>
+                                    <td class="checkbox-cell">
+                                    <%= member_form.check_box :can_draw, class: "permission-checkbox" %>
+                                      </td>
+                                    <td class="checkbox-cell">
+                                       <%= member_form.check_box :can_edit_notes, class: "permission-checkbox" %>
+                                    </td>
+                                </tr>
+                             <% end %>
+                            </tbody>
+                            </table>
+                            <div class="lobby-actions">
+                               <%= form.submit "Update All Permissions", class: "btn btn-primary" %>
+                            </div>
+                        <% end %>
+                    <% end %>
+
+                    <div class="lobby-actions">
+                        <% if current_user == lobby.owner %>
+                             <%= link_to "Destroy Lobby", lobby, 
+                                        data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }, 
+                                        class: "btn btn-danger" %>
+                        <% else %>
+                            <%= button_to "Leave Lobby", leave_lobby_path(lobby), 
+                                        method: :delete, 
+                                        class: "btn btn-warning" %>
+                             <% end %>
+                        
+                        <%= link_to "Back to Lobbies", lobbies_path, class: "btn btn-secondary" %>
+                    </div>
+         
+               </div>
                 <div class="lobby-layout">
                     <div class="lobby-section">
                         <h3 class="section-title">Shared Notes</h3>
@@ -122,69 +184,6 @@
 
                     </div>
                 </div>
-
-                <div class="lobby-details">
-                   <h3 class="section-title">Description</h3>
-                    <div class="lobby-description"><%= lobby.description %></div>
-                    
-                    <% if current_user == lobby.owner %>
-                        <div class="lobby-code-display">
-                             <strong>Lobby Code:</strong> <span><%= lobby.lobby_code %></span>
-                        </div>
-                    <% end %>
-
-                    <% if current_user == lobby.owner && lobby.lobby_members.length > 1 %>
-                        <hr>
-                        <h3 class="page-title">Manage Permissions</h3>
-
-                        <%= form_with(model: lobby, url: update_all_lobby_permissions_path(lobby), method: :patch) do |form| %>
-                            <table class="permissions-table">
-                            <thead>
-                                <tr>
-                                 <th>Participant</th>
-                                <th>Can Draw on Whiteboard</th>
-                                <th>Can Edit Shared Notes</th>
-                                 </tr>
-                            </thead>
-                            <tbody>
-                            <%= form.fields_for :lobby_members do |member_form| %>
-                                <% next if member_form.object.user == lobby.owner %>
-                                <tr>
-                                   <td>
-                                    <%= member_form.object.user.full_name %>
-                                    <%= member_form.hidden_field :id %>
-                                     </td>
-                                    <td class="checkbox-cell">
-                                    <%= member_form.check_box :can_draw, class: "permission-checkbox" %>
-                                      </td>
-                                    <td class="checkbox-cell">
-                                       <%= member_form.check_box :can_edit_notes, class: "permission-checkbox" %>
-                                    </td>
-                                </tr>
-                             <% end %>
-                            </tbody>
-                            </table>
-                            <div class="lobby-actions">
-                               <%= form.submit "Update All Permissions", class: "btn btn-primary" %>
-                            </div>
-                        <% end %>
-                    <% end %>
-
-                    <div class="lobby-actions">
-                        <% if current_user == lobby.owner %>
-                             <%= link_to "Destroy Lobby", lobby, 
-                                        data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }, 
-                                        class: "btn btn-danger" %>
-                        <% else %>
-                            <%= button_to "Leave Lobby", leave_lobby_path(lobby), 
-                                        method: :delete, 
-                                        class: "btn btn-warning" %>
-                             <% end %>
-                        
-                        <%= link_to "Back to Lobbies", lobbies_path, class: "btn btn-secondary" %>
-                    </div>
-         
-               </div>
             </div>
         </div>
     </main>
