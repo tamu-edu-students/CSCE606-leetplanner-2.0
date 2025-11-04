@@ -69,10 +69,10 @@ Deliverables:
 -   Fully functional calendar + LeetCode tracker
 -   Weekly progress insights working
 -   Export feature available
--   Documentation completed in `README.md` / `docs/`
+-   Documentation completed in `README.md` / `docs_project1/`
 -   All commits & PRs following standards
 
-Note: Scrum Events can be found [here](docs/scrum_events.md) 
+Note: Scrum Events can be found [here](docs_project1/scrum_events.md) 
 * * * * *
 
 User Stories (SMART & INVEST)
@@ -133,7 +133,7 @@ CSCE606-group5-project1/
 
 │── spec/ # RSpec unit tests
 
-│── docs/ # Technical docs, architecture diagrams
+│── docs_project1/ # Technical docs, architecture diagrams
 
 │── config/ # Configurations & routes
 
@@ -161,10 +161,10 @@ Documentation
 
 [](https://github.com/tamu-edu-students/CSCE606-group5-project1#-documentation)
 
--	[Technical Documentation](docs/technical_documentation.md) -- setup & deployment steps
--	[User Guide](docs/user_guide.md) -- how to use the calendar and LeetCode tracker
--	[Architecture Decision Records](docs/architecture_records.md)
--   [Architecture Diagram](docs/architecture_records.md)
+-	[Technical Documentation](docs_project1/technical_documentation.md) -- setup & deployment steps
+-	[User Guide](docs_project1/user_guide.md) -- how to use the calendar and LeetCode tracker
+-	[Architecture Decision Records](docs_project1/architecture_records.md)
+-   [Architecture Diagram](docs_project1/architecture_records.md)
 -   [Database Diagram](https://dbdiagram.io/d/Leet-Planner-68cac63d5779bb7265eabfe3)
 -   [Presentation](https://www.canva.com/design/DAG095ZKo98/n4TI6UGwLIhXS8fFRR_DZw/view)
 
