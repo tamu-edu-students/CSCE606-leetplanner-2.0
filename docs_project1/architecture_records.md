@@ -1,8 +1,7 @@
 Architecture Decision Records (ADRs)
 ====================================
 
-###\
-ADR-001: User Authentication via Google OAuth
+### ADR-001: User Authentication via Google OAuth
 
 -   Status: Accepted
 

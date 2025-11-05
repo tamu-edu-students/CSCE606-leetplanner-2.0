@@ -25,40 +25,6 @@ Track your study sessions in two modes:
 
 ### Note: Live countdowns require JavaScript. If JavaScript is disabled in the browser, the timer will be static and a "Refresh" button is provided that will update the time countdown display on click.
 
-### Collaborative Whiteboard
-
-The Lobby page includes a shared whiteboard designed to work with and without JavaScript:
-
-1. JavaScript Enabled (Enhanced Mode)
-	- Drawing canvas powered by Fabric.js (freehand pen, text, rectangle, circle, line tools).
-	- Color picker and brush size slider.
-	- Live synchronization: changes broadcast instantly to other lobby members using ActionCable.
-	- Grid background for alignment.
-
-2. JavaScript Disabled (Fallback Mode)
-	- The current board state is rendered as server-side SVG.
-	- Basic forms allow adding text, rectangle, circle, and line elements without any client scripting.
-	- Notes section remains editable if you have the proper permission (Owner or Can Edit Notes).
-	- A <noscript> notice explains limitations.
-
-Permissions:
-	- Drawing/shape adding controlled by "Can Draw" flag per lobby member.
-	- Notes editing controlled by "Can Edit Notes" flag.
-
-Data Persistence:
-	- Board stored as SVG (`whiteboards.svg_data`).
-	- Notes stored in `whiteboards.notes`.
-
-Limitations / Future Improvements:
-	- Real-time presence (who is viewing) not yet displayed.
-	- Undo/redo stack not implemented.
-	- Potential optimization: PNG snapshot for faster initial load when JS disabled.
-
-Accessibility:
-	- All buttons have text labels; color input uses native picker.
-	- Fallback forms are regular HTML for screen reader compatibility.
-
-
 ### Calendar
 
 You can view your Google Calendar events on the "Calendar" view. Any modifications you make to your calendar events from this application will sync with your Google Calendar.
