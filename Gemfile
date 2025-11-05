@@ -18,6 +18,7 @@ gem "puma", ">= 5.0"
 gem "jbuilder"
 gem "google-api-client", "~> 0.53.0"
 gem "httparty"
+gem "nokogiri"
 
 # --- Authentication ---
 gem "omniauth"
@@ -36,6 +37,9 @@ gem "bootsnap", require: false
 gem "kamal", require: false
 gem "thruster", require: false
 
+gem "rack-cors"
+gem "activerecord-session_store"
+
 # Gems used only for development and testing
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
@@ -44,6 +48,8 @@ group :development, :test do
   gem "shoulda-matchers"
   gem "webmock", "~> 3.25"
   gem "vcr", "~> 6.3"
+  gem "rack_session_access"
+  gem "faker"
 end
 
 # Gems used only for development
@@ -52,6 +58,7 @@ group :development do
   gem "foreman"
   gem "brakeman", require: false
   gem "rubocop-rails-omakase", require: false
+  gem "rails-erd"
 end
 
 # Gems used only for testing

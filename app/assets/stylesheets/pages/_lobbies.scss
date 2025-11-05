@@ -1,0 +1,383 @@
+/* --- Main Lobby Layout (3-Column) --- */
+.lobby-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr 240px;
+  gap: 24px;
+  margin: 24px 0;
+  height: calc(100vh - 180px);
+  min-height: 600px;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 20px;
+}
+
+.lobby-section {
+  background: white;
+  border: 1px solid #e1e5e9;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  overflow: hidden;
+  
+  .section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0 0 20px 0;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f1f3f4;
+  }
+}
+
+/* --- Right Column: Participants & Analytics --- */
+.participants-list {
+  .lobby-members {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .participant-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #f1f3f4;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+  
+  .participant-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    box-shadow: 0 2px 4px rgba(0,123,255,0.3);
+  }
+  
+  .participant-name {
+    flex: 1;
+    font-size: 15px;
+    font-weight: 500;
+    color: #2c3e50;
+  }
+  
+  .status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #28a745;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px #28a745;
+  }
+}
+
+.lobby-analytics {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 2px solid #f1f3f4;
+  
+  .section-title {
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+  
+  .analytics-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 14px;
+    
+    .analytics-value {
+      font-weight: 600;
+      color: #28a745;
+    }
+  }
+}
+
+/* --- Bottom Section: Description & Permissions --- */
+.lobby-details {
+  margin-top: 32px;
+  background: white;
+  border: 1px solid #e1e5e9;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  display: flex; 
+  flex-direction: row;
+  gap: 20px;
+
+  .section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0 0 20px 0;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f1f3f4;
+  }
+  > div{
+    flex-grow: 1;
+  }
+}
+
+.lobby-description {
+  margin-bottom: 1.5rem;
+  background: #f5f8fe;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.lobby-code-display {
+  background: var(--gray-lighter);
+  border: 1px solid var(--gray-border);
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  
+  span {
+    font-weight: bold;
+    font-family: 'SF Mono', Monaco, monospace;
+    color: var(--tamu-red);
+  }
+}
+
+/* --- Lobby Dashboard (index.html.erb) --- */
+.lobbies-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+  gap: 24px !important;
+  margin: 24px 0;
+}
+
+.lobby-card {
+  background: #f8f9ff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid #e5e7eb;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+  }
+}
+
+.lobby-card-link {
+  text-decoration: none;
+  color: #111;
+}
+
+.card-title {
+  font-weight: 600;
+  font-size: 1.25rem;
+  margin-bottom: 0.25rem;
+  color: #1d1d1f;
+}
+
+.card-subtitle {
+  font-size: 0.95rem;
+  color: #86868b;
+  margin-bottom: 1.5rem;
+}
+
+.card-invite-code {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+  font-size: 0.9rem;
+  color: #6b6b70;
+
+  span {
+    font-weight: bold;
+    font-family: 'SF Mono', Monaco, monospace;
+    color: var(--tamu-red);
+    background-color: #f5f5f7;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    letter-spacing: 1px;
+  }
+}
+
+.join-lobby-form {
+  margin-bottom: 2rem;
+  .join-form-fields {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+}
+
+/* --- Permissions Table (_lobby.html.erb) --- */
+.permissions-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+
+  th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    padding: 12px;
+    text-align: left;
+    border-bottom: 2px solid #dee2e6;
+  }
+
+  td {
+    padding: 12px;
+    border-bottom: 1px solid #dee2e6;
+  }
+  
+  tr:hover {
+    background-color: #f8f9fa;
+  }
+}
+
+.permissions-table .checkbox-cell {
+  text-align: center;
+  padding: 1rem;
+}
+
+.permission-checkbox {
+  width: 20px !important;
+  height: 20px !important;
+  cursor: pointer;
+  transform: scale(1.2);
+}
+
+/* --- Common/Utility --- */
+.lobby-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.lobby-actions form {
+  display: inline-block;
+}
+
+.lobby-content-area {
+  display: flex;
+  flex-direction: column;
+}
+
+.lobby-participants {
+  flex-grow: 1;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.lobby-members {
+  margin-bottom: 2rem;
+  padding: 1rem;
+}
+
+.lobby-visibility-tag {
+  background: #ebecf0;
+  color: #585a5e;
+  padding: 0.3rem 0.5rem 0.2rem 0.5rem;
+  margin-bottom: 1rem;
+  border-radius: 0.3rem;
+}
+
+.lobby-button-box {
+  display: flex;
+  gap: 1rem;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 2rem 0;
+}
+
+.content-area > h3.page-title {
+  margin-top: 1rem;
+}
+
+/* --- Responsive Media Queries --- */
+@media (max-width: 1200px) {
+  .lobby-layout {
+    grid-template-columns: 200px 1fr 220px;
+    gap: 20px;
+    padding: 0 16px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .lobby-layout {
+    grid-template-columns: 1fr;
+    height: auto;
+    gap: 20px;
+    padding: 0 16px;
+  }
+  
+  .lobby-section {
+    height: auto;
+    min-height: 300px;
+    padding: 20px;
+  }
+  
+  .lobby-section.whiteboard-section {
+    order: 1;
+    min-height: 500px;
+  }
+}
+
+@media (max-width: 768px) {
+  .lobby-layout {
+    margin: 16px 0;
+    gap: 16px;
+    padding: 0 12px;
+  }
+  
+  .lobby-section {
+    padding: 16px;
+  }
+}
+
+.lobby-chat{
+  display: flex; 
+  flex-direction: column; 
+  height: 400px; 
+  border: 1px solid #ccc; 
+  padding: 10px;
+}
+.lobby-messages{
+  overflow-y: auto; 
+  margin-bottom: 10px;
+}
+.message-date-separator{
+  text-align: center; 
+  margin: 5px 0;
+}
+.lobby-chat-button{
+  flex: 0 0 auto; 
+  padding: 8px 16px; 
+  background-color: var(--tamu-red);
+  border: none; 
+  color: white; 
+  cursor: pointer; 
+  border-radius: 4px;
+}
+
+.lobby-chat-input{
+  flex: 1 1 auto; 
+  resize: none; 
+  height: 40px; 
+  padding: 8px;
+}

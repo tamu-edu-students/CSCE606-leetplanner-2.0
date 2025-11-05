@@ -24,7 +24,7 @@
                   <%= @current_event.start.date_time.strftime("%d %B %Y, %H:%M:%S") %> — <%= @current_event.end.date_time.strftime("%d %B %Y, %H:%M:%S") %>
                 <% else %>
                   <%# For all-day events %>
-                  <%= @current_event.start.date.strftime("%d %B %Y") %> — <%= @current_event.end.date.strftime("%d %B %Y") %>
+                  <%= Date.parse(@current_event.start.date).strftime("%d %B %Y") %> — <%= Date.parse(@current_event.end.date).strftime("%d %B %Y") %>
                 <% end %>
               </p>
               <% if @current_event.description.present? %>

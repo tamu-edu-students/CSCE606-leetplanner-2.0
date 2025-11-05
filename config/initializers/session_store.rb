@@ -1,4 +1,15 @@
-Rails.application.config.session_store :cookie_store,
-  key: "_csce606_group5_project1_session",
-  secure: Rails.env.production?, # ensures cookies are marked secure in production
-  same_site: Rails.env.production? ? :none : :lax # allows cookies to be sent on cross-site redirects in production
+Rails.application.config.session_store :active_record_store
+
+# Configure all session options on config.action_dispatch.session
+# This hash will be used to create the session.
+Rails.application.config.action_dispatch.session = {
+  key: "_csce606_group5_project1_session"
+}
+
+# Add production-specific options by merging them into the hash
+if Rails.env.production?
+  Rails.application.config.action_dispatch.session.merge!(
+    domain: :all,
+    tld_length: 2
+  )
+end

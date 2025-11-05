@@ -9,18 +9,21 @@
  * Consider organizing styles into separate files for maintainability.
  */
 
-@import "base/base";
+@use "base/base";
 
-@import "layout/sidebar";
-@import "layout/page";
+@use "layout/sidebar";
+@use "layout/page";
 
-@import "components/buttons";
-@import "components/cards";
-@import "components/forms";
-@import "components/flash";
+@use "components/buttons";
+@use "components/cards";
+@use "components/forms";
+@use "components/flash";
 
-@import "pages/login";
-@import "pages/dashboard";
-@import "pages/calendar";
-@import "pages/leetcode";
-@import "pages/statistics";
+@use "pages/login";
+@use "pages/dashboard";
+@use "pages/calendar";
+@use "pages/leetcode";
+@use "pages/statistics";
+@use "pages/lobbies";
+@use "pages/guru";
+@use "pages/whiteboard";

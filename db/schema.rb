@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_04_225611) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_05_014836) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -51,6 +51,60 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_04_225611) do
     t.index [ "user_id" ], name: "index_leet_code_sessions_on_user_id"
   end
 
+  create_table "lobbies", force: :cascade do |t|
+    t.bigint "owner_id", null: false
+    t.text "description"
+    t.string "lobby_code", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "name"
+    t.boolean "private", default: false
+    t.index [ "lobby_code" ], name: "index_lobbies_on_lobby_code", unique: true
+    t.index [ "owner_id" ], name: "index_lobbies_on_owner_id"
+    t.index [ "private" ], name: "index_lobbies_on_private"
+  end
+
+  create_table "lobby_members", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "lobby_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "can_draw", default: false
+    t.boolean "can_edit_notes", default: false
+    t.boolean "can_speak", default: false
+    t.index [ "lobby_id" ], name: "index_lobby_members_on_lobby_id"
+    t.index [ "user_id" ], name: "index_lobby_members_on_user_id"
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "lobby_id", null: false
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index [ "lobby_id" ], name: "index_messages_on_lobby_id"
+    t.index [ "user_id" ], name: "index_messages_on_user_id"
+  end
+
+  create_table "notes", force: :cascade do |t|
+    t.text "content", default: ""
+    t.bigint "lobby_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index [ "lobby_id" ], name: "index_notes_on_lobby_id", unique: true
+    t.index [ "user_id" ], name: "index_notes_on_user_id"
+  end
+
+  create_table "sessions", force: :cascade do |t|
+    t.string "session_id", null: false
+    t.text "data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index [ "session_id" ], name: "index_sessions_on_session_id", unique: true
+    t.index [ "updated_at" ], name: "index_sessions_on_updated_at"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "netid"
     t.string "email"
@@ -74,7 +128,26 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_04_225611) do
     t.index [ "netid" ], name: "index_users_on_netid", unique: true
   end
 
+  create_table "whiteboards", force: :cascade do |t|
+    t.bigint "lobby_id", null: false
+    t.string "name"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "svg_data"
+    t.text "notes"
+    t.index [ "lobby_id" ], name: "index_whiteboards_on_lobby_id"
+  end
+
   add_foreign_key "leet_code_session_problems", "leet_code_problems"
   add_foreign_key "leet_code_session_problems", "leet_code_sessions"
   add_foreign_key "leet_code_sessions", "users"
+  add_foreign_key "lobbies", "users", column: "owner_id"
+  add_foreign_key "lobby_members", "lobbies"
+  add_foreign_key "lobby_members", "users"
+  add_foreign_key "messages", "lobbies"
+  add_foreign_key "messages", "users"
+  add_foreign_key "notes", "lobbies"
+  add_foreign_key "notes", "users"
+  add_foreign_key "whiteboards", "lobbies"
 end

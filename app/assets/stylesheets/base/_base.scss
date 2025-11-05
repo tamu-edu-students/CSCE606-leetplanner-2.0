@@ -35,3 +35,28 @@ body {
 .hidden {
     display: none !important;
 }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.js-required-notice {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 15px;
+  color: #856404;
+}
+.js-required-notice h4 {
+  margin-top: 0;
+  color: #856404;
+}

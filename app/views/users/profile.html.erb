@@ -42,7 +42,7 @@
             <div class="focus-time-container">
               <p class="focus-time-label">Update your profile information</p>
               <div class="focus-time-controls">
-                <%= form_with model: current_user, url: profile_path, method: :patch do |form| %>
+                <%= form_with(model: current_user, url: profile_path, method: :patch, html: { id: 'profileForm' }) do |form| %>
                   <div style="margin-bottom: 1rem;">
                     <%= form.label :first_name, "First Name" %>
                     <%= form.text_field :first_name, class: "focus-time-input", placeholder: "Enter first name" %>

@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   # Authentication / Sessions
   # -------------------------------
   get "/login/google",          to: redirect("/auth/google_oauth2")
+  post "/login/dev_bypass",     to: "login#dev_bypass"  # Development login
   get "/auth/:provider/callback", to: "sessions#create"
   get "sessions/create", to: "sessions#create", as: "sessions_create"
   get "/auth/failure",          to: "sessions#failure", as: "sessions_failure"
@@ -16,7 +17,7 @@ Rails.application.routes.draw do
   # Dashboard, Calendar, Timer
   # -------------------------------
   get "dashboard", to: "dashboard#show", as: "dashboard"
-  get "/calendar",              to: "calendar#show"
+  get "/calendar",              to: "calendar#show", as: :calendar
   post "/calendar/sync",        to: "calendar#sync", as: "sync_calendar"
   get "/calendar/add",          to: "calendar#new", as: "add_calendar_event"
   get "/calendar/:id/edit",     to: "calendar#edit", as: "edit_calendar_event"
@@ -32,6 +33,13 @@ Rails.application.routes.draw do
   resources :users, only: [ :show, :update ]
 
   # -------------------------------
+  # Guru Chat Interface
+  # -------------------------------
+  get "/guru",                  to: "guru#index", as: :guru
+  post "/guru/message",         to: "guru#create_message", as: :guru_message
+  delete "/guru/clear",         to: "guru#clear_chat", as: :clear_guru_chat
+
+  # -------------------------------
   # LeetCode Features
   # -------------------------------
   get "/leetcode",              to: "leet_code_problems#index"
@@ -45,6 +53,42 @@ Rails.application.routes.draw do
   resource  :statistics, only: [ :show ], controller: "statistics"
 
   # -------------------------------
+  # Lobby Features with Whiteboard
+  # -------------------------------
+  resources :lobbies do
+    resources :whiteboards, only: [] do
+      collection do
+        post :add_drawing
+        post :clear
+        post :update_svg
+        patch :update_notes
+        get :show
+      end
+    end
+    resource :note, only: [ :show, :create, :update, :edit ]
+    resources :messages, only: [ :index, :create ]
+  end
+
+  # Controller spec compatibility aliases (direct controller action routing)
+  # Some controller specs invoke actions by name (get :profile, get :show on WhiteboardsController)
+  # which expect conventional /users/profile or top-level /whiteboards paths. Provide explicit
+  # non-nested routes to satisfy those tests while keeping primary nested REST structure intact.
+  get "/users/profile", to: "users#profile"
+  scope "/whiteboards" do
+    post :add_drawing, to: "whiteboards#add_drawing"
+    post :clear, to: "whiteboards#clear"
+    post :update_svg, to: "whiteboards#update_svg"
+    patch :update_notes, to: "whiteboards#update_notes"
+    get :show, to: "whiteboards#show"
+  end
+  post "join_lobby", to: "lobby_members#create_by_code", as: :join_lobby
+  delete "leave_lobby/:id", to: "lobby_members#destroy", as: :leave_lobby
+  resources :lobby_members, only: [] do
+    patch "permissions", on: :member, to: "lobby_permissions#update", as: :update_permissions
+  end
+  patch "lobbies/:id/update_all_permissions", to: "lobby_permissions#update_all", as: :update_all_lobby_permissions
+
+  # -------------------------------
   # API Namespace
   # -------------------------------
   namespace :api do
@@ -55,6 +99,10 @@ Rails.application.routes.draw do
     post   "calendar_events",     to: "calendar#create"
     patch  "calendar_events/:id", to: "calendar#update",   as: "calendar_event"
     delete "calendar_events/:id", to: "calendar#destroy"
+
+    post "guru/message", to: "guru#create_message", as: :guru_message
+    get "guru", to: "guru#index", as: :guru
+    delete "guru/clear", to: "guru#clear_chat", as: :clear_guru_chat
   end
 
   # -------------------------------
@@ -62,4 +110,13 @@ Rails.application.routes.draw do
   # -------------------------------
   get "up", to: "rails/health#show", as: :rails_health_check
   get "favicon.ico", to: proc { [ 204, {}, [] ] }
+
+  # Test-only helpers
+  if Rails.env.test?
+    get "/test/clear_session", to: "test_helpers#clear_session"
+    get "/test/clear_session_with_alert", to: "test_helpers#clear_session_with_alert"
+    get "/test/clear_timer", to: "test_helpers#clear_timer"
+    get "/test/set_timer", to: "test_helpers#set_timer"
+    get "/test/login_as", to: "test_helpers#login_as"
+  end
 end
