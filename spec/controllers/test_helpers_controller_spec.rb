@@ -16,6 +16,11 @@ RSpec.describe TestHelpersController, type: :controller do
     end
   end
 
+  after do
+    # Reload original application routes so later request/view specs see full route set.
+    Rails.application.reload_routes!
+  end
+
   describe "GET #clear_session" do
     it "clears the session and returns :ok" do
       session[:user_id] = 123 # Set a dummy session

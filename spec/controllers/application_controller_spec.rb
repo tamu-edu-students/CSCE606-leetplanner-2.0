@@ -21,6 +21,11 @@ RSpec.describe ApplicationController, type: :controller do
     end
   end
 
+  after do
+    # Restore full application routes so subsequent specs (lobbies, whiteboards, etc.) have their path helpers.
+    Rails.application.reload_routes!
+  end
+
   let(:user) { create(:user) }
 
   describe '#authenticate_user!' do
