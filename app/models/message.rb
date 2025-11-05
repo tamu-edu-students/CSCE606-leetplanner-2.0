@@ -8,6 +8,6 @@ class Message < ApplicationRecord
   after_commit :broadcast_message, on: :create
 
   def broadcast_message
-    broadcast_append_to lobby if lobby.present?
+    broadcast_append_to "lobby_#{lobby.id}_messages" if lobby.present?
   end
 end
