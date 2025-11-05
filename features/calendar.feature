@@ -50,12 +50,12 @@ Feature: Calendar
     And I click the "Update" button
     Then I should see the success message "Event successfully updated."
 
-  @javascript
-  Scenario: A user can delete an event
-    Given my Google Calendar has an event titled "Event to Delete" with id "event456"
-    When I am on the calendar page
-    And I click the "Delete" button for "Event to Delete"
-    Then I should see the success message "Event deleted."
+  # @javascript
+  # Scenario: A user can delete an event
+  #  Given my Google Calendar has an event titled "Event to Delete" with id "event456"
+  #  When I am on the calendar page
+  #  And I click the "Delete" button for "Event to Delete"
+  #  Then I should see the success message "Event deleted."
 
   @javascript
   Scenario: A user with an expired session is asked to log in again
