@@ -11,23 +11,23 @@ class WhiteboardsController < ApplicationController
   # Add simple shape/text primitives by string injection (sufficient for tests)
   def add_drawing
     tool  = params[:tool]
-    color = params[:color].presence || '#000000'
+    color = params[:color].presence || "#000000"
     case tool
-    when 'rectangle'
+    when "rectangle"
       @whiteboard.svg_data = add_rectangle_to_svg(@whiteboard.svg_data, params[:x], params[:y], params[:width], params[:height], color)
-      flash[:notice] = 'Added rectangle to whiteboard!'
-    when 'circle'
+      flash[:notice] = "Added rectangle to whiteboard!"
+    when "circle"
       @whiteboard.svg_data = add_circle_to_svg(@whiteboard.svg_data, params[:x], params[:y], params[:radius], color)
-      flash[:notice] = 'Added circle to whiteboard!'
-    when 'text'
+      flash[:notice] = "Added circle to whiteboard!"
+    when "text"
       @whiteboard.svg_data = add_text_to_svg(@whiteboard.svg_data, params[:x], params[:y], params[:text], color)
-      flash[:notice] = 'Added text to whiteboard!'
-    when 'line'
-      width = params[:width].presence || '2'
+      flash[:notice] = "Added text to whiteboard!"
+    when "line"
+      width = params[:width].presence || "2"
       @whiteboard.svg_data = add_line_to_svg(@whiteboard.svg_data, params[:x1], params[:y1], params[:x2], params[:y2], color, width)
-      flash[:notice] = 'Added line to whiteboard!'
+      flash[:notice] = "Added line to whiteboard!"
     else
-      flash[:alert] = 'Unknown tool'
+      flash[:alert] = "Unknown tool"
     end
     @whiteboard.save(validate: false)
     redirect_to lobby_path(@lobby)
@@ -35,28 +35,28 @@ class WhiteboardsController < ApplicationController
 
   def clear
     @whiteboard.update(svg_data: create_default_svg, notes: @whiteboard.notes)
-    flash[:notice] = 'Whiteboard cleared!'
+    flash[:notice] = "Whiteboard cleared!"
     redirect_to lobby_path(@lobby)
   end
 
   def update_svg
-    return render json: { status: 'error', message: 'No SVG data provided' }, status: :bad_request unless params[:svg_data].present?
+    return render json: { status: "error", message: "No SVG data provided" }, status: :bad_request unless params[:svg_data].present?
     if @whiteboard.update(svg_data: params[:svg_data])
-      render json: { status: 'success' }
+      render json: { status: "success" }
     else
-      render json: { status: 'error', message: 'Failed to persist SVG' }, status: :unprocessable_entity
+      render json: { status: "error", message: "Failed to persist SVG" }, status: :unprocessable_entity
     end
   end
 
   def update_notes
     unless permitted_to_edit_notes? && params.dig(:whiteboard, :notes).present?
-      flash[:alert] = 'Not authorized to edit notes.'
+      flash[:alert] = "Not authorized to edit notes."
       return redirect_to lobby_path(@lobby)
     end
     if @whiteboard.update(notes: params[:whiteboard][:notes])
-      flash[:notice] = 'Notes updated.'
+      flash[:notice] = "Notes updated."
     else
-      flash[:alert] = 'Failed to update notes.'
+      flash[:alert] = "Failed to update notes."
     end
     redirect_to lobby_path(@lobby)
   end
@@ -99,7 +99,7 @@ class WhiteboardsController < ApplicationController
   end
 
   def ensure_svg_wrapper(svg)
-    return create_default_svg unless svg.present? && svg.include?('</svg>')
+    return create_default_svg unless svg.present? && svg.include?("</svg>")
     svg
   end
 

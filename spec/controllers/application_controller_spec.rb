@@ -20,7 +20,7 @@ RSpec.describe ApplicationController, type: :controller do
       get 'protected_action' => 'anonymous#protected_action'
     end
   end
-  
+
   after do
     # Restore full application routes so subsequent specs (lobbies, whiteboards, etc.) have their path helpers.
     Rails.application.reload_routes!

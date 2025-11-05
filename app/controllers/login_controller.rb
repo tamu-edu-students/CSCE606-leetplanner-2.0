@@ -19,18 +19,18 @@ class LoginController < ApplicationController
   # POST /login/dev_bypass
   # Development-only helper to quickly sign in a predefined user.
   def dev_bypass
-    unless Rails.env.development? && ENV['ENABLE_DEV_LOGIN'] == 'true'
-      flash[:alert] = 'Development login not available'
+    unless Rails.env.development? && ENV["ENABLE_DEV_LOGIN"] == "true"
+      flash[:alert] = "Development login not available"
       redirect_to root_path and return
     end
 
-    user = User.find_by(email: 'dev@tamu.edu')
+    user = User.find_by(email: "dev@tamu.edu")
     if user.nil?
       user = User.create!(
-        netid: 'dev',
-        email: 'dev@tamu.edu',
-        first_name: 'Development',
-        last_name: 'User',
+        netid: "dev",
+        email: "dev@tamu.edu",
+        first_name: "Development",
+        last_name: "User",
         last_login_at: Time.current
       )
     else
@@ -41,7 +41,7 @@ class LoginController < ApplicationController
     session[:user_email] = user.email
     session[:user_first_name] = user.first_name
 
-    flash[:notice] = 'Development login successful'
+    flash[:notice] = "Development login successful"
     redirect_to dashboard_path
   end
 end
