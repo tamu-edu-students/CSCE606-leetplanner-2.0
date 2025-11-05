@@ -5,6 +5,9 @@
   def create
     @message = @lobby.messages.build(message_params)
     @message.user = current_user
+    puts "--DEBUG MESSAGE--"
+    puts @lobby.id
+    puts @message.id
 
     if @message.save
       # Message creation succeeded; Turbo Streams will handle broadcasting
