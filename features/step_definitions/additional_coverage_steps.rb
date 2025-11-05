@@ -211,6 +211,3 @@ When('I invoke the calendar sync with an expired token') do
   allow(Signet::OAuth2::Client).to receive(:new).and_return(double(expired?: true, refresh!: (raise Signet::AuthorizationError.new('Refresh failed'))))
   @sync_result = GoogleCalendarSync.sync_for_user(@current_user || FactoryBot.create(:user), session_hash)
 end
-
-# Reuse existing verification step for failure above
-
