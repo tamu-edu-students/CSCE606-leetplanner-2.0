@@ -21,12 +21,23 @@ class NotesController < ApplicationController
   end
 
   def update
-    @note = @lobby.note
+    @note = @lobby.note || @lobby.build_note(user: current_user)
 
-    if @note.update(note_params)
-      redirect_to @lobby, notice: "Note updated successfully"
+    if @note.persisted?
+      # Update existing note
+      if @note.update(note_params)
+        redirect_to @lobby, notice: "Note updated successfully"
+      else
+        render :edit, status: :unprocessable_entity
+      end
     else
-      render :edit, status: :unprocessable_entity
+      # Create new note
+      @note.assign_attributes(note_params)
+      if @note.save
+        redirect_to @lobby, notice: "Note updated successfully"
+      else
+        render :edit, status: :unprocessable_entity
+      end
     end
   end
 

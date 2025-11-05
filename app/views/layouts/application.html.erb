@@ -8,8 +8,9 @@
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
 
-    <%= javascript_importmap_tags %>
-    <%= javascript_include_tag "whiteboard", type: "module", defer: true %>
+  <%= javascript_importmap_tags %>
+  <!-- Use importmap module tag for whiteboard (was javascript_include_tag which failed to locate asset) -->
+  <%= javascript_import_module_tag "whiteboard", defer: true %>
     <script>document.documentElement.classList.add('js-enabled');</script>
   </head>
   <body>

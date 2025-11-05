@@ -11,5 +11,24 @@ require 'rails_helper'
 #   end
 # end
 RSpec.describe MessagesHelper, type: :helper do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe '#formatted_timestamp' do
+    it 'formats time to HH:MM 24h' do
+      time = Time.zone.parse('2025-01-02 14:35:10')
+      expect(helper.formatted_timestamp(time)).to eq('14:35')
+    end
+  end
+
+  describe '#safe_message_body' do
+    it 'returns empty string for nil' do
+      expect(helper.safe_message_body(nil)).to eq('')
+    end
+
+    it 'escapes HTML tags' do
+      expect(helper.safe_message_body('<b>hi</b>')).to eq('&lt;b&gt;hi&lt;/b&gt;')
+    end
+
+    it 'strips surrounding whitespace' do
+      expect(helper.safe_message_body("  hello  ")).to eq('hello')
+    end
+  end
 end

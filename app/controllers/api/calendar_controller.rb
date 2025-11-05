@@ -178,7 +178,7 @@ module Api
         error_message = e.respond_to?(:message) ? e.message : "Failed to create event"
         Rails.logger.error("Calendar create: #{error_message}")
         respond_to do |format|
-          format.html { redirect_to calendar_path, alert: "Failed to create event" }
+          format.html { redirect_to calendar_path, alert: error_message }
           format.json { render json: { error: error_message }, status: :unprocessable_entity }
         end
       end
