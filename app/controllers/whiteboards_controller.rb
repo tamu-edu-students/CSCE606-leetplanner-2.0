@@ -52,19 +52,6 @@ class WhiteboardsController < ApplicationController
     end
   end
 
-  # Update shared notes (non-JS compatible)
-  def update_notes
-    if params[:whiteboard] && permitted_to_edit_notes?
-      if @whiteboard.update(notes_params)
-        redirect_to lobby_path(@lobby), notice: "Notes updated."
-      else
-        redirect_to lobby_path(@lobby), alert: "Failed to update notes."
-      end
-    else
-      redirect_to lobby_path(@lobby), alert: "Not authorized to edit notes."
-    end
-  end
-
   private
 
   def set_lobby
@@ -73,16 +60,6 @@ class WhiteboardsController < ApplicationController
 
   def set_whiteboard
     @whiteboard = @lobby.whiteboard || @lobby.create_whiteboard(name: "#{@lobby.name} Whiteboard")
-  end
-
-  def permitted_to_edit_notes?
-    return true if current_user == @lobby.owner
-    member = @lobby.lobby_members.find_by(user: current_user)
-    member&.can_edit_notes
-  end
-
-  def notes_params
-    params.require(:whiteboard).permit(:notes)
   end
 
   # Default SVG background grid

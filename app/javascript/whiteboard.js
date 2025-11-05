@@ -35,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Tool selection
   document.getElementById('pencil-tool').onclick = () => selectTool('pencil');
-  document.getElementById('eraser-tool').onclick = () => selectTool('eraser');
   document.getElementById('clear-btn').onclick = clearCanvas;
 
   document.getElementById('color-picker').onchange = (e) => {
